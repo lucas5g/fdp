@@ -1,26 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUtilDto } from './dto/create-util.dto';
-import { UpdateUtilDto } from './dto/update-util.dto';
+import { format } from 'date-fns';
+import { z } from 'zod';
+import 'dotenv/config'
+import { chromium } from 'playwright';
 
 @Injectable()
 export class UtilService {
-  create(createUtilDto: CreateUtilDto) {
-    return 'This action adds a new util';
+
+  env() {
+    return z.object({
+      DISCORD_TOKEN: z.string(),
+      DISCORD_CLIENT_ID: z.string(),
+      AZC_TOKEN: z.string()
+    }).parse(process.env);
   }
 
-  findAll() {
-    return `This action returns all util`;
-  }
+  getUrlPoint(username: string) {
 
-  findOne(id: number) {
-    return `This action returns a #${id} util`;
-  }
+    const date = format(new Date(), 'yyyy-MM-dd')
 
-  update(id: number, updateUtilDto: UpdateUtilDto) {
-    return `This action updates a #${id} util`;
-  }
+    const hours = format(new Date(), 'HH:mm')
 
-  remove(id: number) {
-    return `This action removes a #${id} util`;
+
+    return `https://azc.defensoria.mg.def.br/arte/auraarteweb?credentials=00020aarte0a${username}0aarte0alucas.assuncao${this.env().AZC_TOKEN}${date}%20(${hours})&relat=.F00&codigoLayout=xxxx`
   }
 }

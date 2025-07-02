@@ -5,5 +5,6 @@ import { PontoController } from './ponto.controller';
 @Module({
   controllers: [PontoController],
   providers: [PontoService],
+  exports: [PontoService],
 })
 export class PontoModule {}
