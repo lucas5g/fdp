@@ -61,6 +61,20 @@ export class PontoService {
     }
   }
 
+  async findByusernameFormat(username: string) {
+
+    const { data } = await axios.get('https://n8n.dizelequefez.com.br/webhook/discord/usuarios', {
+      params: {
+        username
+      }
+    })
+
+    const res = await this.findByUsername(data[0].usuario)
+
+    return `Entrada: ${res.Entrada} \nAlmoco: ${res.Almoco} \nRetorno: ${res.Retorno} \nSaida: ${res.Saida} \n\n**Horas trabalhada**: ${res.HorasTrabalhada}`
+
+  }
+
   private calcularHorasTrabalhada(horasChaves: { Entrada: string, Almoco: string, Retorno: string, Saida: string }) {
 
     const horasStringParaNumero = (horasMinutos: string) => {

@@ -24,17 +24,14 @@ export class DiscordService implements OnModuleInit {
     client.on(Events.InteractionCreate, async (interaction: Interaction) => {
       if (!interaction.isChatInputCommand()) return;
 
-      const { commandName, user  } = interaction;
-      console.log(user.username)
-
+      const { commandName } = interaction;
 
       if (commandName === 'tutorial') {
         interaction.reply('/inserir - Adicionar Ponto \n /visualizar - Visualizar Ponto');
       }
 
-      if(commandName === 'visualizar'){
-        
-        interaction.reply('Visualizar Ponto');
+      if(commandName === 'consultar'){
+        interaction.reply(await this.pontoService.findByusernameFormat(interaction.user.username));
       }
 
       if (commandName === 'inserir') {
@@ -45,6 +42,9 @@ export class DiscordService implements OnModuleInit {
     client.login(this.util.env().DISCORD_TOKEN);
   }
 
+  private async consultar(username: string) {
+  
+  }
  
   create() {
     const commands = [
@@ -52,8 +52,8 @@ export class DiscordService implements OnModuleInit {
         .setName('tutorial')
         .setDescription('Mostrar os camandos disponíveis.'),
       new SlashCommandBuilder()
-        .setName('visualizar')
-        .setDescription('Visualizar Ponto'),
+        .setName('consultar')
+        .setDescription('Consultar os registros do dia.'),
     ].map(cmd => cmd.toJSON());
 
     const rest = new REST({ version: '10' }).setToken(this.util.env().DISCORD_TOKEN);
