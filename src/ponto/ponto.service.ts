@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CreatePontoDto } from './dto/create-ponto.dto';
@@ -104,7 +105,8 @@ export class PontoService {
         ...horas,
         HorasTrabalhada: this.calcularHorasTrabalhada(horas),
       };
-    } catch {
+    } catch(e) {
+      Logger.debug(e);
       throw new NotFoundException('Usuário não cadastrado.');
     }
   }
