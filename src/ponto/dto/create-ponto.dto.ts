@@ -1,3 +1,3 @@
 export class CreatePontoDto {
-  username: string
+  username: string;
 }

@@ -16,7 +16,7 @@ COPY . .
 # Build the app
 RUN npm run build
 
-RUN npx playwright install       
+RUN npx playwright install-deps       
 
 
 

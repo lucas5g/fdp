@@ -17,6 +17,6 @@ describe('DiscordService', () => {
   it('create', async () => {
     const res = await service.create();
 
-    expect(res).toBe
+    expect(res).toBe;
   });
 });
