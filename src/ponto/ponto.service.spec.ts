@@ -31,7 +31,7 @@ describe('PontoService', () => {
   });
 
   it('findByUsernameFormadao', async () => {
-    const res = await service.findByusernameFormat('lucasdesousa3885');
+    const res = await service.findByusernameFormat('lucas.assuncao');
 
     expect(res).toContain('**Horas trabalhada**:');
   });

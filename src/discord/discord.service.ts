@@ -8,10 +8,8 @@ import {
   Events,
   GatewayIntentBits,
   Interaction,
+  Message,
   Partials,
-  REST,
-  Routes,
-  SlashCommandBuilder,
 } from 'discord.js';
 
 @Injectable()
@@ -19,7 +17,7 @@ export class DiscordService implements OnModuleInit {
   constructor(
     private readonly util: UtilService,
     private readonly pontoService: PontoService,
-  ) { }
+  ) {}
 
   onModuleInit() {
     if (!this.util.env().DISCORD_ONLINE) {
@@ -36,6 +34,7 @@ export class DiscordService implements OnModuleInit {
       Logger.debug(`✅ Bot online ${client.user?.tag}`);
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     client.on(Events.InteractionCreate, async (interaction: Interaction) => {
       if (!interaction.isChatInputCommand()) return;
       await interaction.deferReply();
@@ -43,7 +42,11 @@ export class DiscordService implements OnModuleInit {
       const { commandName, user } = interaction;
 
       try {
-        const { data } = await axios.get(
+        const {
+          data,
+        }: {
+          data: { usuario: string }[];
+        } = await axios.get(
           'https://n8n.dizelequefez.com.br/webhook/discord/usuarios',
           {
             params: {
@@ -52,67 +55,29 @@ export class DiscordService implements OnModuleInit {
           },
         );
 
-        const user = data[0].usuario;
+        const userPoint = data[0].usuario;
 
-        const commands = {
-          tutorial: () =>
-            interaction.editReply(
-              '/inserir - Adicionar Ponto \n /visualizar - Visualizar Ponto',
-            ),
+        const commands: Record<string, () => Promise<Message<boolean>>> = {
           inserir: async () =>
             interaction.editReply(
-              await this.pontoService.create({ username: user.username }),
+              await this.pontoService.create({ username: userPoint }),
             ),
           consultar: async () => {
-            try {
-              const usuario = interaction.options.getString('usuario');
-              console.log('aqui tbm');
+            const userFilter = interaction.options.getString('usuario');
 
-              if (usuario) {
-                interaction.editReply(
-                  await this.pontoService.findByusernameFormat(usuario),
-                );
-                return;
-              }
-
-         
-
-              interaction.editReply(
-                await this.pontoService.findByusernameFormat(data[0].usuario),
-              );
-            } catch {
-              interaction.editReply('Usuário não Encontrado');
-            }
+            const res = await this.pontoService.findByusernameFormat(
+              userFilter ?? userPoint,
+            );
+            return interaction.editReply(res);
           },
         };
 
         await commands[commandName]();
-
       } catch {
-        interaction.editReply('Usuário nao cadastrado');
+        void interaction.editReply('Usuário nao cadastrado');
       }
     });
 
-    client.login(this.util.env().DISCORD_TOKEN);
-  }
-
-  create() {
-    const commands = [
-      new SlashCommandBuilder()
-        .setName('tutorial')
-        .setDescription('Mostrar os camandos disponíveis.'),
-      new SlashCommandBuilder()
-        .setName('consultar')
-        .setDescription('Consultar os registros do dia.'),
-    ].map((cmd) => cmd.toJSON());
-
-    const rest = new REST({ version: '10' }).setToken(
-      this.util.env().DISCORD_TOKEN,
-    );
-
-    return rest.put(
-      Routes.applicationCommands(this.util.env().DISCORD_CLIENT_ID),
-      { body: commands },
-    );
+    void client.login(this.util.env().DISCORD_TOKEN);
   }
 }

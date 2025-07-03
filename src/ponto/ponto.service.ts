@@ -4,11 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreatePontoDto } from './dto/create-ponto.dto';
-import { UpdatePontoDto } from './dto/update-ponto.dto';
 import { UtilService } from '@/util/util.service';
-import * as cheerio from 'cheerio';
-import axios from 'axios';
-import { chromium, Page } from 'playwright';
 import { format } from 'date-fns';
 @Injectable()
 export class PontoService {
@@ -31,6 +27,10 @@ export class PontoService {
 
     const { browser, context, page } = await this.util.setupPlaywright();
 
+    await page.waitForTimeout(200);
+
+    await context.close();
+    await browser.close();
     return 'teste';
   }
 

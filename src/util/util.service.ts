@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { format } from 'date-fns';
 import { z } from 'zod';
 import 'dotenv/config';
-import { chromium, Page } from 'playwright';
+import { chromium } from 'playwright';
 
 @Injectable()
 export class UtilService {
@@ -29,7 +29,7 @@ export class UtilService {
 
   async setupPlaywright(url?: string) {
     const browser = await chromium.launch({
-      // headless: false
+      // headless: false,
     });
 
     const context = await browser.newContext();
