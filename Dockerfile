@@ -1,6 +1,9 @@
 # Base image
 FROM node:22
 
+ENV TZ=America/Sao_Paulo
+
+
 # Set working directory
 WORKDIR /usr/src/app
 
