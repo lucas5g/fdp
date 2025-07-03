@@ -9,4 +9,9 @@ export class PontoController {
   findByUsername(@Param('username') username: string) {
     return this.pontoService.findByUsername(username);
   }
+
+  @Get('username/:username/formatado')
+  findByusernameFormat(@Param('username') username: string) {
+    return this.pontoService.findByusernameFormat(username);
+  }
 }

@@ -12,7 +12,7 @@ export class DiscordService implements OnModuleInit {
   onModuleInit() {
 
     if (!this.util.env().DISCORD_ONLINE) {
-      Logger.log('Discord bot is disabled');
+      Logger.debug('Discord bot is disabled');
       return
     }
 
@@ -25,7 +25,7 @@ export class DiscordService implements OnModuleInit {
     });
 
     client.once(Events.ClientReady, () => {
-      console.log(`✅ Bot online ${client.user?.tag}`);
+      Logger.debug(`✅ Bot online ${client.user?.tag}`);
     });
 
     client.on(Events.InteractionCreate, async (interaction: Interaction) => {

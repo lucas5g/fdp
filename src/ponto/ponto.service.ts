@@ -4,18 +4,44 @@ import { UpdatePontoDto } from './dto/update-ponto.dto';
 import { UtilService } from '@/util/util.service';
 import * as cheerio from 'cheerio'
 import axios from 'axios';
-import { chromium } from 'playwright';
+import { chromium, Page } from 'playwright';
 import { format } from 'date-fns';
-
 @Injectable()
 export class PontoService {
 
   constructor(private readonly util: UtilService) { }
   create(createPontoDto: CreatePontoDto) {
+    let page:Page
+
+
     return 'This action adds a new ponto';
   }
 
-  findAll() {
+  async findAll() {
+
+    const browser = await chromium.launch({
+      headless: false
+    });
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.goto('https://azc.defensoria.mg.def.br');
+
+    await page.locator('#cod_usuario').fill('lucas.assuncao');
+    await page.locator('#senha').fill('Dpmg@7c8');
+    await page.locator('#senha').press('Enter');
+
+    await page.getByRole('row', { name: 'Minha Frequência' }).getByRole('img').nth(1).click();
+    await page.getByText('Controle').click();
+
+    const selector = '#x-widget-50 > div > div > div.GB2UA-DDDUB > div.GB2UA-DDOSB > table > tbody:nth-child(2) > tr > td:nth-child(4)'
+
+
+    // ---------------------
+    await page.waitForTimeout(30000)
+    await context.close();
+    await browser.close();
+
+
     return `This action returns all ponto`;
   }
 
