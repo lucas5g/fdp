@@ -24,8 +24,6 @@ export class UtilService {
 
     const hours = format(new Date(), 'HH:mm');
 
-    console.log({ hours})
-
     return `https://azc.defensoria.mg.def.br/arte/auraarteweb?credentials=00020aarte0a${username}0aarte0alucas.assuncao${this.env().AZC_TOKEN}${date}%20(${hours})&relat=.F00&codigoLayout=xxxx`;
   }
 

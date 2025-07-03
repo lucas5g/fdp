@@ -20,7 +20,7 @@ COPY . .
 RUN npm run build
 
 RUN npx playwright install-deps       
-
+RUN npx playwright install
 
 
 # Expose port

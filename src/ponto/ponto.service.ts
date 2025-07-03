@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CreatePontoDto } from './dto/create-ponto.dto';
@@ -11,28 +10,39 @@ import { format } from 'date-fns';
 export class PontoService {
   constructor(private readonly util: UtilService) {}
   async create(createPontoDto: CreatePontoDto) {
-    const { Saida, Retorno, HorasTrabalhada } = await this.findByUsername(
-      createPontoDto.username,
+    const url = this.util.getUrlPoint(createPontoDto.username);
+    const { browser, context, page } = await this.util.setupPlaywright(url);
+
+    const selectorHours = 'tbody > tr > td';
+
+    await page.waitForSelector(selectorHours);
+
+    const res = await page.$$eval(selectorHours, (elements) =>
+      elements.map((element) => element.textContent?.trim() ?? ''),
     );
 
+    const { Retorno, Saida, horasTrabalhada } =
+      this.calcularHorasTrabalhada(res);
+
     if (Saida !== '-') {
-      throw new BadRequestException('Já registrou a saída');
+      throw new BadRequestException('Já registrou a saída.');
     }
 
-    const [hours, minutes] = HorasTrabalhada.split(':');
+    const [hours, minutes] = horasTrabalhada.split(':');
     const minutesFull = Number(hours) * 60 + Number(minutes);
 
     if (Retorno !== '-' && minutesFull < 480) {
       throw new BadRequestException('Você ainda não trabalhou 8 horas.');
     }
 
-    const { browser, context, page } = await this.util.setupPlaywright();
+    const selector = 'input#btRelogio';
 
-    await page.waitForTimeout(200);
+    await page.waitForSelector(selector);
+    await page.locator(selector).click();
 
     await context.close();
     await browser.close();
-    return 'teste';
+    return { message: 'Ponto Batido' };
   }
 
   async findAll() {
@@ -76,7 +86,6 @@ export class PontoService {
   async findByUsername(username: string) {
     try {
       const url = this.util.getUrlPoint(username);
-
       const { browser, context, page } = await this.util.setupPlaywright(url);
 
       await page.goto(this.util.getUrlPoint(username));
@@ -89,24 +98,12 @@ export class PontoService {
         elements.map((element) => element.textContent?.trim() ?? ''),
       );
 
-      const [Entrada, Almoco, Retorno, Saida] = res;
-
       await context.close();
       await browser.close();
 
-      const horas = {
-        Entrada: Entrada ?? '-',
-        Almoco: Almoco ?? '-',
-        Retorno: Retorno ?? '-',
-        Saida: Saida ?? '-',
-      };
-
-      return {
-        ...horas,
-        HorasTrabalhada: this.calcularHorasTrabalhada(horas),
-      };
-    } catch(e) {
-      Logger.debug(e);
+      return this.calcularHorasTrabalhada(res);
+    } catch (e) {
+      console.error(e);
       throw new NotFoundException('Usuário não cadastrado.');
     }
   }
@@ -117,12 +114,14 @@ export class PontoService {
     return `Entrada: ${res.Entrada} \nAlmoco: ${res.Almoco} \nRetorno: ${res.Retorno} \nSaida: ${res.Saida} \n\n**Horas trabalhada**: ${res.HorasTrabalhada}`;
   }
 
-  private calcularHorasTrabalhada(horasChaves: {
-    Entrada: string;
-    Almoco: string;
-    Retorno: string;
-    Saida: string;
-  }) {
+  private calcularHorasTrabalhada(horasList: string[]) {
+    const horasChaves = {
+      Entrada: horasList[0],
+      Almoco: horasList[1],
+      Retorno: horasList[2],
+      Saida: horasList[3],
+    };
+
     const horasStringParaNumero = (horasMinutos: string) => {
       const horasParaSplitar =
         horasMinutos === '-' ? format(new Date(), 'HH:mm') : horasMinutos;
@@ -147,6 +146,9 @@ export class PontoService {
 
     const horasTrabalhada = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
 
-    return horasTrabalhada;
+    return {
+      ...horasChaves,
+      horasTrabalhada,
+    };
   }
 }
