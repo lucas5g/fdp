@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { format } from 'date-fns';
 import { z } from 'zod';
 import 'dotenv/config'
-import { chromium } from 'playwright';
+import { chromium, Page } from 'playwright';
 
 @Injectable()
 export class UtilService {
@@ -26,7 +26,7 @@ export class UtilService {
     return `https://azc.defensoria.mg.def.br/arte/auraarteweb?credentials=00020aarte0a${username}0aarte0alucas.assuncao${this.env().AZC_TOKEN}${date}%20(${hours})&relat=.F00&codigoLayout=xxxx`
   }
 
-  crawler(){
+  async crawler(callback: (page: Page) => Promise<void>) {
     
 
   }

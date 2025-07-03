@@ -5,6 +5,11 @@ import { PontoService } from './ponto.service';
 export class PontoController {
   constructor(private readonly pontoService: PontoService) {}
 
+  @Get()
+  findAll() {
+    return this.pontoService.findAll();
+  }
+
   @Get('username/:username')
   findByUsername(@Param('username') username: string) {
     return this.pontoService.findByUsername(username);

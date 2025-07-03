@@ -1,1 +1,3 @@
-export class CreatePontoDto {}
+export class CreatePontoDto {
+  username: string
+}

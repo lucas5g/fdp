@@ -29,6 +29,8 @@ describe('PontoService', () => {
 
   it.only('findAll', async () => {
     const res = await service.findAll()
-    expect(res).toBeDefined();
-  }, 30000);
+
+    expect(res).toHaveProperty('01')
+
+  });
 });

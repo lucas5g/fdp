@@ -10,20 +10,22 @@ import { format } from 'date-fns';
 export class PontoService {
 
   constructor(private readonly util: UtilService) { }
-  create(createPontoDto: CreatePontoDto) {
-    let page:Page
+  async create(createPontoDto: CreatePontoDto) {
+    const { Saida, Retorno, HorasTrabalhada } = await this.findByUsername(createPontoDto.username)
 
+    console.log({ Saida, Retorno, HorasTrabalhada })
 
-    return 'This action adds a new ponto';
+    return 'teste';
   }
 
   async findAll() {
-
     const browser = await chromium.launch({
-      headless: false
+      // headless: false
     });
+
     const context = await browser.newContext();
     const page = await context.newPage();
+
     await page.goto('https://azc.defensoria.mg.def.br');
 
     await page.locator('#cod_usuario').fill('lucas.assuncao');
@@ -33,16 +35,30 @@ export class PontoService {
     await page.getByRole('row', { name: 'Minha Frequência' }).getByRole('img').nth(1).click();
     await page.getByText('Controle').click();
 
-    const selector = '#x-widget-50 > div > div > div.GB2UA-DDDUB > div.GB2UA-DDOSB > table > tbody:nth-child(2) > tr > td:nth-child(4)'
+    const selector = '#x-widget-50 > div > div > div.GB2UA-DDDUB > div.GB2UA-DDOSB > table > tbody:nth-child(2) > tr > td:nth-child(4) > div'
+
+    await page.waitForSelector(selector)
+
+    const res = await page.$$eval(selector, (elements) => elements.map((element) => {
+      return element.textContent?.trim() ?? ''
+    }));
 
 
-    // ---------------------
-    await page.waitForTimeout(30000)
     await context.close();
     await browser.close();
 
-
-    return `This action returns all ponto`;
+    return res.map((row, i) => {
+      const [Entrada, Almoco, Retorno, Saida] = row.split(' ')
+      return {
+        dia: String(i + 1).padStart(2, '0'),
+        registros: {
+          Entrada,
+          Almoco,
+          Retorno,
+          Saida
+        }
+      }
+    })
   }
 
   findOne(id: number) {

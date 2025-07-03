@@ -30,16 +30,32 @@ export class DiscordService implements OnModuleInit {
 
     client.on(Events.InteractionCreate, async (interaction: Interaction) => {
       if (!interaction.isChatInputCommand()) return;
-      await interaction.deferReply(); 
+      await interaction.deferReply();
 
       const { commandName, user } = interaction;
 
+      try{
+
+        const { data } = await axios.get('https://n8n.dizelequefez.com.br/webhook/discord/usuarios', {
+          params: {
+            username: user.username
+          }
+        })
+
+        
+      }catch {
+        interaction.editReply('Usuário nao cadastrado');
+      }
+
+
       const commands = {
         tutorial: () => interaction.editReply('/inserir - Adicionar Ponto \n /visualizar - Visualizar Ponto'),
+        inserir: async () => interaction.editReply(await this.pontoService.create({ username: user.username })),
         consultar: async () => {
           try {
 
             const usuario = interaction.options.getString('usuario')
+            console.log('aqui tbm')
 
             if (usuario) {
               interaction.editReply(await this.pontoService.findByusernameFormat(usuario));
