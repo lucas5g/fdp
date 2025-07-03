@@ -21,14 +21,14 @@ export class PontoService {
       elements.map((element) => element.textContent?.trim() ?? ''),
     );
 
-    const { Retorno, Saida, horasTrabalhada } =
+    const { Retorno, Saida, HorasTrabalhada } =
       this.calcularHorasTrabalhada(res);
 
     if (Saida !== '-') {
       throw new BadRequestException('Já registrou a saída.');
     }
 
-    const [hours, minutes] = horasTrabalhada.split(':');
+    const [hours, minutes] = HorasTrabalhada.split(':');
     const minutesFull = Number(hours) * 60 + Number(minutes);
 
     if (Retorno !== '-' && minutesFull < 480) {
@@ -144,11 +144,11 @@ export class PontoService {
     const horas = Math.floor(horasTrabalhadaInteiro / 60);
     const minutos = horasTrabalhadaInteiro % 60;
 
-    const horasTrabalhada = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
+    const HorasTrabalhada = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
 
     return {
       ...horasChaves,
-      horasTrabalhada,
+      HorasTrabalhada,
     };
   }
 }
