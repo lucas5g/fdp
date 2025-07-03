@@ -63,13 +63,7 @@ export class PontoService {
 
   async findByusernameFormat(username: string) {
 
-    const { data } = await axios.get('https://n8n.dizelequefez.com.br/webhook/discord/usuarios', {
-      params: {
-        username
-      }
-    })
-
-    const res = await this.findByUsername(data[0].usuario)
+    const res = await this.findByUsername(username)
 
     return `Entrada: ${res.Entrada} \nAlmoco: ${res.Almoco} \nRetorno: ${res.Retorno} \nSaida: ${res.Saida} \n\n**Horas trabalhada**: ${res.HorasTrabalhada}`
 

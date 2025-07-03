@@ -11,7 +11,8 @@ export class UtilService {
     return z.object({
       DISCORD_TOKEN: z.string(),
       DISCORD_CLIENT_ID: z.string(),
-      AZC_TOKEN: z.string()
+      AZC_TOKEN: z.string(),
+      DISCORD_ONLINE: z.string().transform((value) => value === 'true'),
     }).parse(process.env);
   }
 
