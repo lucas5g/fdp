@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePontoDto } from './dto/create-ponto.dto';
 import { UpdatePontoDto } from './dto/update-ponto.dto';
 import { UtilService } from '@/util/util.service';
@@ -13,7 +13,23 @@ export class PontoService {
   async create(createPontoDto: CreatePontoDto) {
     const { Saida, Retorno, HorasTrabalhada } = await this.findByUsername(createPontoDto.username)
 
-    console.log({ Saida, Retorno, HorasTrabalhada })
+    if(Saida !== '-'){
+      throw new BadRequestException('Já registrou a saída')
+    }
+
+    const [hours, minutes] = HorasTrabalhada.split(':')
+    const minutesFull = Number(hours) * 60 + Number(minutes)
+
+
+    if(Retorno !== '-' && minutesFull < 480){
+      throw new BadRequestException('Você ainda não trabalhou 8 horas.')
+    }
+
+    const { browser, context, page } = await this.util.setupPlaywright()
+
+
+
+
 
     return 'teste';
   }

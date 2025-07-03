@@ -13,6 +13,11 @@ describe('PontoService', () => {
     service = module.get<PontoService>(PontoService);
   });
 
+  it.only('create', async () => {
+    const res = service.create({ username: 'lucas.assuncao' })  
+
+    await expect(res).rejects.toThrow('Você ainda não trabalhou 8 horas.')
+  })
   it('findByUsername', async () => {
     const res = await service.findByUsername('lucas.assuncao')
 
@@ -27,10 +32,12 @@ describe('PontoService', () => {
 
   });
 
-  it.only('findAll', async () => {
+  it('findAll', async () => {
     const res = await service.findAll()
 
     expect(res).toHaveProperty('01')
 
   });
+
+
 });
