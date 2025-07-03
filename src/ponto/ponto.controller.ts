@@ -1,9 +1,15 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { PontoService } from './ponto.service';
+import { CreatePontoDto } from './dto/create-ponto.dto';
 
 @Controller('pontos')
 export class PontoController {
   constructor(private readonly pontoService: PontoService) {}
+
+  @Post()
+  create(@Body() createPontoDto: CreatePontoDto) {
+    return this.pontoService.create(createPontoDto);
+  }
 
   @Get()
   findAll() {
