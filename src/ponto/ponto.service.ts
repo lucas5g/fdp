@@ -88,7 +88,8 @@ export class PontoService {
       const url = this.util.getUrlPoint(username);
       const { browser, context, page } = await this.util.setupPlaywright(url);
 
-      await page.goto(this.util.getUrlPoint(username));
+      console.log(url)
+      await page.goto(url);
 
       const seletor = 'tbody > tr > td';
 
