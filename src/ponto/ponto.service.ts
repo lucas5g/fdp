@@ -11,7 +11,8 @@ export class PontoService {
   constructor(private readonly util: UtilService) {}
   async create(createPontoDto: CreatePontoDto) {
     const url = this.util.getUrlPoint(createPontoDto.username);
-    const { browser, context, page } = await this.util.setupPlaywright(url);
+    const { browser, context, page, close } =
+      await this.util.setupPlaywright(url);
 
     const selectorHours = 'tbody > tr > td';
 
@@ -32,6 +33,11 @@ export class PontoService {
 
     if (Retorno !== '-' && minutesFull < 480) {
       throw new BadRequestException('Você ainda não trabalhou 8 horas.');
+    }
+
+    if (!this.util.env().RECORD_HOURS) {
+      close();
+      throw new BadRequestException('Função desativada');
     }
 
     const selector = 'input#btRelogio';
@@ -87,7 +93,6 @@ export class PontoService {
       const url = this.util.getUrlPoint(username);
       const { browser, context, page } = await this.util.setupPlaywright(url);
 
-      console.log(url);
       await page.goto(url);
 
       const seletor = 'tbody > tr > td';
@@ -97,7 +102,6 @@ export class PontoService {
       const res = await page.$$eval(seletor, (elements) =>
         elements.map((element) => element.textContent?.trim() ?? ''),
       );
-      console.log(res);
 
       await context.close();
       await browser.close();

@@ -15,6 +15,7 @@ export class UtilService {
         DISCORD_ONLINE: z.string().transform((value) => value === 'true'),
         USER_NAME: z.string(),
         USER_PASSWORD: z.string(),
+        RECORD_HOURS: z.string().transform((value) => value === 'true'),
       })
       .parse(process.env);
   }
@@ -45,6 +46,14 @@ export class UtilService {
       await page.locator('#senha').press('Enter');
     }
 
-    return { browser, context, page };
+    return {
+      browser,
+      context,
+      page,
+      close: async () => {
+        await context.close();
+        await browser.close();
+      },
+    };
   }
 }

@@ -4,7 +4,6 @@ import { UtilService } from '@/util/util.service';
 
 describe('PontoService', () => {
   let service: PontoService;
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [PontoService, UtilService],
@@ -22,7 +21,10 @@ describe('PontoService', () => {
       return await expect(res).rejects.toThrow('Já registrou a saída.');
     }
 
-    console.log(res);
+    if (process.env.RECORD_HOURS === 'false') {
+      return await expect(res).rejects.toThrow('Função desativada');
+    }
+    await expect(res).resolves.toBeDefined();
   }, 7000);
 
   it('findByUsernameFormadao', async () => {
