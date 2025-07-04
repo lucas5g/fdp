@@ -23,4 +23,14 @@ describe('UtilService', () => {
 
     await expect(res).rejects.toThrow('Usuário não cadastrado!!!');
   });
+
+  it('setupPlaywright credentials invalid', async () => {
+    const res = service.setupPlaywright({
+      username: 'lucas.assuncao',
+      password: '123',
+      haveLogin: true,
+    });
+
+    await expect(res).rejects.toThrow('Usuário e Senha Incorretos!!!');
+  });
 });

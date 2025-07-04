@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { format } from 'date-fns';
 import { chromium } from 'playwright';
 import axios from 'axios';
@@ -34,25 +38,34 @@ export class UtilService {
     const context = await browser.newContext();
     const page = await context.newPage();
 
+    const closeBrowser = async () => {
+      await context.close();
+      await browser.close();
+    };
+
     if (data.haveLogin) {
       await page.goto('https://azc.defensoria.mg.def.br');
 
       await page.locator('#cod_usuario').fill(data.username);
       await page.locator('#senha').fill(data.password!);
       await page.locator('#senha').press('Enter');
+
+      const selector = '#idLabelRazaoEmpresaSelecionada';
+      await page.waitForTimeout(1000);
+      const exist = await page.$(selector);
+
+      if (!exist) {
+        void closeBrowser();
+        throw new UnauthorizedException('Usuário e Senha Incorretos!!!');
+      }
     } else {
       const url = await this.getUrlPoint(data.username);
       await page.goto(url);
     }
 
     return {
-      browser,
-      context,
       page,
-      closeBrowser: async () => {
-        await context.close();
-        await browser.close();
-      },
+      closeBrowser,
     };
   }
 }

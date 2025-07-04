@@ -54,7 +54,7 @@ export class PontoService {
   }
 
   async findAll(dto: FindAllPontoDto) {
-    const { browser, context, page } = await this.util.setupPlaywright({
+    const { page, closeBrowser } = await this.util.setupPlaywright({
       username: dto.username,
       password: dto.password,
       haveLogin: true,
@@ -78,8 +78,7 @@ export class PontoService {
       }),
     );
 
-    await context.close();
-    await browser.close();
+    void closeBrowser();
 
     return res.map((row, i) => {
       const [Entrada, Almoco, Retorno, Saida] = row.split(' ');
