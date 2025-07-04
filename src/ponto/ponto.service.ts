@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePontoDto } from './dto/create-ponto.dto';
 import { UtilService } from '@/util/util.service';
 import { format } from 'date-fns';
@@ -8,7 +12,7 @@ import { env } from '@/env';
 export class PontoService {
   constructor(private readonly util: UtilService) {}
   async create(createPontoDto: CreatePontoDto) {
-    const { browser, context, page, close } = await this.util.setupPlaywright({
+    const { page, closeBrowser } = await this.util.setupPlaywright({
       username: createPontoDto.username,
     });
 
@@ -30,12 +34,12 @@ export class PontoService {
     const minutesFull = Number(hours) * 60 + Number(minutes);
 
     if (Retorno !== '-' && minutesFull < 480) {
-      void close();
+      void closeBrowser();
       throw new BadRequestException('Você ainda não trabalhou 8 horas.');
     }
 
     if (!env.RECORD_HOURS) {
-      void close();
+      void closeBrowser();
       throw new BadRequestException('Função desativada');
     }
 
@@ -44,8 +48,8 @@ export class PontoService {
     await page.waitForSelector(selector);
     await page.locator(selector).click();
 
-    await context.close();
-    await browser.close();
+    void closeBrowser();
+
     return { message: 'Ponto Batido' };
   }
 
@@ -92,20 +96,24 @@ export class PontoService {
   }
 
   async findByUsername(username: string) {
-    const { browser, context, page } = await this.util.setupPlaywright({
+    const { page, closeBrowser } = await this.util.setupPlaywright({
       username: username,
     });
 
     const seletor = 'tbody > tr > td';
 
-    await page.waitForSelector(seletor);
+    const exist = await page.$(seletor);
+
+    if (!exist) {
+      closeBrowser();
+      throw new NotFoundException('Hoje não teve ponto registrado.');
+    }
 
     const res = await page.$$eval(seletor, (elements) =>
       elements.map((element) => element.textContent?.trim() ?? ''),
     );
 
-    await context.close();
-    await browser.close();
+    closeBrowser();
 
     return this.hoursRecorded(res);
   }

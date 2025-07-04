@@ -62,4 +62,12 @@ describe('PontoService', () => {
       'HorasTrabalhada',
     ]);
   });
+
+  it('findByUsername not register points', async () => {
+    const username = 'luiz.dias';
+
+    const res = service.findByUsername(username);
+
+    await expect(res).rejects.toThrow('Hoje não teve ponto registrado.');
+  });
 });

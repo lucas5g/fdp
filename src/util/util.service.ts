@@ -49,7 +49,7 @@ export class UtilService {
       browser,
       context,
       page,
-      close: async () => {
+      closeBrowser: async () => {
         await context.close();
         await browser.close();
       },
