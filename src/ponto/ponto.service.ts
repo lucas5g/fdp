@@ -21,8 +21,7 @@ export class PontoService {
       elements.map((element) => element.textContent?.trim() ?? ''),
     );
 
-    const { Retorno, Saida, HorasTrabalhada } =
-      this.calcularHorasTrabalhada(res);
+    const { Retorno, Saida, HorasTrabalhada } = this.hoursRecorded(res);
 
     if (Saida !== '-') {
       throw new BadRequestException('Já registrou a saída.');
@@ -88,7 +87,7 @@ export class PontoService {
       const url = this.util.getUrlPoint(username);
       const { browser, context, page } = await this.util.setupPlaywright(url);
 
-      console.log(url)
+      console.log(url);
       await page.goto(url);
 
       const seletor = 'tbody > tr > td';
@@ -98,11 +97,12 @@ export class PontoService {
       const res = await page.$$eval(seletor, (elements) =>
         elements.map((element) => element.textContent?.trim() ?? ''),
       );
+      console.log(res);
 
       await context.close();
       await browser.close();
 
-      return this.calcularHorasTrabalhada(res);
+      return this.hoursRecorded(res);
     } catch (e) {
       console.error(e);
       throw new NotFoundException('Usuário não cadastrado.');
@@ -115,15 +115,15 @@ export class PontoService {
     return `Entrada: ${res.Entrada} \nAlmoco: ${res.Almoco} \nRetorno: ${res.Retorno} \nSaida: ${res.Saida} \n\n**Horas trabalhada**: ${res.HorasTrabalhada}`;
   }
 
-  private calcularHorasTrabalhada(horasList: string[]) {
+  hoursRecorded(horasList: string[]) {
     const horasChaves = {
-      Entrada: horasList[0],
-      Almoco: horasList[1],
-      Retorno: horasList[2],
-      Saida: horasList[3],
+      Entrada: horasList[0] ?? '-',
+      Almoco: horasList[1] ?? '-',
+      Retorno: horasList[2] ?? '-',
+      Saida: horasList[3] ?? '-',
     };
 
-    const horasStringParaNumero = (horasMinutos: string) => {
+    const hoursToNumber = (horasMinutos: string) => {
       const horasParaSplitar =
         horasMinutos === '-' ? format(new Date(), 'HH:mm') : horasMinutos;
 
@@ -132,10 +132,10 @@ export class PontoService {
     };
 
     const horasInteiro = {
-      Entrada: horasStringParaNumero(horasChaves.Entrada),
-      Almoco: horasStringParaNumero(horasChaves.Almoco),
-      Retorno: horasStringParaNumero(horasChaves.Retorno),
-      Saida: horasStringParaNumero(horasChaves.Saida),
+      Entrada: hoursToNumber(horasChaves.Entrada),
+      Almoco: hoursToNumber(horasChaves.Almoco),
+      Retorno: hoursToNumber(horasChaves.Retorno),
+      Saida: hoursToNumber(horasChaves.Saida),
     };
 
     const horasTrabalhadaInteiro =

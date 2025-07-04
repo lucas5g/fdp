@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  console.log(new Date());
   const config = new DocumentBuilder()
     .setTitle('Folha de Pontos')
     .setDescription('API Gestão Folha de Pontos')

@@ -36,4 +36,17 @@ describe('PontoService', () => {
 
     expect(res[0]).toHaveProperty('dia');
   }, 6000);
+
+  it('hoursRecorded', () => {
+    const hours = ['09:35'];
+    const res = service.hoursRecorded(hours);
+
+    expect(Object.keys(res)).toEqual([
+      'Entrada',
+      'Almoco',
+      'Retorno',
+      'Saida',
+      'HorasTrabalhada',
+    ]);
+  });
 });
