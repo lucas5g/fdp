@@ -4,6 +4,8 @@ export class FindAllPontoDto {
   @ApiProperty()
   username: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    format: 'password',
+  })
   password: string;
 }

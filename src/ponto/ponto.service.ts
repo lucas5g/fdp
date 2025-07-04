@@ -105,7 +105,7 @@ export class PontoService {
     const exist = await page.$(seletor);
 
     if (!exist) {
-      closeBrowser();
+      void closeBrowser();
       throw new NotFoundException('Hoje não teve ponto registrado.');
     }
 
@@ -113,7 +113,7 @@ export class PontoService {
       elements.map((element) => element.textContent?.trim() ?? ''),
     );
 
-    closeBrowser();
+    void closeBrowser();
 
     return this.hoursRecorded(res);
   }
