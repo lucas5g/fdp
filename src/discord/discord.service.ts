@@ -32,7 +32,7 @@ export class DiscordService implements OnModuleInit {
     });
 
     client.once(Events.ClientReady, () => {
-      Logger.debug(`✅ Bot online ${client.user?.tag}`);
+      Logger.debug(`✅ Bot ${client.user?.tag} online`);
     });
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises

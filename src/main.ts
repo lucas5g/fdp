@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { version } from '../package.json';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -9,8 +10,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Folha de Pontos')
     .setDescription('API Gestão Folha de Pontos')
-    .setVersion('0.0.1')
-    // .addTag('cats')
+    .setVersion(version)
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/', app, documentFactory);
