@@ -1,18 +1,16 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePontoDto } from './dto/create-ponto.dto';
 import { UtilService } from '@/util/util.service';
 import { format } from 'date-fns';
+import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
+import { env } from '@/env';
 @Injectable()
 export class PontoService {
   constructor(private readonly util: UtilService) {}
   async create(createPontoDto: CreatePontoDto) {
-    const url = this.util.getUrlPoint(createPontoDto.username);
-    const { browser, context, page, close } =
-      await this.util.setupPlaywright(url);
+    const { browser, context, page, close } = await this.util.setupPlaywright({
+      username: createPontoDto.username,
+    });
 
     const selectorHours = 'tbody > tr > td';
 
@@ -32,11 +30,12 @@ export class PontoService {
     const minutesFull = Number(hours) * 60 + Number(minutes);
 
     if (Retorno !== '-' && minutesFull < 480) {
+      void close();
       throw new BadRequestException('Você ainda não trabalhou 8 horas.');
     }
 
-    if (!this.util.env().RECORD_HOURS) {
-      close();
+    if (!env.RECORD_HOURS) {
+      void close();
       throw new BadRequestException('Função desativada');
     }
 
@@ -50,8 +49,12 @@ export class PontoService {
     return { message: 'Ponto Batido' };
   }
 
-  async findAll() {
-    const { browser, context, page } = await this.util.setupPlaywright();
+  async findAll(dto: FindAllPontoDto) {
+    const { browser, context, page } = await this.util.setupPlaywright({
+      username: dto.username,
+      password: dto.password,
+      haveLogin: true,
+    });
 
     await page
       .getByRole('row', { name: 'Minha Frequência' })
@@ -89,28 +92,22 @@ export class PontoService {
   }
 
   async findByUsername(username: string) {
-    try {
-      const url = this.util.getUrlPoint(username);
-      const { browser, context, page } = await this.util.setupPlaywright(url);
+    const { browser, context, page } = await this.util.setupPlaywright({
+      username: username,
+    });
 
-      await page.goto(url);
+    const seletor = 'tbody > tr > td';
 
-      const seletor = 'tbody > tr > td';
+    await page.waitForSelector(seletor);
 
-      await page.waitForSelector(seletor);
+    const res = await page.$$eval(seletor, (elements) =>
+      elements.map((element) => element.textContent?.trim() ?? ''),
+    );
 
-      const res = await page.$$eval(seletor, (elements) =>
-        elements.map((element) => element.textContent?.trim() ?? ''),
-      );
+    await context.close();
+    await browser.close();
 
-      await context.close();
-      await browser.close();
-
-      return this.hoursRecorded(res);
-    } catch (e) {
-      console.error(e);
-      throw new NotFoundException('Usuário não cadastrado.');
-    }
+    return this.hoursRecorded(res);
   }
 
   async findByusernameFormat(username: string) {

@@ -12,7 +12,15 @@ describe('UtilService', () => {
     service = module.get<UtilService>(UtilService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('getUrlPoint', async () => {
+    const res = await service.getUrlPoint('lucas.assuncao');
+
+    expect(res).toContain('https://');
+  });
+
+  it('getUrlPoint user not exist', async () => {
+    const res = service.getUrlPoint('lucas.sousa');
+
+    await expect(res).rejects.toThrow('Usuário não cadastrado!!!');
   });
 });

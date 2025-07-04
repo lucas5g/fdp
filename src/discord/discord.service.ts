@@ -1,3 +1,4 @@
+import { env } from '@/env';
 import { PontoService } from '@/ponto/ponto.service';
 import { UtilService } from '@/util/util.service';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -20,7 +21,7 @@ export class DiscordService implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    if (!this.util.env().DISCORD_ONLINE) {
+    if (env.DISCORD_ONLINE) {
       Logger.debug('Discord bot is disabled');
       return;
     }
@@ -78,6 +79,6 @@ export class DiscordService implements OnModuleInit {
       }
     });
 
-    void client.login(this.util.env().DISCORD_TOKEN);
+    void client.login(env.DISCORD_TOKEN);
   }
 }

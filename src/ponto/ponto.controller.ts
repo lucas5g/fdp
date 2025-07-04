@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { PontoService } from './ponto.service';
 import { CreatePontoDto } from './dto/create-ponto.dto';
+import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 
 @Controller('pontos')
 export class PontoController {
@@ -12,8 +13,8 @@ export class PontoController {
   }
 
   @Get()
-  findAll() {
-    return this.pontoService.findAll();
+  findAll(@Query() query: FindAllPontoDto) {
+    return this.pontoService.findAll(query);
   }
 
   @Get('username/:username')

@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PontoService } from './ponto.service';
 import { UtilService } from '@/util/util.service';
+import { env } from '@/env';
 
 describe('PontoService', () => {
   let service: PontoService;
@@ -17,13 +18,20 @@ describe('PontoService', () => {
 
     const res = service.create({ username: 'lucas.assuncao' });
 
+    if (inserts.Retorno !== '-') {
+      return await expect(res).rejects.toThrow(
+        'Você ainda não trabalhou 8 horas.',
+      );
+    }
+
     if (inserts.Saida !== '-') {
       return await expect(res).rejects.toThrow('Já registrou a saída.');
     }
 
-    if (process.env.RECORD_HOURS === 'false') {
+    if (env.RECORD_HOURS === false) {
       return await expect(res).rejects.toThrow('Função desativada');
     }
+
     await expect(res).resolves.toBeDefined();
   }, 7000);
 
@@ -34,7 +42,10 @@ describe('PontoService', () => {
   });
 
   it('findAll', async () => {
-    const res = await service.findAll();
+    const res = await service.findAll({
+      username: env.USER_NAME,
+      password: env.USER_PASSWORD,
+    });
 
     expect(res[0]).toHaveProperty('dia');
   }, 6000);

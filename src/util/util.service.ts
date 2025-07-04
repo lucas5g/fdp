@@ -1,34 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { format } from 'date-fns';
-import { z } from 'zod';
-import 'dotenv/config';
 import { chromium } from 'playwright';
+import axios from 'axios';
+import { env } from '@/env';
 
 @Injectable()
 export class UtilService {
-  env() {
-    return z
-      .object({
-        DISCORD_TOKEN: z.string(),
-        DISCORD_CLIENT_ID: z.string(),
-        AZC_TOKEN: z.string(),
-        DISCORD_ONLINE: z.string().transform((value) => value === 'true'),
-        USER_NAME: z.string(),
-        USER_PASSWORD: z.string(),
-        RECORD_HOURS: z.string().transform((value) => value === 'true'),
-      })
-      .parse(process.env);
-  }
-
-  getUrlPoint(username: string) {
+  async getUrlPoint(username: string) {
     const date = format(new Date(), 'yyyy-MM-dd');
 
     const hours = format(new Date(), 'HH:mm');
 
-    return `https://azc.defensoria.mg.def.br/arte/auraarteweb?credentials=00020aarte0a${username}0aarte0alucas.assuncao${this.env().AZC_TOKEN}${date}%20(${hours})&relat=.F00&codigoLayout=xxxx`;
+    const url = `https://azc.defensoria.mg.def.br/arte/auraarteweb?credentials=00020aarte0a${username}0aarte0alucas.assuncao${env.AZC_TOKEN}${date}%20(${hours})&relat=.F00&codigoLayout=xxxx`;
+
+    try {
+      await axios.get(url);
+    } catch {
+      throw new NotFoundException('Usuário não cadastrado!!!');
+    }
+
+    return url;
   }
 
-  async setupPlaywright(url?: string) {
+  async setupPlaywright(data: {
+    username: string;
+    password?: string;
+    haveLogin?: boolean;
+  }) {
     const browser = await chromium.launch({
       // headless: false,
     });
@@ -36,14 +34,15 @@ export class UtilService {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    if (url) {
-      await page.goto(url);
-    } else {
+    if (data.haveLogin) {
       await page.goto('https://azc.defensoria.mg.def.br');
 
-      await page.locator('#cod_usuario').fill(this.env().USER_NAME);
-      await page.locator('#senha').fill(this.env().USER_PASSWORD);
+      await page.locator('#cod_usuario').fill(data.username);
+      await page.locator('#senha').fill(data.password!);
       await page.locator('#senha').press('Enter');
+    } else {
+      const url = await this.getUrlPoint(data.username);
+      await page.goto(url);
     }
 
     return {
