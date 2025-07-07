@@ -16,7 +16,24 @@ export class PontoService {
       username: createPontoDto.username,
     });
 
+    const handlePoint = async () => {
+      const selector = 'input#btRelogio';
+
+      await page.waitForSelector(selector);
+      await page.locator(selector).click();
+
+      void closeBrowser();
+
+      return { message: 'Ponto Batido' };
+    };
+
     const selectorHours = 'tbody > tr > td';
+
+    const exist = await page.$(selectorHours);
+
+    if (!exist) {
+      return await handlePoint();
+    }
 
     await page.waitForSelector(selectorHours);
 
@@ -43,14 +60,7 @@ export class PontoService {
       throw new BadRequestException('Função desativada');
     }
 
-    const selector = 'input#btRelogio';
-
-    await page.waitForSelector(selector);
-    await page.locator(selector).click();
-
-    void closeBrowser();
-
-    return { message: 'Ponto Batido' };
+    await handlePoint();
   }
 
   async findAll(dto: FindAllPontoDto) {

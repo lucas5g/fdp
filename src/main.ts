@@ -17,6 +17,8 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000);
 
-  Logger.debug(`Application is running on: ${await app.getUrl()}`);
+  Logger.debug(
+    `Application is running on: ${await app.getUrl()} - version: ${version}`,
+  );
 }
 void bootstrap();

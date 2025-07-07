@@ -8,4 +8,4 @@ import { UtilModule } from './util/util.module';
   imports: [DiscordModule, PontoModule, UtilModule],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

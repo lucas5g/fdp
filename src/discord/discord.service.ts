@@ -18,7 +18,7 @@ export class DiscordService implements OnModuleInit {
   constructor(
     private readonly util: UtilService,
     private readonly pontoService: PontoService,
-  ) { }
+  ) {}
 
   onModuleInit() {
     if (!env.DISCORD_ONLINE) {

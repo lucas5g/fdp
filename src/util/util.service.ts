@@ -32,7 +32,7 @@ export class UtilService {
     haveLogin?: boolean;
   }) {
     const browser = await chromium.launch({
-      // headless: false,
+      headless: false,
     });
 
     const context = await browser.newContext();
