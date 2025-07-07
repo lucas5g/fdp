@@ -13,7 +13,7 @@ describe('PontoService', () => {
     service = module.get<PontoService>(PontoService);
   });
 
-  it.only('create', async () => {
+  it('create', async () => {
     const inserts = await service.findByUsername('lucas.assuncao');
 
     const res = service.create({ username: 'lucas.assuncao' });
