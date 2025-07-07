@@ -8,9 +8,10 @@ import { UtilService } from '@/util/util.service';
 import { format } from 'date-fns';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { env } from '@/env';
+import { Cron } from '@nestjs/schedule';
 @Injectable()
 export class PontoService {
-  constructor(private readonly util: UtilService) {}
+  constructor(private readonly util: UtilService) { }
   async create(createPontoDto: CreatePontoDto) {
     const { page, closeBrowser } = await this.util.setupPlaywright({
       username: createPontoDto.username,
@@ -62,6 +63,11 @@ export class PontoService {
 
     await handlePoint();
   }
+
+  // @Cron('0 0 * * *')
+  // async createWithCron() {
+  //   await this.create({ username: 'lucas.assuncao' });
+  // }
 
   async findAll(dto: FindAllPontoDto) {
     const { page, closeBrowser } = await this.util.setupPlaywright({
