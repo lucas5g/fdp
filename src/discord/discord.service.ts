@@ -18,7 +18,7 @@ export class DiscordService implements OnModuleInit {
   constructor(
     private readonly util: UtilService,
     private readonly pontoService: PontoService,
-  ) {}
+  ) { }
 
   onModuleInit() {
     if (!env.DISCORD_ONLINE) {
@@ -61,7 +61,7 @@ export class DiscordService implements OnModuleInit {
         const commands: Record<string, () => Promise<Message<boolean>>> = {
           inserir: async () =>
             interaction.editReply(
-              await this.pontoService.create({ username: userPoint }),
+              await this.pontoService.create({ username: userPoint }) ?? 'Erro',
             ),
           consultar: async () => {
             const userFilter = interaction.options.getString('usuario');
