@@ -10,5 +10,6 @@ export const env = z
     USER_NAME: z.string(),
     USER_PASSWORD: z.string(),
     RECORD_HOURS: z.string().transform((value) => value === 'true'),
+    // BROWSER_HEADLESS: z.string().transform((value) => value === 'true'),
   })
   .parse(process.env);

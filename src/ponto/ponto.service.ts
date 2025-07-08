@@ -73,7 +73,6 @@ export class PontoService {
     const { page, closeBrowser } = await this.util.setupPlaywright({
       username: dto.username,
       password: dto.password,
-      haveLogin: true,
     });
 
     await page
@@ -110,34 +109,40 @@ export class PontoService {
     });
   }
 
-  async findByUsername(username: string) {
+  async findByDay(dto: FindAllPontoDto) {
     const { page, closeBrowser } = await this.util.setupPlaywright({
-      username: username,
+      username: dto.username,
+      password: dto.password,
     });
 
-    const seletor = 'tbody > tr > td';
+    await page.locator('#iFrameArteWeb').contentFrame().getByRole('heading', { name: 'Ponto web LUCAS DE SOUSA'}).waitFor();
 
-    const exist = await page.$(seletor);
+    const table = await page.locator('#iFrameArteWeb').contentFrame().getByRole('table')
+      .locator('tbody > tr > td')
+      .allTextContents()
 
-    if (!exist) {
-      void closeBrowser();
-      throw new NotFoundException('Hoje não teve ponto registrado.');
-    }
-
-    const res = await page.$$eval(seletor, (elements) =>
-      elements.map((element) => element.textContent?.trim() ?? ''),
-    );
-
+    const res = table.map(element => element.trim());
+    
     void closeBrowser();
-
     return this.hoursRecorded(res);
+
+    // const exist = await frameContent?.$(selector);
+
+    // if (!exist) {
+    //   void closeBrowser();
+    //   throw new NotFoundException('Hoje não teve ponto registrado.');
+    // }
+
+    // const res = await page.$$eval(selector, (elements) =>
+    //   elements.map((element) => element.textContent?.trim() ?? ''),
+    // );
+
+    // console.log('res => ', res);
+
+
+    // return '-';
   }
 
-  async findByusernameFormat(username: string) {
-    const res = await this.findByUsername(username);
-
-    return `Entrada: ${res.Entrada} \nAlmoco: ${res.Almoco} \nRetorno: ${res.Retorno} \nSaida: ${res.Saida} \n\n**Horas trabalhada**: ${res.HorasTrabalhada}`;
-  }
 
   hoursRecorded(horasList: string[]) {
     const horasChaves = {

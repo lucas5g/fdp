@@ -29,7 +29,7 @@ export class UtilService {
   async setupPlaywright(data: {
     username: string;
     password?: string;
-    haveLogin?: boolean;
+
   }) {
     const browser = await chromium.launch({
       // headless: false,
@@ -43,24 +43,19 @@ export class UtilService {
       await browser.close();
     };
 
-    if (data.haveLogin) {
-      await page.goto('https://azc.defensoria.mg.def.br');
+    await page.goto('https://azc.defensoria.mg.def.br');
 
-      await page.locator('#cod_usuario').fill(data.username);
-      await page.locator('#senha').fill(data.password!);
-      await page.locator('#senha').press('Enter');
+    await page.locator('#cod_usuario').fill(data.username);
+    await page.locator('#senha').fill(data.password!);
+    await page.locator('#senha').press('Enter');
 
-      const selector = '#idLabelRazaoEmpresaSelecionada';
-      await page.waitForTimeout(1000);
-      const exist = await page.$(selector);
+    const selector = '#idLabelRazaoEmpresaSelecionada';
+    await page.waitForTimeout(1300);
+    const exist = await page.$(selector);
 
-      if (!exist) {
-        void closeBrowser();
-        throw new UnauthorizedException('Usuário e Senha Incorretos!!!');
-      }
-    } else {
-      const url = await this.getUrlPoint(data.username);
-      await page.goto(url);
+    if (!exist) {
+      void closeBrowser();
+      throw new UnauthorizedException('Usuário e Senha Incorretos!!!');
     }
 
     return {

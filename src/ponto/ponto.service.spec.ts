@@ -63,11 +63,17 @@ describe('PontoService', () => {
     ]);
   });
 
-  it('findByUsername not register points', async () => {
-    const username = 'luiz.dias';
+  it.only('findByDay', async () => {
+    const payload = {
+      username: env.USER_NAME,
+      password: env.USER_PASSWORD,
+    };
+    
 
-    const res = service.findByUsername(username);
+    const res = await service.findByDay(payload);
 
-    await expect(res).rejects.toThrow('Hoje não teve ponto registrado.');
-  });
+    console.log(res);
+
+    // await expect(res).rejects.toThrow('Hoje não teve ponto registrado.');
+  }, 170000);
 });

@@ -1,11 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { CreatePontoDto } from './create-ponto.dto';
 
-export class FindAllPontoDto {
-  @ApiProperty()
-  username: string;
-
-  @ApiProperty({
-    format: 'password',
-  })
-  password: string;
-}
+export class FindAllPontoDto extends CreatePontoDto{}

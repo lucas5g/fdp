@@ -12,17 +12,17 @@ export class PontoController {
     return this.pontoService.create(createPontoDto);
   }
 
-  @Get()
+  @Get('mes')
   findAll(@Query() query: FindAllPontoDto) {
     return this.pontoService.findAll(query);
   }
 
-  @Get('username/:username')
-  findByUsername(@Param('username') username: string) {
+  @Get('dia')
+  findByUsername(@Body() dto: CreatePontoDto) {
     return this.pontoService.findByUsername(username);
   }
 
-  @Get('username/:username/formatado')
+  @Get('formatado')
   findByusernameFormat(@Param('username') username: string) {
     return this.pontoService.findByusernameFormat(username);
   }
