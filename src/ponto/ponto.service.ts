@@ -1,57 +1,43 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePontoDto } from './dto/create-ponto.dto';
 import { UtilService } from '@/util/util.service';
 import { format } from 'date-fns';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { env } from '@/env';
-import { Cron } from '@nestjs/schedule';
+import { Page } from 'playwright';
 @Injectable()
 export class PontoService {
-  constructor(private readonly util: UtilService) { }
-  async create(createPontoDto: CreatePontoDto) {
+  constructor(private readonly util: UtilService) {}
+  async create(dto: CreatePontoDto) {
     const { page, closeBrowser } = await this.util.setupPlaywright({
-      username: createPontoDto.username,
+      username: dto.username,
+      password: dto.password,
     });
 
-    const handlePoint = async () => {
-      const selector = 'input#btRelogio';
+    // const handlePoint = async () => {
+    //   const selector = 'input#btRelogio';
 
-      await page.waitForSelector(selector);
-      await page.locator(selector).click();
+    //   await page.waitForSelector(selector);
+    //   await page.locator(selector).click();
 
+    //   void closeBrowser();
+
+    //   return { message: 'Ponto Batido' };
+    // };
+
+    const hoursDict = await this.findHours({ page });
+
+    void closeBrowser();
+
+    if (hoursDict.Saida !== '-') {
       void closeBrowser();
-
-      return { message: 'Ponto Batido' };
-    };
-
-    const selectorHours = 'tbody > tr > td';
-
-    const exist = await page.$(selectorHours);
-
-    if (!exist) {
-      return await handlePoint();
-    }
-
-    await page.waitForSelector(selectorHours);
-
-    const res = await page.$$eval(selectorHours, (elements) =>
-      elements.map((element) => element.textContent?.trim() ?? ''),
-    );
-
-    const { Retorno, Saida, HorasTrabalhada } = this.hoursRecorded(res);
-
-    if (Saida !== '-') {
       throw new BadRequestException('Já registrou a saída.');
     }
 
-    const [hours, minutes] = HorasTrabalhada.split(':');
-    const minutesFull = Number(hours) * 60 + Number(minutes);
+    const [hours, minutes] = hoursDict.HorasTrabalhada.split(':').map(Number);
+    const minutesFull = hours * 60 + minutes;
 
-    if (Retorno !== '-' && minutesFull < 480) {
+    if (hoursDict.Retorno !== '-' && minutesFull < 480) {
       void closeBrowser();
       throw new BadRequestException('Você ainda não trabalhou 8 horas.');
     }
@@ -61,13 +47,20 @@ export class PontoService {
       throw new BadRequestException('Função desativada');
     }
 
-    await handlePoint();
-  }
+    return hoursDict;
 
-  // @Cron('0 0 * * *')
-  // async createWithCron() {
-  //   await this.create({ username: 'lucas.assuncao' });
-  // }
+    // const selectorHours = 'tbody > tr > td';
+
+    // const exist = await page.$(selectorHours);
+
+    // if (!exist) {
+    //   return await handlePoint();
+    // }
+
+    // await page.waitForSelector(selectorHours);
+
+    // await handlePoint();
+  }
 
   async findAll(dto: FindAllPontoDto) {
     const { page, closeBrowser } = await this.util.setupPlaywright({
@@ -115,16 +108,10 @@ export class PontoService {
       password: dto.password,
     });
 
-    await page.locator('#iFrameArteWeb').contentFrame().getByRole('heading', { name: 'Ponto web LUCAS DE SOUSA'}).waitFor();
+    const res = await this.findHours({ page });
 
-    const table = await page.locator('#iFrameArteWeb').contentFrame().getByRole('table')
-      .locator('tbody > tr > td')
-      .allTextContents()
-
-    const res = table.map(element => element.trim());
-    
     void closeBrowser();
-    return this.hoursRecorded(res);
+    return res;
 
     // const exist = await frameContent?.$(selector);
 
@@ -139,10 +126,8 @@ export class PontoService {
 
     // console.log('res => ', res);
 
-
     // return '-';
   }
-
 
   hoursRecorded(horasList: string[]) {
     const horasChaves = {
@@ -180,5 +165,24 @@ export class PontoService {
       ...horasChaves,
       HorasTrabalhada,
     };
+  }
+
+  private async findHours({ page }: { page: Page }) {
+    await page
+      .locator('#iFrameArteWeb')
+      .contentFrame()
+      .getByRole('heading', { name: 'Ponto web LUCAS DE SOUSA' })
+      .waitFor();
+
+    const table = await page
+      .locator('#iFrameArteWeb')
+      .contentFrame()
+      .getByRole('table')
+      .locator('tbody > tr > td')
+      .allTextContents();
+
+    const res = table.map((element) => element.trim());
+
+    return this.hoursRecorded(res);
   }
 }

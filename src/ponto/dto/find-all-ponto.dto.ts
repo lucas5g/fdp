@@ -1,3 +1,3 @@
 import { CreatePontoDto } from './create-ponto.dto';
 
-export class FindAllPontoDto extends CreatePontoDto{}
+export class FindAllPontoDto extends CreatePontoDto {}

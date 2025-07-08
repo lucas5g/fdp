@@ -26,13 +26,9 @@ export class UtilService {
     return url;
   }
 
-  async setupPlaywright(data: {
-    username: string;
-    password?: string;
-
-  }) {
+  async setupPlaywright(data: { username: string; password: string }) {
     const browser = await chromium.launch({
-      // headless: false,
+      headless: false,
     });
 
     const context = await browser.newContext();
@@ -46,7 +42,7 @@ export class UtilService {
     await page.goto('https://azc.defensoria.mg.def.br');
 
     await page.locator('#cod_usuario').fill(data.username);
-    await page.locator('#senha').fill(data.password!);
+    await page.locator('#senha').fill(data.password);
     await page.locator('#senha').press('Enter');
 
     const selector = '#idLabelRazaoEmpresaSelecionada';

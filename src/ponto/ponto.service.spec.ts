@@ -14,9 +14,22 @@ describe('PontoService', () => {
   });
 
   it('create', async () => {
-    const inserts = await service.findByUsername('lucas.assuncao');
+    const inserts = await service.findByDay({
+      username: env.USER_NAME,
+      password: env.USER_PASSWORD,
+    });
+    expect(Object.keys(inserts)).toEqual([
+      'Entrada',
+      'Almoco',
+      'Retorno',
+      'Saida',
+      'HorasTrabalhada',
+    ]);
 
-    const res = service.create({ username: 'lucas.assuncao' });
+    const res = service.create({
+      username: env.USER_NAME,
+      password: env.USER_PASSWORD,
+    });
 
     if (inserts.Retorno !== '-') {
       return await expect(res).rejects.toThrow(
@@ -34,12 +47,6 @@ describe('PontoService', () => {
 
     await expect(res).resolves.toBeDefined();
   }, 7000);
-
-  it('findByUsernameFormadao', async () => {
-    const res = await service.findByusernameFormat('lucas.assuncao');
-
-    expect(res).toContain('**Horas trabalhada**:');
-  });
 
   it('findAll', async () => {
     const res = await service.findAll({
@@ -63,17 +70,13 @@ describe('PontoService', () => {
     ]);
   });
 
-  it.only('findByDay', async () => {
-    const payload = {
-      username: env.USER_NAME,
-      password: env.USER_PASSWORD,
-    };
-    
+  // it('findByDay', async () => {
+  //   const payload = {
+  //     username: env.USER_NAME,
+  //     password: env.USER_PASSWORD,
+  //   };
 
-    const res = await service.findByDay(payload);
+  //   const res = await service.findByDay(payload);
 
-    console.log(res);
-
-    // await expect(res).rejects.toThrow('Hoje não teve ponto registrado.');
-  }, 170000);
+  // });
 });

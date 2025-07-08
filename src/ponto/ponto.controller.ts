@@ -1,13 +1,17 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { PontoService } from './ponto.service';
 import { CreatePontoDto } from './dto/create-ponto.dto';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
+import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 
 @Controller('pontos')
 export class PontoController {
   constructor(private readonly pontoService: PontoService) {}
 
   @Post()
+  @ApiBody({ type: CreatePontoDto })
+  // @ApiConsumes('multipart/form-data')
+  @ApiConsumes('application/x-www-form-urlencoded') // <- ESSENCIAL
   create(@Body() createPontoDto: CreatePontoDto) {
     return this.pontoService.create(createPontoDto);
   }
@@ -18,12 +22,7 @@ export class PontoController {
   }
 
   @Get('dia')
-  findByUsername(@Body() dto: CreatePontoDto) {
-    return this.pontoService.findByUsername(username);
-  }
-
-  @Get('formatado')
-  findByusernameFormat(@Param('username') username: string) {
-    return this.pontoService.findByusernameFormat(username);
+  findByDay(@Query() dto: CreatePontoDto) {
+    return this.pontoService.findByDay(dto);
   }
 }

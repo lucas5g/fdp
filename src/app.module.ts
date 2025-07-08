@@ -9,4 +9,4 @@ import { ScheduleModule } from '@nestjs/schedule';
   imports: [DiscordModule, PontoModule, UtilModule, ScheduleModule.forRoot()],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
