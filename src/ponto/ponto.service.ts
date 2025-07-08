@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePontoDto } from './dto/create-ponto.dto';
 import { UtilService } from '@/util/util.service';
-import { format } from 'date-fns';
+import { format, getDay } from 'date-fns';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { env } from '@/env';
 import { Page } from 'playwright';
@@ -13,17 +13,6 @@ export class PontoService {
       username: dto.username,
       password: dto.password,
     });
-
-    // const handlePoint = async () => {
-    //   const selector = 'input#btRelogio';
-
-    //   await page.waitForSelector(selector);
-    //   await page.locator(selector).click();
-
-    //   void closeBrowser();
-
-    //   return { message: 'Ponto Batido' };
-    // };
 
     const hoursDict = await this.findHours({ page });
 
@@ -88,16 +77,38 @@ export class PontoService {
 
     void closeBrowser();
 
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth(); // 0 = janeiro
+
     return res.map((row, i) => {
+      const day = i + 1;
       const [Entrada, Almoco, Retorno, Saida] = row.split(' ');
+      const data = new Date(year, month, day);
+
+      const dayWeek = getDay(data);
+      const dayWeekName = [
+        'Domingo',
+        'Segunda',
+        'Terca',
+        'Quarta',
+        'Quinta',
+        'Sexta',
+        'Sábado',
+      ][dayWeek].toUpperCase();
+
       return {
-        dia: String(i + 1).padStart(2, '0'),
-        registros: {
-          Entrada,
-          Almoco,
-          Retorno,
-          Saida,
-        },
+        dia: String(day).padStart(2, '0'),
+        diaSemana: dayWeekName,
+        registros:
+          dayWeek === 0 || dayWeek === 6
+            ? '-'
+            : {
+                Entrada,
+                Almoco,
+                Retorno,
+                Saida,
+              },
       };
     });
   }
@@ -184,5 +195,14 @@ export class PontoService {
     const res = table.map((element) => element.trim());
 
     return this.hoursRecorded(res);
+  }
+
+  private async handlePoint({ page }: { page: Page }) {
+    const selector = 'input#btRelogio';
+
+    await page.waitForSelector(selector);
+    await page.locator(selector).click();
+
+    // return { message: 'Ponto Batido' };
   }
 }

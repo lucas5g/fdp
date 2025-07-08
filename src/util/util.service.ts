@@ -28,7 +28,7 @@ export class UtilService {
 
   async setupPlaywright(data: { username: string; password: string }) {
     const browser = await chromium.launch({
-      headless: false,
+      // headless: false,
     });
 
     const context = await browser.newContext();

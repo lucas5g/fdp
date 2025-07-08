@@ -48,11 +48,13 @@ describe('PontoService', () => {
     await expect(res).resolves.toBeDefined();
   }, 7000);
 
-  it('findAll', async () => {
+  it.only('findAll', async () => {
     const res = await service.findAll({
       username: env.USER_NAME,
       password: env.USER_PASSWORD,
     });
+
+    console.log(res);
 
     expect(res[0]).toHaveProperty('dia');
   }, 6000);
