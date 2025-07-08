@@ -7,7 +7,7 @@ import { env } from '@/env';
 import { Page } from 'playwright';
 @Injectable()
 export class PontoService {
-  constructor(private readonly util: UtilService) {}
+  constructor(private readonly util: UtilService) { }
   async create(dto: CreatePontoDto) {
     const { page, closeBrowser } = await this.util.setupPlaywright({
       username: dto.username,
@@ -15,8 +15,6 @@ export class PontoService {
     });
 
     const hoursDict = await this.findHours({ page });
-
-    void closeBrowser();
 
     if (hoursDict.Saida !== '-') {
       void closeBrowser();
@@ -31,10 +29,12 @@ export class PontoService {
       throw new BadRequestException('Você ainda não trabalhou 8 horas.');
     }
 
-    if (!env.RECORD_HOURS) {
-      void closeBrowser();
-      throw new BadRequestException('Função desativada');
-    }
+    await page.locator('#iFrameArteWeb').contentFrame().getByRole('button', { name: 'Inserir Marcação' }).click();
+
+    void closeBrowser();
+    // if (!env.RECORD_HOURS) {
+    //   throw new BadRequestException('Função desativada');
+    // }
 
     return hoursDict;
 
@@ -104,11 +104,11 @@ export class PontoService {
           dayWeek === 0 || dayWeek === 6
             ? '-'
             : {
-                Entrada,
-                Almoco,
-                Retorno,
-                Saida,
-              },
+              Entrada,
+              Almoco,
+              Retorno,
+              Saida,
+            },
       };
     });
   }

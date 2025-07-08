@@ -14,6 +14,15 @@ describe('PontoService', () => {
   });
 
   it('create', async () => {
+
+
+    // await service.create({
+    //   username: env.USER_NAME,
+    //   password: env.USER_PASSWORD,
+    // });
+    // return 
+
+
     const inserts = await service.findByDay({
       username: env.USER_NAME,
       password: env.USER_PASSWORD,
@@ -31,6 +40,7 @@ describe('PontoService', () => {
       password: env.USER_PASSWORD,
     });
 
+
     if (inserts.Retorno !== '-') {
       return await expect(res).rejects.toThrow(
         'Você ainda não trabalhou 8 horas.',
@@ -46,15 +56,13 @@ describe('PontoService', () => {
     }
 
     await expect(res).resolves.toBeDefined();
-  }, 7000);
+  }, 70000);
 
-  it.only('findAll', async () => {
+  it('findAll', async () => {
     const res = await service.findAll({
       username: env.USER_NAME,
       password: env.USER_PASSWORD,
     });
-
-    console.log(res);
 
     expect(res[0]).toHaveProperty('dia');
   }, 6000);
