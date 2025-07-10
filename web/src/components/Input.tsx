@@ -6,7 +6,7 @@ export function Input(props: Props) {
         {props.placeholder}
       </label>
       <input 
-        className=" bg-gray-500 text-white py-3 px-2 rounded"
+        className=" bg-gray-700 text-white py-3 px-2 rounded"
         {...props} 
         
         />
