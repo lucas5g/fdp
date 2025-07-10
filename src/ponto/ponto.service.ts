@@ -3,11 +3,10 @@ import { CreatePontoDto } from './dto/create-ponto.dto';
 import { UtilService } from '@/util/util.service';
 import { format, getDay } from 'date-fns';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
-import { env } from '@/env';
 import { Page } from 'playwright';
 @Injectable()
 export class PontoService {
-  constructor(private readonly util: UtilService) { }
+  constructor(private readonly util: UtilService) {}
   async create(dto: CreatePontoDto) {
     const { page, closeBrowser } = await this.util.setupPlaywright({
       username: dto.username,
@@ -29,7 +28,11 @@ export class PontoService {
       throw new BadRequestException('Você ainda não trabalhou 8 horas.');
     }
 
-    await page.locator('#iFrameArteWeb').contentFrame().getByRole('button', { name: 'Inserir Marcação' }).click();
+    await page
+      .locator('#iFrameArteWeb')
+      .contentFrame()
+      .getByRole('button', { name: 'Inserir Marcação' })
+      .click();
 
     void closeBrowser();
     // if (!env.RECORD_HOURS) {
@@ -104,11 +107,11 @@ export class PontoService {
           dayWeek === 0 || dayWeek === 6
             ? '-'
             : {
-              Entrada,
-              Almoco,
-              Retorno,
-              Saida,
-            },
+                Entrada,
+                Almoco,
+                Retorno,
+                Saida,
+              },
       };
     });
   }
