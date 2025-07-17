@@ -46,7 +46,7 @@ export class UtilService {
     await page.locator('#senha').press('Enter');
 
     const selector = '#idLabelRazaoEmpresaSelecionada';
-    await page.waitForTimeout(1400);
+    await page.waitForTimeout(1600);
     const exist = await page.$(selector);
 
     if (!exist) {

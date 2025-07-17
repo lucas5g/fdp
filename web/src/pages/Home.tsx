@@ -1,25 +1,17 @@
-import { useEffect } from "react";
 import { Card } from "../components/Card";
+import { PointDay } from "../components/point/Day";
+import { PointMonth } from "../components/point/Month";
 
-export function Home(){
+export function Home() {
 
-  useEffect(() => {
-    const access = localStorage.getItem('access')
-   
-    
-
-  }, [])
-
-
-
-  return(
-    <div className="flex flex-row gap-5">
+  return (
+    <div className="flex  gap-5 w-full bg-amber-400">
+      <PointDay />
       <Card>
-        <h1>Home</h1>
+        <p>teste</p>
       </Card>
-      <Card>
-        <h1>Lista</h1>
-      </Card>
+      {/* <PointMonth /> */}
     </div>
   )
+
 }
