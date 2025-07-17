@@ -7,6 +7,7 @@ export function Input(props: Props) {
       </label>
       <input 
         className=" bg-gray-700 text-white py-3 px-2 rounded"
+        required
         {...props} 
         
         />
