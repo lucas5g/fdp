@@ -6,7 +6,7 @@ import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { Page } from 'playwright';
 @Injectable()
 export class PontoService {
-  constructor(private readonly util: UtilService) {}
+  constructor(private readonly util: UtilService) { }
   async create(dto: CreatePontoDto) {
     const { page, closeBrowser } = await this.util.setupPlaywright({
       username: dto.username,
@@ -20,7 +20,7 @@ export class PontoService {
       throw new BadRequestException('Já registrou a saída.');
     }
 
-    const [hours, minutes] = hoursDict.HorasTrabalhada.split(':').map(Number);
+    const [hours, minutes] = hoursDict['Horas trabalhadas'].split(':').map(Number);
     const minutesFull = hours * 60 + minutes;
 
     if (hoursDict.Retorno !== '-' && minutesFull < 480) {
@@ -35,23 +35,9 @@ export class PontoService {
       .click();
 
     void closeBrowser();
-    // if (!env.RECORD_HOURS) {
-    //   throw new BadRequestException('Função desativada');
-    // }
 
-    return hoursDict;
+    return { message: 'Ponto Batido' };
 
-    // const selectorHours = 'tbody > tr > td';
-
-    // const exist = await page.$(selectorHours);
-
-    // if (!exist) {
-    //   return await handlePoint();
-    // }
-
-    // await page.waitForSelector(selectorHours);
-
-    // await handlePoint();
   }
 
   async findAll(dto: FindAllPontoDto) {
@@ -107,11 +93,11 @@ export class PontoService {
           dayWeek === 0 || dayWeek === 6
             ? '-'
             : {
-                Entrada,
-                Almoco,
-                Retorno,
-                Saida,
-              },
+              Entrada,
+              Almoco,
+              Retorno,
+              Saida,
+            },
       };
     });
   }
@@ -126,21 +112,6 @@ export class PontoService {
 
     void closeBrowser();
     return res;
-
-    // const exist = await frameContent?.$(selector);
-
-    // if (!exist) {
-    //   void closeBrowser();
-    //   throw new NotFoundException('Hoje não teve ponto registrado.');
-    // }
-
-    // const res = await page.$$eval(selector, (elements) =>
-    //   elements.map((element) => element.textContent?.trim() ?? ''),
-    // );
-
-    // console.log('res => ', res);
-
-    // return '-';
   }
 
   hoursRecorded(horasList: string[]) {
@@ -161,15 +132,15 @@ export class PontoService {
 
     const horasInteiro = {
       Entrada: hoursToNumber(horasChaves.Entrada),
-      Almoco: hoursToNumber(horasChaves.Almoco),
+      Almoço: hoursToNumber(horasChaves.Almoco),
       Retorno: hoursToNumber(horasChaves.Retorno),
-      Saida: hoursToNumber(horasChaves.Saida),
+      Saída: hoursToNumber(horasChaves.Saida),
     };
 
     const horasTrabalhadaInteiro =
-      horasInteiro.Saida -
+      horasInteiro.Saída -
       horasInteiro.Entrada -
-      (horasInteiro.Retorno - horasInteiro.Almoco);
+      (horasInteiro.Retorno - horasInteiro.Almoço);
     const horas = Math.floor(horasTrabalhadaInteiro / 60);
     const minutos = horasTrabalhadaInteiro % 60;
 
@@ -177,7 +148,7 @@ export class PontoService {
 
     return {
       ...horasChaves,
-      HorasTrabalhada,
+      'Horas trabalhadas': HorasTrabalhada,
     };
   }
 

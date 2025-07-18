@@ -1,22 +1,19 @@
-import { Route, Routes } from 'react-router'
+import {
+  Route, Routes
+} from 'react-router'
 import { Home } from './pages/Home'
 import { Login } from './pages/Login'
-import { Layout } from './components/Layout'
-import { createTheme, ThemeProvider } from '@mui/material'
+import { Layout } from '@/components/Layout'
+import { Logout } from '@/pages/Logout'
+
 export function App() {
   return (
-    <ThemeProvider theme={createTheme({
-      palette: {
-        mode: 'dark',
-      },
-    })}>
-
-      <Routes >
-        <Route path='/login' element={<Login />} />
-        {/* <Route element={<Layout />} >
+    <Routes >
+      <Route path='/login' element={<Login />} />
+      <Route path='/sair' element={<Logout />} />
+      <Route element={<Layout />} >
         <Route index element={<Home />} />
-        </Route> */}
-      </Routes>
-    </ThemeProvider>
+      </Route>
+    </Routes>
   )
 }

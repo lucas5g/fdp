@@ -1,15 +1,14 @@
+import { Stack } from "@chakra-ui/react";
 import { useEffect } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router";
+import { Link, Outlet, useNavigate } from "react-router";
 export function Layout() {
 
   return (
-    <div className='flex flex-col gap-5 bg-gray-500 text-white h-screen'>
+    <>
       <Header />
-      <main className="p-10 h-screen">
-        <Outlet />
-      </main>
+      <Outlet />
 
-    </div>
+    </>
   )
 }
 
@@ -25,16 +24,17 @@ function Header() {
   }, [])
 
   return (
-    <nav className='bg-gray-800 p-5 shadow-2xl flex justify-end gap-5 '>
-      <NavLink to="/">Home</NavLink>
-      <button
-        className="cursor-pointer"
-        onClick={() => {
-          localStorage.removeItem('access')
-          navigate('/login')
-        }}>
-        Sair
-      </button>
-    </nav>
+    <Stack
+      direction={'row'}
+      background={'gray.900'}
+      padding={5}
+      justifyContent={'end'}
+    >
+      <Link
+        to="/">
+        Home
+      </Link>
+      <Link to="/sair">Sair</Link>
+    </Stack>
   )
 }

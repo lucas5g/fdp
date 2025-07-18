@@ -1,5 +1,6 @@
-import { api } from "../../utils/api"
-import { Card } from "../Card"
+import { api } from "@/utils/api"
+import { Card, Heading, Table } from "@chakra-ui/react"
+
 
 export function PointDay() {
   const { data, isLoading, error } = api('getDay') as { data: { [key: string]: string }, isLoading: boolean, error: any }
@@ -9,29 +10,36 @@ export function PointDay() {
   }
 
   return (
-      <Card>
-        <h1>Pontos do Dia</h1>
-
-        <table className="w-[80%]">
-          <thead>
-            <tr>
-              <th className="text-left">Pontos</th>
-              <th>Horas</th>
-            </tr>
-          </thead>
-          <tbody>
+    <Card.Root>
+      <Card.Header>
+        <Card.Title>
+          Pontos do Dia
+        </Card.Title>
+      </Card.Header>
+      <Card.Body>
+        <Table.Root>
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeader>
+                Pontos
+              </Table.ColumnHeader>
+              <Table.ColumnHeader>
+                Horas
+              </Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
             {Object.entries(data).map(([key, value]) => (
-              <tr key={key}>
-                <td>{key}</td>
-                <td>{value}</td>
-              </tr>
+              <Table.Row key={key}>
+                <Table.Cell>{key}</Table.Cell>
+                <Table.Cell>{value}</Table.Cell>
+              </Table.Row>
             ))}
-          </tbody>
-        </table>
+          </Table.Body>
+        </Table.Root>
 
-
-      </Card>
-      
+      </Card.Body>
+    </Card.Root>
   )
 
 

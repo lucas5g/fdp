@@ -1,17 +1,26 @@
-import { Card } from "../components/Card";
-import { PointDay } from "../components/point/Day";
-import { PointMonth } from "../components/point/Month";
+import { PointDay } from "@/components/point/Day";
+import { Card, Flex } from "@chakra-ui/react";
 
 export function Home() {
 
   return (
-    <div className="flex  gap-5 w-full bg-amber-400">
-      <PointDay />
-      <Card>
-        <p>teste</p>
-      </Card>
-      {/* <PointMonth /> */}
-    </div>
+    <Flex
+      height={'90vh'}
+      justify={'center'}
+      align={'center'}
+      padding={5}
+
+    >
+      <Card.Root
+        lg={{
+          width: '1/3'
+        }}
+        width={'full'}
+      >
+        <PointDay />
+        {/* <PointMonth /> */}
+      </Card.Root>
+    </Flex>
   )
 
 }
