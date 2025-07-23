@@ -1,14 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-
+import { Transform } from 'class-transformer'
+import {type Cookie} from 'playwright'
 export class CreatePontoDto {
   @ApiProperty()
   @IsNotEmpty()
-  username: string;
-
-  @ApiProperty({
-    format: 'password',
+  // @Type(() => Object)
+  @Transform(({ value }) => {
+    const data = JSON.parse(value)
+    console.log({ data })
+    return data
   })
-  @IsNotEmpty()
-  password: string;
+  cookie:Cookie[]
 }

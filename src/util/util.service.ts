@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { format } from 'date-fns';
-import { chromium } from 'playwright';
+import { chromium, Cookie } from 'playwright';
 import axios from 'axios';
 import { env } from '@/env';
 
@@ -26,37 +26,38 @@ export class UtilService {
     return url;
   }
 
-  async setupPlaywright(data: { username: string; password: string }) {
+  async setupPlaywright(cookie?:Cookie[]) {
     const browser = await chromium.launch({
-      // headless: false,
+      headless: false,
     });
 
     const context = await browser.newContext();
+    if(cookie){
+      await context.addCookies(cookie);
+    }
+
     const page = await context.newPage();
+
+    
 
     const closeBrowser = async () => {
       await context.close();
       await browser.close();
     };
 
-    await page.goto('https://azc.defensoria.mg.def.br');
+    // const selector = '#idLabelRazaoEmpresaSelecionada';
+    // await page.waitForTimeout(1600);
+    // const exist = await page.$(selector);
 
-    await page.locator('#cod_usuario').fill(data.username);
-    await page.locator('#senha').fill(data.password);
-    await page.locator('#senha').press('Enter');
-
-    const selector = '#idLabelRazaoEmpresaSelecionada';
-    await page.waitForTimeout(1600);
-    const exist = await page.$(selector);
-
-    if (!exist) {
-      void closeBrowser();
-      throw new UnauthorizedException('Usuário e Senha Incorretos!!!');
-    }
+    // if (!exist) {
+    //   void closeBrowser();
+    //   throw new UnauthorizedException('Usuário e Senha Incorretos!!!');
+    // }
 
     return {
       page,
       closeBrowser,
+      context
     };
   }
 }

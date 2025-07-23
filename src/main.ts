@@ -7,7 +7,10 @@ import { version } from '../package.json';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   app
-    .useGlobalPipes(new ValidationPipe())
+    .useGlobalPipes(new ValidationPipe({
+      transform: true,
+      whitelist: true
+    }))
     .enableCors();
 
   const config = new DocumentBuilder()

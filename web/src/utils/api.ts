@@ -11,13 +11,13 @@ const axiosCreate = axios.create({
 });
 
 const request = {
-  getDay: axiosCreate.get('pontos/dia', {
+  getDay: () => axiosCreate.get('pontos/dia', {
     params: {
       username,
       password
     },
   }),
-  getMonth: axiosCreate.get('pontos/mes', {
+  getMonth: () => axiosCreate.get('pontos/mes', {
     params: {
       username,
       password
@@ -28,7 +28,7 @@ const request = {
 
 export const api = (route: keyof typeof request) => {
   return useSWR(route, async () => {
-    const { data } = await request[route]
+    const { data } = await request[route]()
     return data
   })
 }

@@ -4,6 +4,7 @@ import { UtilService } from '@/util/util.service';
 import { format, getDay } from 'date-fns';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { Page } from 'playwright';
+import { LoginPontoDto } from './dto/login-ponto.dto';
 @Injectable()
 export class PontoService {
   constructor(private readonly util: UtilService) { }
@@ -41,11 +42,10 @@ export class PontoService {
   }
 
   async findAll(dto: FindAllPontoDto) {
-    const { page, closeBrowser } = await this.util.setupPlaywright({
-      username: dto.username,
-      password: dto.password,
-    });
+    console.log('cookie => ', dto.cookie) //dto.cookie
+    const { page, closeBrowser } = await this.util.setupPlaywright(dto.cookie);
 
+    await page.goto('https://azc.defensoria.mg.def.br');
     await page
       .getByRole('row', { name: 'Minha Frequência' })
       .getByRole('img')
@@ -103,10 +103,22 @@ export class PontoService {
   }
 
   async findByDay(dto: FindAllPontoDto) {
-    const { page, closeBrowser } = await this.util.setupPlaywright({
-      username: dto.username,
-      password: dto.password,
-    });
+
+    const {
+      page,
+      closeBrowser,
+    } = await this.util.setupPlaywright(dto.cookie);
+
+
+    await page.goto('https://azc.defensoria.mg.def.br/azc')
+    
+    // await page
+    //   .getByRole('row', { name: 'Minha Frequência' })
+    //   .getByRole('img')
+    //   .nth(1)
+    //   .click();
+    await page.getByText('Marcar').click();
+    // await page.click('#id_treegrid_0 > div.GB2UA-DDDUB > div.GB2UA-DDOSB > table > tbody:nth-child(2) > tr:nth-child(2)')
 
     const res = await this.findHours({ page });
 
@@ -148,7 +160,7 @@ export class PontoService {
 
     return {
       ...horasChaves,
-      'Horas trabalhadas': HorasTrabalhada,
+      'Horas Trabalhadas': HorasTrabalhada,
     };
   }
 
@@ -171,12 +183,24 @@ export class PontoService {
     return this.hoursRecorded(res);
   }
 
-  private async handlePoint({ page }: { page: Page }) {
-    const selector = 'input#btRelogio';
 
-    await page.waitForSelector(selector);
-    await page.locator(selector).click();
+  async login(dto: LoginPontoDto) {
+    const {
+      page,
+      context,
+      closeBrowser
+    } = await this.util.setupPlaywright();
 
-    // return { message: 'Ponto Batido' };
+    await page.goto('https://azc.defensoria.mg.def.br');
+
+    await page.locator('#cod_usuario').fill(dto.username);
+    await page.locator('#senha').fill(dto.password);
+    await page.locator('#senha').press('Enter');
+
+    const cookies = await context.cookies();
+
+    await closeBrowser();
+
+    return cookies
   }
 }

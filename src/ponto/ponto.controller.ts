@@ -3,6 +3,7 @@ import { PontoService } from './ponto.service';
 import { CreatePontoDto } from './dto/create-ponto.dto';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { LoginPontoDto } from './dto/login-ponto.dto';
 
 @Controller('pontos')
 export class PontoController {
@@ -11,9 +12,15 @@ export class PontoController {
   @Post()
   @ApiBody({ type: CreatePontoDto })
   // @ApiConsumes('multipart/form-data')
-  @ApiConsumes('application/x-www-form-urlencoded') // <- ESSENCIAL
   create(@Body() createPontoDto: CreatePontoDto) {
     return this.pontoService.create(createPontoDto);
+  }
+
+
+  @Post('login')
+  @ApiConsumes('application/x-www-form-urlencoded') // <- ESSENCIAL
+  login(@Body() dto: LoginPontoDto) {
+    return this.pontoService.login(dto);
   }
 
   @Get('mes')
@@ -25,4 +32,5 @@ export class PontoController {
   findByDay(@Query() dto: CreatePontoDto) {
     return this.pontoService.findByDay(dto);
   }
+
 }
