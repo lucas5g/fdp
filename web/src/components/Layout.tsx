@@ -17,8 +17,8 @@ function Header() {
   let navigate = useNavigate()
 
   useEffect(() => {
-    const access = localStorage.getItem('access')
-    if (!access) {
+    const cookie = localStorage.getItem('cookie')
+    if (!cookie) {
       navigate('/login')
     }
   }, [])

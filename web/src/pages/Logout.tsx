@@ -1,6 +1,6 @@
 import { Navigate } from "react-router"
 
 export function Logout() {
-  localStorage.removeItem('access')
+  localStorage.removeItem('cookie')
   return <Navigate to={'/login'} replace={true} />
 }

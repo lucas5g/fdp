@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 import { PontoService } from './ponto.service';
 import { CreatePontoDto } from './dto/create-ponto.dto';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { LoginPontoDto } from './dto/login-ponto.dto';
+import { Response } from 'express';
 
 @Controller('pontos')
 export class PontoController {

@@ -44,16 +44,9 @@ export class PontoService {
   }
 
   async findAll(dto: FindAllPontoDto) {
-    console.log('cookie => ', dto.cookie) //dto.cookie
-    const { page, closeBrowser } = await this.util.setupPlaywright(dto.cookie);
+    const { page, closeBrowser } = await this.util.setupPlaywright(dto);
 
     await page.goto('https://azc.defensoria.mg.def.br');
-    await page
-      .getByRole('row', { name: 'Minha Frequência' })
-      .getByRole('img')
-      .nth(1)
-      .click();
-    await page.getByText('Controle').click();
 
     const selector =
       '#x-widget-50 > div > div > div.GB2UA-DDDUB > div.GB2UA-DDOSB > table > tbody:nth-child(2) > tr > td:nth-child(4) > div';
@@ -106,19 +99,15 @@ export class PontoService {
 
   async findByDay(dto: FindAllPontoDto) {
 
+    console.log({ dto })
+
     const {
       page,
       closeBrowser,
-    } = await this.util.setupPlaywright(dto.cookie);
+    } = await this.util.setupPlaywright(dto);
 
 
     await page.goto('https://azc.defensoria.mg.def.br/azc')
-
-    // await page
-    //   .getByRole('row', { name: 'Minha Frequência' })
-    //   .getByRole('img')
-    //   .nth(1)
-    //   .click();
     await page.getByText('Marcar').click();
     // await page.click('#id_treegrid_0 > div.GB2UA-DDDUB > div.GB2UA-DDOSB > table > tbody:nth-child(2) > tr:nth-child(2)')
 
@@ -208,8 +197,10 @@ export class PontoService {
       message = error.response.data
     }
 
-    if (message.includes('Usu�rio e/ou senha inv�lidos')) {
-      throw new UnauthorizedException('Usuário e Senha Incorretos!!!');
+
+    if (message.includes('Usu�rio e/ou senha inv�lidos') 
+      || message.includes('Usu�rio Ldap. Login ou senha inv�lidos')) {
+      throw new UnauthorizedException('Usuário ou Senha Incorretos!!!');
     }
 
     const {
@@ -226,8 +217,12 @@ export class PontoService {
 
     const cookies = await context.cookies();
 
+    await page.getByRole('row', { name: 'Minha Frequência' }).getByRole('img').nth(1).click();
+    await page.getByText('Controle').click();
+
+
     await closeBrowser();
 
-    return cookies
+    return { value: cookies[0].value}
   }
 }

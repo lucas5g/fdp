@@ -1,15 +1,38 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer'
-import {type Cookie} from 'playwright'
-export class CreatePontoDto {
+import { Cookie } from 'playwright'
+
+enum SameSite {
+  Strict = 'Strict',
+  Lax = 'Lax',
+  None = 'None',
+}
+
+export class CreatePontoDto implements Cookie {
   @ApiProperty()
   @IsNotEmpty()
-  // @Type(() => Object)
-  @Transform(({ value }) => {
-    const data = JSON.parse(value)
-    console.log({ data })
-    return data
-  })
-  cookie:Cookie[]
+  value: string
+
+  @IsOptional()
+  name = 'JSESSIONID'
+
+  @IsOptional()
+  domain = 'azc.defensoria.mg.def.br'
+
+  @IsOptional()
+
+  path = '/azc'
+
+  @IsOptional()
+  expires = -1
+
+  @IsOptional()
+  httpOnly = true
+
+  @IsOptional()
+  secure = false
+
+  @IsOptional()
+  sameSite = SameSite.Lax
 }

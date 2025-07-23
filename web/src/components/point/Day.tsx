@@ -1,9 +1,9 @@
 import { api } from "@/utils/api"
-import { Card, Heading, Table } from "@chakra-ui/react"
+import { Card, Table } from "@chakra-ui/react"
 
 
 export function PointDay() {
-  const { data, isLoading, error } = api('getDay') as { data: { [key: string]: string }, isLoading: boolean, error: any }
+  const { data, isLoading } = api('getDay') as { data: { [key: string]: string }, isLoading: boolean, error: any }
 
   if (isLoading) {
     return <div>Loading...</div>

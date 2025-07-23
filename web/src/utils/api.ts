@@ -1,35 +1,19 @@
 import axios from "axios";
 import useSWR from 'swr'
 
-const access = localStorage.getItem('access')
-
-const [username, password] = atob(access!).split(':')
+// console.log(typeof localStorage.getItem('cookie'))
 
 export const axiosCreate = axios.create({
   // baseURL: 'https://gfdp.dizelequefez.com.br',
   baseURL: 'http://localhost:3000',
+  params: {
+    cookie: localStorage.getItem('cookie')
+  }
 });
 
 const request = {
-  getDay: () => axiosCreate.get('pontos/dia', {
-    params: {
-      username,
-      password
-    },
-  }),
-  getMonth: () => axiosCreate.get('pontos/mes', {
-    params: {
-      username,
-      password
-    },
-  }),
-
-  login: () => axiosCreate.post('login', {
-    params: {
-      username,
-      password
-    },
-  }),
+  getDay: () => axiosCreate.get('pontos/dia'),
+  getMonth: () => axiosCreate.get('pontos/mes')
 }
 
 

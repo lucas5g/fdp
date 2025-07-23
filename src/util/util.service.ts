@@ -26,14 +26,17 @@ export class UtilService {
     return url;
   }
 
-  async setupPlaywright(cookie?:Cookie[]) {
+  async setupPlaywright(cookie?:Cookie) {
     const browser = await chromium.launch({
       headless: false,
     });
 
     const context = await browser.newContext();
+    console.log({
+      cookie
+    })
     if(cookie){
-      await context.addCookies(cookie);
+      await context.addCookies([cookie]);
     }
 
     const page = await context.newPage();

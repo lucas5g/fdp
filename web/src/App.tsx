@@ -8,7 +8,8 @@ import { Logout } from '@/pages/Logout'
 
 export function App() {
   return (
-    <Routes >
+    <Routes>
+      <Route path='/' element={<Home />} />
       <Route path='/login' element={<Login />} />
       <Route path='/sair' element={<Logout />} />
       <Route element={<Layout />} >

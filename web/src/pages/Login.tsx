@@ -3,10 +3,12 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { api, axiosCreate } from "@/utils/api";
 import { timeout } from "@/utils/timeout";
 import {
+  Alert,
   Button, Card, Field, Flex,
   For,
   Spinner, Stack
 } from "@chakra-ui/react";
+import { AxiosError } from "axios";
 import e from "express";
 import { useEffect, useState, type FormEvent } from "react";
 
@@ -15,25 +17,37 @@ export function Login() {
 
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
+  const [messageErro, setMessageErro] = useState<string>()
 
   useEffect(() => {
-    const access = localStorage.getItem('access')
-    if (access) {
+    const cookie = localStorage.getItem('cookie')
+    if (cookie) {
       navigate('/')
     }
-  })
+  }, [])
   async function handleAccess(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setIsLoading(true)
+    setMessageErro(undefined)
     await timeout(1000)
 
     const payload = Object.fromEntries(new FormData(event.target as HTMLFormElement))
-    
-    const { data } = await axiosCreate.post('pontos/login', payload)
 
-    console.log(data)
+    try {
+      const { data } = await axiosCreate.post('pontos/login', payload)
+      localStorage.setItem('cookie', JSON.stringify(data))
+      navigate('/')
 
-    setIsLoading(false)
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        setMessageErro(e.response?.data.message)
+      }
+
+    } finally {
+      setIsLoading(false)
+    }
+
+
   }
 
   return (
@@ -42,6 +56,8 @@ export function Login() {
       justify={'center'}
       align={'center'}
       padding={5}
+      gap={5}
+      direction={'column'}
 
     >
       <Card.Root
@@ -80,6 +96,18 @@ export function Login() {
           </form>
         </Card.Body>
       </Card.Root>
+      {messageErro &&
+        <Alert.Root
+          status="warning"
+          width={'1/2'}
+        >
+          <Alert.Indicator />
+          <Alert.Title>
+            {messageErro}
+          </Alert.Title>
+        </Alert.Root>
+      }
+
     </Flex>
   )
 }
