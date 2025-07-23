@@ -1,10 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, UnauthorizedException, } from '@nestjs/common';
 import { CreatePontoDto } from './dto/create-ponto.dto';
 import { UtilService } from '@/util/util.service';
 import { format, getDay } from 'date-fns';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { Page } from 'playwright';
 import { LoginPontoDto } from './dto/login-ponto.dto';
+import axios from 'axios';
+import qs from 'qs'
 @Injectable()
 export class PontoService {
   constructor(private readonly util: UtilService) { }
@@ -111,7 +113,7 @@ export class PontoService {
 
 
     await page.goto('https://azc.defensoria.mg.def.br/azc')
-    
+
     // await page
     //   .getByRole('row', { name: 'Minha Frequência' })
     //   .getByRole('img')
@@ -185,6 +187,31 @@ export class PontoService {
 
 
   async login(dto: LoginPontoDto) {
+
+    let message: string
+
+    try {
+
+      const { data } =await axios.post('https://azc.defensoria.mg.def.br/azc/j_security_check',
+        qs.stringify({
+          j_username: dto.username,
+          j_password: dto.password,
+        }), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          
+        },
+        transformResponse:[]
+      })
+      message = data
+    } catch (error) {
+      message = error.response.data
+    }
+
+    if (message.includes('Usu�rio e/ou senha inv�lidos')) {
+      throw new UnauthorizedException('Usuário e Senha Incorretos!!!');
+    }
+
     const {
       page,
       context,

@@ -5,7 +5,7 @@ const access = localStorage.getItem('access')
 
 const [username, password] = atob(access!).split(':')
 
-const axiosCreate = axios.create({
+export const axiosCreate = axios.create({
   // baseURL: 'https://gfdp.dizelequefez.com.br',
   baseURL: 'http://localhost:3000',
 });
@@ -18,6 +18,13 @@ const request = {
     },
   }),
   getMonth: () => axiosCreate.get('pontos/mes', {
+    params: {
+      username,
+      password
+    },
+  }),
+
+  login: () => axiosCreate.post('login', {
     params: {
       username,
       password

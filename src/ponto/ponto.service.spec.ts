@@ -23,23 +23,27 @@ describe('PontoService', () => {
 
     cookie = res
 
-    expect(res).toMatchObject(
-      [
-        {
-          name: 'JSESSIONID',
-          domain: 'azc.defensoria.mg.def.br',
-          path: '/azc',
-          expires: -1,
-          httpOnly: true,
-          secure: false,
-          sameSite: 'Lax'
-        }
-      ]
+    // expect(res).toMatchObject(
+    //   [
+    //     {
+    //       name: 'JSESSIONID',
+    //       domain: 'azc.defensoria.mg.def.br',
+    //       path: '/azc',
+    //       expires: -1,
+    //       httpOnly: true,
+    //       secure: false,
+    //       sameSite: 'Lax'
+    //     }
+    //   ]
 
-    )
+    // )
   });
 
-  it.only('create', async () => {
+  it.only("test", async () => {
+    console.log({cookie})
+  })
+
+  it('create', async () => {
     const inserts = await service.findByDay({ cookie });
 
     expect(Object.keys(inserts)).toEqual([

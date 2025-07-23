@@ -1,5 +1,6 @@
 import { Input } from "@/components/Input";
 import { PasswordInput } from "@/components/ui/password-input";
+import { api, axiosCreate } from "@/utils/api";
 import { timeout } from "@/utils/timeout";
 import {
   Button, Card, Field, Flex,
@@ -26,13 +27,13 @@ export function Login() {
     setIsLoading(true)
     await timeout(1000)
 
-    const data = Object.fromEntries(new FormData(event.target as HTMLFormElement))
+    const payload = Object.fromEntries(new FormData(event.target as HTMLFormElement))
+    
+    const { data } = await axiosCreate.post('pontos/login', payload)
 
-    const access = btoa(JSON.stringify(data))
+    console.log(data)
 
-    localStorage.setItem('access', access)
-
-    navigate('/')
+    setIsLoading(false)
   }
 
   return (
