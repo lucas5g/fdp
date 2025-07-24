@@ -11,10 +11,7 @@ import qs from 'qs'
 export class PontoService {
   constructor(private readonly util: UtilService) { }
   async create(dto: CreatePontoDto) {
-    const { page, closeBrowser } = await this.util.setupPlaywright({
-      username: dto.username,
-      password: dto.password,
-    });
+    const { page, closeBrowser } = await this.util.setupPlaywright(dto);
 
     const hoursDict = await this.findHours({ page });
 
@@ -23,7 +20,7 @@ export class PontoService {
       throw new BadRequestException('Já registrou a saída.');
     }
 
-    const [hours, minutes] = hoursDict['Horas trabalhadas'].split(':').map(Number);
+    const [hours, minutes] = hoursDict['Horas Trabalhadas'].split(':').map(Number);
     const minutesFull = hours * 60 + minutes;
 
     if (hoursDict.Retorno !== '-' && minutesFull < 480) {
@@ -106,11 +103,6 @@ export class PontoService {
       closeBrowser,
     } = await this.util.setupPlaywright(dto);
 
-
-    await page.goto('https://azc.defensoria.mg.def.br/azc')
-    await page.getByText('Marcar').click();
-    // await page.click('#id_treegrid_0 > div.GB2UA-DDDUB > div.GB2UA-DDOSB > table > tbody:nth-child(2) > tr:nth-child(2)')
-
     const res = await this.findHours({ page });
 
     void closeBrowser();
@@ -156,6 +148,10 @@ export class PontoService {
   }
 
   private async findHours({ page }: { page: Page }) {
+
+    await page.goto('https://azc.defensoria.mg.def.br/azc')
+    await page.getByText('Marcar').click();
+
     await page
       .locator('#iFrameArteWeb')
       .contentFrame()
@@ -181,16 +177,16 @@ export class PontoService {
 
     try {
 
-      const { data } =await axios.post('https://azc.defensoria.mg.def.br/azc/j_security_check',
+      const { data } = await axios.post('https://azc.defensoria.mg.def.br/azc/j_security_check',
         qs.stringify({
           j_username: dto.username,
           j_password: dto.password,
         }), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          
+
         },
-        transformResponse:[]
+        transformResponse: []
       })
       message = data
     } catch (error) {
@@ -198,7 +194,7 @@ export class PontoService {
     }
 
 
-    if (message.includes('Usu�rio e/ou senha inv�lidos') 
+    if (message.includes('Usu�rio e/ou senha inv�lidos')
       || message.includes('Usu�rio Ldap. Login ou senha inv�lidos')) {
       throw new UnauthorizedException('Usuário ou Senha Incorretos!!!');
     }
@@ -223,6 +219,6 @@ export class PontoService {
 
     await closeBrowser();
 
-    return { value: cookies[0].value}
+    return { value: cookies[0].value }
   }
 }

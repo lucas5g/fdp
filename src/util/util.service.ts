@@ -32,30 +32,28 @@ export class UtilService {
     });
 
     const context = await browser.newContext();
-    console.log({
-      cookie
-    })
-    if(cookie){
-      await context.addCookies([cookie]);
-    }
-
-    const page = await context.newPage();
-
     
-
+    const page = await context.newPage();
     const closeBrowser = async () => {
       await context.close();
       await browser.close();
     };
 
-    // const selector = '#idLabelRazaoEmpresaSelecionada';
-    // await page.waitForTimeout(1600);
-    // const exist = await page.$(selector);
+    
+    
+    if(cookie){
+      await context.addCookies([cookie]);
+      await page.goto('https://azc.defensoria.mg.def.br');
 
-    // if (!exist) {
-    //   void closeBrowser();
-    //   throw new UnauthorizedException('Usuário e Senha Incorretos!!!');
-    // }
+      const selector = '#txtBoasVindas';
+      const exist = await page.$(selector);
+
+      if (exist) {
+        void closeBrowser();
+        throw new UnauthorizedException('Faça login!!!');
+      }
+      
+    }
 
     return {
       page,
