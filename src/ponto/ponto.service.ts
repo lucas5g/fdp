@@ -213,6 +213,7 @@ export class PontoService {
 
     const cookies = await context.cookies();
 
+    await page.waitForTimeout(1000);
     await page.getByRole('row', { name: 'Minha Frequência' }).getByRole('img').nth(1).click();
     await page.getByText('Controle').click();
 
