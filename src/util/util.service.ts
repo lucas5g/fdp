@@ -26,22 +26,20 @@ export class UtilService {
     return url;
   }
 
-  async setupPlaywright(cookie?:Cookie) {
+  async setupPlaywright(cookie?: Cookie) {
     const browser = await chromium.launch({
-      headless: false,
+      // headless: false,
     });
 
     const context = await browser.newContext();
-    
+
     const page = await context.newPage();
     const closeBrowser = async () => {
       await context.close();
       await browser.close();
     };
 
-    
-    
-    if(cookie){
+    if (cookie) {
       await context.addCookies([cookie]);
       await page.goto('https://azc.defensoria.mg.def.br');
 
@@ -52,7 +50,7 @@ export class UtilService {
         void closeBrowser();
         throw new UnauthorizedException('Faça login!!!');
       }
-      
+
     }
 
     return {

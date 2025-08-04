@@ -15,7 +15,7 @@ export class CreatePontoDto implements Cookie {
   value: string
 
   @IsOptional()
-  name = 'JSESSIONID'
+  name: string = 'JSESSIONID'
 
   @IsOptional()
   domain = 'azc.defensoria.mg.def.br'

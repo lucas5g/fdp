@@ -6,74 +6,219 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
-table, td{
-      /* margin: 0; */
-
+    table,
+    /**tr **/
+    th,
+    td {
       border: 1px solid;
       border-collapse: collapse;
+      padding: 4px;
     }
   </style>
 </head>
 
 <body>
-  <div style="border: 1px solid;">
-    <div style="display: grid; grid-template-columns: 40% 60%;  border-bottom: 1px solid">
-      <div
-        style="border-right: 1px solid; background: chartreuse; display: flex; align-items: center; gap: 10px; ">
-        <img src="./logo.png" width="60" height="60" alt="logo">
-        <strong>
-          <h3>
-            DEFENSORIA PÚBLICA DE </br> MINAS GERAIS
-          </h3>
-        </strong>
-      </div>
-      <div style="text-align: center;">
-        <strong>
-          <h3>
-            FOLHA DE PONTO DE </br>FREQUÊNCIA
-          </h3>
-        </strong>
-      </div>
-    </div>
+  <div id="content"
+    style=" font-size: 10px; overflow: hidden; font-family: 'Times New Roman', Times, serif,  sans-serif">
+    <div style="border: 1px solid; border-bottom: 0px;">
 
-    <div style="display: grid; grid-template-columns: auto auto auto;  border-bottom: 1px solid">
-      <div style="border-right: 1px solid;">
-        UNIDADE EMITENTE: DIRETORIA DE DESENVOLVIMENTO DE SISTEMAS E PROJETOS / SEDE II
+      <div style="display: grid; grid-template-columns: 40% 60%;  border-bottom: 1px solid; font-size: 12px;">
+        <div style="border-right: 1px solid; display: flex; align-items: center; gap: 10px; ">
+          <img src="./logo.png" width="60" height="60" alt="logo">
+          <strong>
+            <h3>
+              DEFENSORIA PÚBLICA DE <br> MINAS GERAIS
+            </h3>
+          </strong>
+        </div>
+        <div style="text-align: center;">
+          <strong>
+            <h3>
+              FOLHA DE PONTO DE <br>FREQUÊNCIA
+            </h3>
+          </strong>
+        </div>
       </div>
-      <div style="border-right: 1px solid; padding-left: 5px;">
-        <strong>
-          MÊS: JUNHO
-        </strong>
-      </div>
-      <div style="padding-left: 5px;">
-        <strong>2025</strong>
-      </div>
-    </div>
 
-    <div style="display: grid; grid-template-columns: auto 15%;">
-      <div style="border-right: 1px solid;">
-        Lucas de Sousa Assunção
+      <div style="display: grid; grid-template-columns: auto auto auto;  border-bottom: 1px solid; ">
+        <div style="border-right: 1px solid; padding: 5px;">
+          UNIDADE EMITENTE: DIRETORIA DE DESENVOLVIMENTO DE SISTEMAS E PROJETOS / SEDE II
+        </div>
+        <div style="border-right: 1px solid;  padding: 5px;">
+          <strong>
+            MÊS: JULHO
+          </strong>
+        </div>
+        <div style="padding: 5px;">
+          <strong>2025</strong>
+        </div>
       </div>
-      <div style="padding-left: 5px;">
-        <strong>MASP: 78945697 </strong>
+
+      <div style="display: grid; grid-template-columns: auto 15%;">
+        <div style="border-right: 1px solid; padding: 5px">
+          NOME DO SERVIDOR: <strong>LUCAS DE SOUSA ASSUNÇÃO</strong>
+        </div>
+        <div style="padding: 5px;">
+          <strong>MASP: 7000.699-4 </strong>
+        </div>
       </div>
     </div>
-    <table>
-      <tr>
-        <th>
-          <strong>
-            PERÍODO DE AFASTAMENTO 
-          </strong>
-        </th>
-        <td>
-          <strong>
-            MOTIVO
-          </strong>
-        </td>
-      </tr>
+    <table style="width: 100%;">
+      <thead>
+        <tr>
+          <th colspan="5">
+            <strong>
+              PERÍODO DE AFASTAMENTO
+            </strong>
+          </th>
+          <th colspan="6">
+            <strong>
+              MOTIVO
+            </strong>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="5">
+            <strong>
+              DE __/__/____ A __/__/____
+            </strong>
+          </td>
+          <td colspan="6">
+
+          </td>
+        </tr>
+
+        <tr>
+          <td rowspan="2">
+            DIA
+          </td>
+          <td colspan="4" style="text-align: center;">
+            1° TURNO
+          </td>
+          <td colspan="4" style="text-align: center;">
+            2° TURNO
+          </td>
+          <td rowspan="2">
+            RUBRICA <br>
+            DA CHEFIA
+          </td>
+          <td rowspan="2">
+            OBSERVAÇÕES
+          </td>
+
+        </tr>
+        <tr>
+          <td>
+            ENTRADA
+          </td>
+          <td>
+            RUBRICA
+          </td>
+          <td>
+            SAÍDA
+          </td>
+          <td>
+            RUBRICA
+          </td>
+          <td>
+            ENTRADA
+          </td>
+          <td>
+            RUBRICA
+          </td>
+          <td>
+            SAÍDA
+          </td>
+          <td>
+            RUBRICA
+          </td>
+
+        </tr>
+
+      </tbody>
     </table>
+    <div style="display: flex; border: 1px solid; border-top: 0px; justify-content: center; ">
+      <div style=" display: flex; gap: 3em; border-right: 1px solid; padding: 25px 20px 10px ">
+        <span style="border-top: 1px solid; padding: 5px 10px 0px 15px">
+          DATA
+        </span>
+        <span style="border-top: 1px solid; padding: 5px 10px 0px 15px">
+          ASSINATURA DO SERVIDOR / MASP
+        </span>
+      </div>
+
+      <div style="display: flex; gap: 3em; padding: 25px 20px 10px">
+        <span style="border-top: 1px solid; padding: 5px 10px 0px 15px">
+          DATA
+        </span>
+        <span style="border-top: 1px solid; padding: 5px 10px 0px 15px">
+          ASSINATURA DA CHEFIA / MADEP OU MASP
+        </span>
+      </div>
+    </div>
 
   </div>
+
+  <!-- <button onclick="gerarPDF()">Gerar pdf</button> -->
 </body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  function gerarPDF() {
+    const elemento = document.getElementById('content');
+    html2pdf().from(elemento).save('pagina.pdf');
+  }
+
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const res = await fetch('http://[::1]:3000/pontos/test')
+
+    const data = await res.json()
+
+
+    console.log(data[4].diaSemana)
+
+    console.log(data[5].diaSemana)
+
+
+    const table = document.querySelector('table').getElementsByTagName('tbody')[0]
+
+    const image = '<img src="assinatura.png" width="45" height="15" />'
+
+    for (const row of data) {
+      const newLine = table.insertRow()
+
+      newLine.insertCell().innerHTML = row.dia
+
+      if (row.diaSemana === 'SÁBADO' || row.diaSemana === 'DOMINGO') {
+        newLine.insertCell().innerHTML = row.diaSemana
+
+        for (let i = 0; i < 9; i++) {
+          newLine.insertCell().innerHTML = ''
+        }
+
+        continue
+      }
+
+      newLine.insertCell().innerHTML = row.registros.Entrada
+      newLine.insertCell().innerHTML = image
+      newLine.insertCell().innerHTML = row.registros.Almoco
+      newLine.insertCell().innerHTML = image
+      newLine.insertCell().innerHTML = row.registros.Retorno
+      newLine.insertCell().innerHTML = image
+      newLine.insertCell().innerHTML = row.registros.Saida
+      newLine.insertCell().innerHTML = image
+      newLine.insertCell().innerHTML = ''
+      newLine.insertCell().innerHTML = ''
+
+
+    }
+
+  })
+
+
+</script>
 
 </html>

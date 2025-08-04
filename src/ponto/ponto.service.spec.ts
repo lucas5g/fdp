@@ -3,10 +3,12 @@ import { PontoService } from './ponto.service';
 import { UtilService } from '@/util/util.service';
 import { env } from '@/env';
 import { Cookie } from 'playwright';
+import { plainToInstance } from 'class-transformer';
+import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 
 describe('PontoService', () => {
   let service: PontoService;
-  let cookie: Cookie[]
+  let value: string = 'D97911D5D312959AE27990DB1DD58F59'
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,29 +21,11 @@ describe('PontoService', () => {
       password: env.USER_PASSWORD,
     };
 
-    const res = await service.login(payload);
+    // const res = await service.login(payload);
 
-    cookie = res
+    // value = res.value
 
-    // expect(res).toMatchObject(
-    //   [
-    //     {
-    //       name: 'JSESSIONID',
-    //       domain: 'azc.defensoria.mg.def.br',
-    //       path: '/azc',
-    //       expires: -1,
-    //       httpOnly: true,
-    //       secure: false,
-    //       sameSite: 'Lax'
-    //     }
-    //   ]
-
-    // )
   });
-
-  it.only("test", async () => {
-    console.log({cookie})
-  })
 
   it('create', async () => {
     const inserts = await service.findByDay({ cookie });
@@ -77,12 +61,19 @@ describe('PontoService', () => {
     await expect(res).resolves.toBeDefined();
   }, 30500);
 
-  it('findAll', async () => {
+  it.only('findAll', async () => {
 
-    const res = await service.findAll({ cookie });
+    const dto = plainToInstance(FindAllPontoDto, {
+      value
+    });
+
+    const res = await service.findAll(dto);
+
+    // console.log({ res })
+    return
 
     expect(res[0]).toHaveProperty('dia');
-  }, 6000);
+  }, 90_000);
 
   it('hoursRecorded', () => {
     const hours = ['09:35'];

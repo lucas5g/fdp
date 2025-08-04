@@ -1,12 +1,13 @@
 import { BadRequestException, Injectable, Logger, UnauthorizedException, } from '@nestjs/common';
 import { CreatePontoDto } from './dto/create-ponto.dto';
 import { UtilService } from '@/util/util.service';
-import { format, getDay } from 'date-fns';
+import { format, getDay, parse } from 'date-fns';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { Page } from 'playwright';
 import { LoginPontoDto } from './dto/login-ponto.dto';
 import axios from 'axios';
 import qs from 'qs'
+import { ptBR } from 'date-fns/locale';
 @Injectable()
 export class PontoService {
   constructor(private readonly util: UtilService) { }
@@ -45,6 +46,15 @@ export class PontoService {
 
     await page.goto('https://azc.defensoria.mg.def.br');
 
+    await page.waitForTimeout(1_500)
+
+    const selectorDateFilter = 'input#id_datefield-mascara-jquery_2007264_2111180';
+
+    const dateFilter = await page.locator(selectorDateFilter).getAttribute('value');
+    console.log({ dateFilter })
+
+    // await page.waitForTimeout(60_000)
+
     const selector =
       '#x-widget-50 > div > div > div.GB2UA-DDDUB > div.GB2UA-DDOSB > table > tbody:nth-child(2) > tr > td:nth-child(4) > div';
 
@@ -58,31 +68,28 @@ export class PontoService {
 
     void closeBrowser();
 
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth(); // 0 = janeiro
+    const [_, month, year] = dateFilter!.split('/').map(Number);
+
+    // const data = parse(dateFilter!, 'dd/MM/yyyy', new Date());
+
+    // const dayWeek = format(data, 'E', { locale: ptBR }).toUpperCase();
+
+    // console.log({ data, dayWeek })
 
     return res.map((row, i) => {
       const day = i + 1;
       const [Entrada, Almoco, Retorno, Saida] = row.split(' ');
-      const data = new Date(year, month, day);
+      const data = parse(`${day}/${month}/${year}`, 'dd/MM/yyyy', new Date());
 
-      const dayWeek = getDay(data);
-      const dayWeekName = [
-        'Domingo',
-        'Segunda',
-        'Terca',
-        'Quarta',
-        'Quinta',
-        'Sexta',
-        'Sábado',
-      ][dayWeek].toUpperCase();
+      // console.log('data => ', data)
+      const dayWeek = format(data, 'E', { locale: ptBR }).toUpperCase();
+
 
       return {
         dia: String(day).padStart(2, '0'),
-        diaSemana: dayWeekName,
+        diaSemana: dayWeek,
         registros:
-          dayWeek === 0 || dayWeek === 6
+          dayWeek === 'SÁBADO' || dayWeek === 'DOMINGO'
             ? '-'
             : {
               Entrada,
@@ -213,9 +220,11 @@ export class PontoService {
 
     const cookies = await context.cookies();
 
-    await page.waitForTimeout(1000);
+    await page.waitForSelector('#idLabelRazaoEmpresaSelecionada');
     await page.getByRole('row', { name: 'Minha Frequência' }).getByRole('img').nth(1).click();
     await page.getByText('Controle').click();
+    await page.waitForSelector('h1#tituloForm')
+    // await page.waitForTimeout(1000);
 
 
     await closeBrowser();
