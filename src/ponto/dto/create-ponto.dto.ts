@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
-import { Transform } from 'class-transformer'
-import { Cookie } from 'playwright'
+import { Cookie } from 'playwright';
 
 enum SameSite {
   Strict = 'Strict',
@@ -12,27 +11,26 @@ enum SameSite {
 export class CreatePontoDto implements Cookie {
   @ApiProperty()
   @IsNotEmpty()
-  value: string
+  value: string;
 
   @IsOptional()
-  name: string = 'JSESSIONID'
+  name: string = 'JSESSIONID';
 
   @IsOptional()
-  domain = 'azc.defensoria.mg.def.br'
+  domain = 'azc.defensoria.mg.def.br';
 
   @IsOptional()
-
-  path = '/azc'
-
-  @IsOptional()
-  expires = -1
+  path = '/azc';
 
   @IsOptional()
-  httpOnly = true
+  expires = -1;
 
   @IsOptional()
-  secure = false
+  httpOnly = true;
 
   @IsOptional()
-  sameSite = SameSite.Lax
+  secure = false;
+
+  @IsOptional()
+  sameSite = SameSite.Lax;
 }

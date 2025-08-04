@@ -5,12 +5,14 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { version } from '../package.json';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule);
   app
-    .useGlobalPipes(new ValidationPipe({
-      transform: true,
-      whitelist: true
-    }))
+    .useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+      }),
+    )
     .enableCors();
 
   const config = new DocumentBuilder()

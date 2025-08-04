@@ -50,7 +50,7 @@
           </strong>
         </div>
         <div style="padding: 5px;">
-          <strong>2025</strong>
+          <strong id="year"></strong>
         </div>
       </div>
 
@@ -171,17 +171,10 @@
     html2pdf().from(elemento).save('pagina.pdf');
   }
 
-
-  document.addEventListener('DOMContentLoaded', async () => {
+  async function getRegisters() {
     const res = await fetch('http://[::1]:3000/pontos/test')
 
     const data = await res.json()
-
-
-    console.log(data[4].diaSemana)
-
-    console.log(data[5].diaSemana)
-
 
     const table = document.querySelector('table').getElementsByTagName('tbody')[0]
 
@@ -216,6 +209,16 @@
 
     }
 
+  }
+
+  function setInfo() {
+    const year = new Date().getFullYear()
+    document.querySelector('#year').innerHTML = year
+  }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    getRegisters()
+    setInfo()
   })
 
 

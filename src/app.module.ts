@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [PontoModule, UtilModule, ScheduleModule.forRoot(), AuthModule],
+  imports: [AuthModule, PontoModule, UtilModule, ScheduleModule.forRoot()],
   providers: [AppService],
 })
 export class AppModule {}

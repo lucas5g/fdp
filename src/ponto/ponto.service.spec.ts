@@ -2,33 +2,40 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PontoService } from './ponto.service';
 import { UtilService } from '@/util/util.service';
 import { env } from '@/env';
-import { Cookie } from 'playwright';
 import { plainToInstance } from 'class-transformer';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
+import { AuthService } from '@/auth/auth.service';
 
 describe('PontoService', () => {
   let service: PontoService;
-  let value: string = 'D97911D5D312959AE27990DB1DD58F59'
+  let serviceAuth: AuthService;
+
+  let dto: FindAllPontoDto;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [PontoService, UtilService],
     }).compile();
 
+    const moduleAuth: TestingModule = await Test.createTestingModule({
+      providers: [AuthService, UtilService],
+    }).compile();
+
     service = module.get<PontoService>(PontoService);
-    const payload = {
+    serviceAuth = moduleAuth.get<AuthService>(AuthService);
+
+    const res = await serviceAuth.login({
       username: env.USER_NAME,
       password: env.USER_PASSWORD,
-    };
+    });
 
-    // const res = await service.login(payload);
-
-    // value = res.value
-
-  });
+    dto = plainToInstance(FindAllPontoDto, {
+      value: res.value,
+    });
+  }, 6_500);
 
   it('create', async () => {
-    const inserts = await service.findByDay({ cookie });
+    const inserts = await service.findByDay(dto);
 
     expect(Object.keys(inserts)).toEqual([
       'Entrada',
@@ -37,12 +44,8 @@ describe('PontoService', () => {
       'Saida',
       'Horas Trabalhadas',
     ]);
-    return
 
-    const res = service.create({
-      username: env.USER_NAME,
-      password: env.USER_PASSWORD,
-    });
+    const res = service.create(dto);
 
     if (inserts.Retorno !== '-') {
       return await expect(res).rejects.toThrow(
@@ -59,21 +62,13 @@ describe('PontoService', () => {
     }
 
     await expect(res).resolves.toBeDefined();
-  }, 30500);
+  }, 7_000);
 
-  it.only('findAll', async () => {
-
-    const dto = plainToInstance(FindAllPontoDto, {
-      value
-    });
-
+  it('findAll', async () => {
     const res = await service.findAll(dto);
 
-    // console.log({ res })
-    return
-
     expect(res[0]).toHaveProperty('dia');
-  }, 90_000);
+  });
 
   it('hoursRecorded', () => {
     const hours = ['09:35'];
@@ -84,8 +79,7 @@ describe('PontoService', () => {
       'Almoco',
       'Retorno',
       'Saida',
-      'HorasTrabalhada',
+      'Horas Trabalhadas',
     ]);
   });
-
 });

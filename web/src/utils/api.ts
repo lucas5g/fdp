@@ -1,7 +1,6 @@
 import axios from "axios";
 import useSWR from 'swr'
 
-// console.log(typeof localStorage.getItem('cookie'))
 
 export const axiosCreate = axios.create({
   // baseURL: 'https://gfdp.dizelequefez.com.br',

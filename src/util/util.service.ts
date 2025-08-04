@@ -50,13 +50,12 @@ export class UtilService {
         void closeBrowser();
         throw new UnauthorizedException('Faça login!!!');
       }
-
     }
 
     return {
       page,
       closeBrowser,
-      context
+      context,
     };
   }
 }

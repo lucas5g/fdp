@@ -1,16 +1,13 @@
-import { BadRequestException, Injectable, Logger, UnauthorizedException, } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePontoDto } from './dto/create-ponto.dto';
 import { UtilService } from '@/util/util.service';
-import { format, getDay, parse } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { Page } from 'playwright';
-import { LoginPontoDto } from './dto/login-ponto.dto';
-import axios from 'axios';
-import qs from 'qs'
 import { ptBR } from 'date-fns/locale';
 @Injectable()
 export class PontoService {
-  constructor(private readonly util: UtilService) { }
+  constructor(private readonly util: UtilService) {}
   async create(dto: CreatePontoDto) {
     const { page, closeBrowser } = await this.util.setupPlaywright(dto);
 
@@ -21,7 +18,9 @@ export class PontoService {
       throw new BadRequestException('Já registrou a saída.');
     }
 
-    const [hours, minutes] = hoursDict['Horas Trabalhadas'].split(':').map(Number);
+    const [hours, minutes] = hoursDict['Horas Trabalhadas']
+      .split(':')
+      .map(Number);
     const minutesFull = hours * 60 + minutes;
 
     if (hoursDict.Retorno !== '-' && minutesFull < 480) {
@@ -38,7 +37,6 @@ export class PontoService {
     void closeBrowser();
 
     return { message: 'Ponto Batido' };
-
   }
 
   async findAll(dto: FindAllPontoDto) {
@@ -46,14 +44,14 @@ export class PontoService {
 
     await page.goto('https://azc.defensoria.mg.def.br');
 
-    await page.waitForTimeout(1_500)
+    await page.waitForTimeout(1_700);
 
-    const selectorDateFilter = 'input#id_datefield-mascara-jquery_2007264_2111180';
+    const selectorDateFilter =
+      'input#id_datefield-mascara-jquery_2007264_2111180';
 
-    const dateFilter = await page.locator(selectorDateFilter).getAttribute('value');
-    console.log({ dateFilter })
-
-    // await page.waitForTimeout(60_000)
+    const dateFilter = await page
+      .locator(selectorDateFilter)
+      .getAttribute('value');
 
     const selector =
       '#x-widget-50 > div > div > div.GB2UA-DDDUB > div.GB2UA-DDOSB > table > tbody:nth-child(2) > tr > td:nth-child(4) > div';
@@ -68,22 +66,14 @@ export class PontoService {
 
     void closeBrowser();
 
-    const [_, month, year] = dateFilter!.split('/').map(Number);
-
-    // const data = parse(dateFilter!, 'dd/MM/yyyy', new Date());
-
-    // const dayWeek = format(data, 'E', { locale: ptBR }).toUpperCase();
-
-    // console.log({ data, dayWeek })
+    const [, month, year] = dateFilter!.split('/').map(Number);
 
     return res.map((row, i) => {
       const day = i + 1;
       const [Entrada, Almoco, Retorno, Saida] = row.split(' ');
       const data = parse(`${day}/${month}/${year}`, 'dd/MM/yyyy', new Date());
 
-      // console.log('data => ', data)
       const dayWeek = format(data, 'E', { locale: ptBR }).toUpperCase();
-
 
       return {
         dia: String(day).padStart(2, '0'),
@@ -92,23 +82,17 @@ export class PontoService {
           dayWeek === 'SÁBADO' || dayWeek === 'DOMINGO'
             ? '-'
             : {
-              Entrada,
-              Almoco,
-              Retorno,
-              Saida,
-            },
+                Entrada,
+                Almoco,
+                Retorno,
+                Saida,
+              },
       };
     });
   }
 
   async findByDay(dto: FindAllPontoDto) {
-
-    console.log({ dto })
-
-    const {
-      page,
-      closeBrowser,
-    } = await this.util.setupPlaywright(dto);
+    const { page, closeBrowser } = await this.util.setupPlaywright(dto);
 
     const res = await this.findHours({ page });
 
@@ -155,8 +139,7 @@ export class PontoService {
   }
 
   private async findHours({ page }: { page: Page }) {
-
-    await page.goto('https://azc.defensoria.mg.def.br/azc')
+    await page.goto('https://azc.defensoria.mg.def.br/azc');
     await page.getByText('Marcar').click();
 
     await page
@@ -175,60 +158,5 @@ export class PontoService {
     const res = table.map((element) => element.trim());
 
     return this.hoursRecorded(res);
-  }
-
-
-  async login(dto: LoginPontoDto) {
-
-    let message: string
-
-    try {
-
-      const { data } = await axios.post('https://azc.defensoria.mg.def.br/azc/j_security_check',
-        qs.stringify({
-          j_username: dto.username,
-          j_password: dto.password,
-        }), {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-
-        },
-        transformResponse: []
-      })
-      message = data
-    } catch (error) {
-      message = error.response.data
-    }
-
-
-    if (message.includes('Usu�rio e/ou senha inv�lidos')
-      || message.includes('Usu�rio Ldap. Login ou senha inv�lidos')) {
-      throw new UnauthorizedException('Usuário ou Senha Incorretos!!!');
-    }
-
-    const {
-      page,
-      context,
-      closeBrowser
-    } = await this.util.setupPlaywright();
-
-    await page.goto('https://azc.defensoria.mg.def.br');
-
-    await page.locator('#cod_usuario').fill(dto.username);
-    await page.locator('#senha').fill(dto.password);
-    await page.locator('#senha').press('Enter');
-
-    const cookies = await context.cookies();
-
-    await page.waitForSelector('#idLabelRazaoEmpresaSelecionada');
-    await page.getByRole('row', { name: 'Minha Frequência' }).getByRole('img').nth(1).click();
-    await page.getByText('Controle').click();
-    await page.waitForSelector('h1#tituloForm')
-    // await page.waitForTimeout(1000);
-
-
-    await closeBrowser();
-
-    return { value: cookies[0].value }
   }
 }
