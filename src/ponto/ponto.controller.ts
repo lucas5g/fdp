@@ -1,27 +1,28 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { PontoService } from './ponto.service';
 import { CreatePontoDto } from './dto/create-ponto.dto';
-import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
-import { ApiBody } from '@nestjs/swagger';
-
+import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { Auth } from '@/auth/decorators/auth.decorator';
+import { AuthEntity } from '@/auth/entities/auth.entity';
+@ApiBearerAuth()
 @Controller('pontos')
 export class PontoController {
   constructor(private readonly pontoService: PontoService) {}
 
   @Post()
   @ApiBody({ type: CreatePontoDto })
-  create(@Body() createPontoDto: CreatePontoDto) {
-    return this.pontoService.create(createPontoDto);
+  create(@Auth() auth: AuthEntity) {
+    return this.pontoService.create(auth);
   }
 
   @Get('mes')
-  findAll(@Query() query: FindAllPontoDto) {
-    return this.pontoService.findAll(query);
+  findAll(@Auth() auth: AuthEntity) {
+    return this.pontoService.findAll(auth);
   }
 
   @Get('dia')
-  findByDay(@Query() dto: CreatePontoDto) {
-    return this.pontoService.findByDay(dto);
+  findByDay(@Auth() auth: AuthEntity) {
+    return this.pontoService.findByDay(auth);
   }
 
   @Get('test')

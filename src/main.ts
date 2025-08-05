@@ -19,6 +19,7 @@ async function bootstrap() {
     .setTitle('Folha de Pontos')
     .setDescription('API Gestão Folha de Pontos')
     .setVersion(version)
+    .addBearerAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/', app, documentFactory);

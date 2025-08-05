@@ -6,13 +6,14 @@ export const axiosCreate = axios.create({
   // baseURL: 'https://gfdp.dizelequefez.com.br',
   baseURL: 'http://localhost:3000',
   params: {
-    cookie: localStorage.getItem('cookie')
+    value: localStorage.getItem('value')
   }
 });
 
 const request = {
   getDay: () => axiosCreate.get('pontos/dia'),
-  getMonth: () => axiosCreate.get('pontos/mes')
+  getMonth: () => axiosCreate.get('pontos/mes'),
+  
 }
 
 

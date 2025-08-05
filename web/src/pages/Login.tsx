@@ -20,8 +20,8 @@ export function Login() {
   const [messageErro, setMessageErro] = useState<string>()
 
   useEffect(() => {
-    const cookie = localStorage.getItem('cookie')
-    if (cookie) {
+    const value = localStorage.getItem('value')
+    if (value) {
       navigate('/')
     }
   }, [])
@@ -34,8 +34,8 @@ export function Login() {
     const payload = Object.fromEntries(new FormData(event.target as HTMLFormElement))
 
     try {
-      const { data } = await axiosCreate.post('pontos/login', payload)
-      localStorage.setItem('cookie', JSON.stringify(data))
+      const { data } = await axiosCreate.post('auth/login', payload)
+      localStorage.setItem('value', data.value)
       navigate('/')
 
     } catch (e) {

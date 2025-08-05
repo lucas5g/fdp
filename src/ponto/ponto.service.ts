@@ -5,6 +5,7 @@ import { format, parse } from 'date-fns';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { Page } from 'playwright';
 import { ptBR } from 'date-fns/locale';
+import { AuthEntity } from '@/auth/entities/auth.entity';
 @Injectable()
 export class PontoService {
   constructor(private readonly util: UtilService) {}
@@ -91,8 +92,8 @@ export class PontoService {
     });
   }
 
-  async findByDay(dto: FindAllPontoDto) {
-    const { page, closeBrowser } = await this.util.setupPlaywright(dto);
+  async findByDay(auth: AuthEntity) {
+    const { page, closeBrowser } = await this.util.setupPlaywright(auth);
 
     const res = await this.findHours({ page });
 
