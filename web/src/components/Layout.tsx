@@ -31,7 +31,7 @@ function Header() {
       justifyContent={'end'}
     >
       <Link
-        to="/">
+        to="/home">
         Home
       </Link>
       <Link to="/sair">Sair</Link>

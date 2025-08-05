@@ -5,10 +5,13 @@ import useSWR from 'swr'
 export const axiosCreate = axios.create({
   // baseURL: 'https://gfdp.dizelequefez.com.br',
   baseURL: 'http://localhost:3000',
-  params: {
-    value: localStorage.getItem('value')
+  headers:{
+    Authorization: `Bearer ${localStorage.getItem('value')}`
   }
 });
+
+
+console.log('localStorage.getItem => ', localStorage.getItem('value'))
 
 const request = {
   getDay: () => axiosCreate.get('pontos/dia'),
@@ -19,7 +22,8 @@ const request = {
 
 export const api = (route: keyof typeof request) => {
   return useSWR(route, async () => {
-    const { data } = await request[route]()
+    const { data } = await request[route]() 
+
     return data
   })
 }

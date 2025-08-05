@@ -1,16 +1,31 @@
+import { ErrorPage } from "@/pages/Error"
 import { api } from "@/utils/api"
-import { Card, Table } from "@chakra-ui/react"
+import { Card, HStack, Skeleton, Stack, Table } from "@chakra-ui/react"
+import type { AxiosError } from "axios"
 
 
 export function PointDay() {
-  const { data, isLoading } = api('getDay') as { data: { [key: string]: string }, isLoading: boolean, error: any }
+  const { data, isLoading, error } = api('getDay') as { data: { [key: string]: string }, isLoading: boolean, error: AxiosError }
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return (
+      <Stack gap={2} padding={5}>
+        <Skeleton height={5} />
+        <Skeleton height={5} />
+        <Skeleton height={5} />
+        <Skeleton height={5} />
+      </Stack>
+    )
   }
 
+
+  if (error) {
+    return <ErrorPage error={error} />
+  }
+
+
   return (
-    <Card.Root>
+    <Card.Root w={'full'} lg={{ w: '1/3' }}>
       <Card.Header>
         <Card.Title>
           Pontos do Dia

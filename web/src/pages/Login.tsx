@@ -1,15 +1,12 @@
 import { Input } from "@/components/Input";
-import { PasswordInput } from "@/components/ui/password-input";
-import { api, axiosCreate } from "@/utils/api";
+import { axiosCreate } from "@/utils/api";
 import { timeout } from "@/utils/timeout";
 import {
   Alert,
-  Button, Card, Field, Flex,
-  For,
+  Button, Card, Flex,
   Spinner, Stack
 } from "@chakra-ui/react";
 import { AxiosError } from "axios";
-import e from "express";
 import { useEffect, useState, type FormEvent } from "react";
 
 import { useNavigate } from "react-router";
@@ -36,6 +33,7 @@ export function Login() {
     try {
       const { data } = await axiosCreate.post('auth/login', payload)
       localStorage.setItem('value', data.value)
+      await timeout(1000)
       navigate('/')
 
     } catch (e) {
@@ -85,10 +83,8 @@ export function Login() {
               />
               <Input name="password" type="password" placeholder="Senha" />
 
-
               <Button
                 type="submit"
-              // disabled={isLoading}
               >
                 {isLoading ? <Spinner /> : 'Acessar'}
               </Button>
