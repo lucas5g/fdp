@@ -1,5 +1,5 @@
 import { Input } from "@/components/Input";
-import { axiosCreate } from "@/utils/api";
+import { api } from "@/utils/api";
 import { timeout } from "@/utils/timeout";
 import {
   Alert,
@@ -31,7 +31,7 @@ export function Login() {
     const payload = Object.fromEntries(new FormData(event.target as HTMLFormElement))
 
     try {
-      const { data } = await axiosCreate.post('auth/login', payload)
+      const { data } = await api.post('auth/login', payload)
       localStorage.setItem('value', data.value)
       await timeout(1000)
       navigate('/')

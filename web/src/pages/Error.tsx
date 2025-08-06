@@ -8,8 +8,8 @@ export function ErrorPage(props: Readonly<{ error: AxiosError }>) {
     window.alert(data.message);
   }
 
-  localStorage.removeItem('value')
-
+  // localStorage.removeItem('value')
+  
   return <Navigate to={'/login'} replace={true} />
 
 }

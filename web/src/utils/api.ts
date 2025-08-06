@@ -1,31 +1,7 @@
 import axios from "axios";
-import useSWR from 'swr'
 
-
-export const axiosCreate = axios.create({
+export const api = axios.create({
   // baseURL: 'https://gfdp.dizelequefez.com.br',
   baseURL: 'http://localhost:3000',
-  headers:{
-    Authorization: `Bearer ${localStorage.getItem('value')}`
-  }
 });
-
-
-console.log('localStorage.getItem => ', localStorage.getItem('value'))
-
-const request = {
-  getDay: () => axiosCreate.get('pontos/dia'),
-  getMonth: () => axiosCreate.get('pontos/mes'),
-  
-}
-
-
-export const api = (route: keyof typeof request) => {
-  return useSWR(route, async () => {
-    const { data } = await request[route]() 
-
-    return data
-  })
-}
-
 

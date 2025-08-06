@@ -1,5 +1,6 @@
+import { Card } from "@/components/Card";
 import { PointDay } from "@/components/point/Day";
-import { Button, Card, Flex } from "@chakra-ui/react";
+import { Button, Flex } from "@chakra-ui/react";
 
 export function Home() {
 
@@ -15,25 +16,13 @@ export function Home() {
     >
       <PointDay />
 
-      <Card.Root  lg={{
-          width: '1/3'
-        }}
-        width={'full'}
-        height={'min-content'}
-        >
-        <Card.Header>
-          <Card.Title>
-            Gerar Relatório
-          </Card.Title>
-        </Card.Header>
-        <Card.Body>
-          <Flex>
-            <Button variant={'surface'}>
-              Gerar
-            </Button>
-          </Flex>
-        </Card.Body>
-      </Card.Root>
+      <Card title="Gerar Relatório">
+        <Flex>
+          <Button variant={'surface'}>
+            Gerar
+          </Button>
+        </Flex>
+      </Card>
     </Flex>
   )
 
