@@ -24,7 +24,7 @@
 
       <div style="display: grid; grid-template-columns: 40% 60%;  border-bottom: 1px solid; font-size: 12px;">
         <div style="border-right: 1px solid; display: flex; align-items: center; gap: 10px; ">
-          <img src="./logo.png" width="60" height="60" alt="logo">
+          <img src="http://[::1]:3000/logo.png" width="60" height="60" alt="logo">
           <strong>
             <h3>
               DEFENSORIA PÚBLICA DE <br> MINAS GERAIS
@@ -135,7 +135,17 @@
             RUBRICA
           </td>
 
+
         </tr>
+        {{#each days }}
+        <tr>
+          {{#if diaSemana == 'SÁBADO' || diaSemana == 'DOMINGO'}}
+            <td>{{diaSemana}}</td>
+          {{/if}}
+
+
+        </tr>
+        {{/each}}
 
       </tbody>
     </table>

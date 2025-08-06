@@ -1,6 +1,7 @@
 import { Card } from "@/components/Card";
 import { PointDay } from "@/components/point/Day";
 import { Button, Flex } from "@chakra-ui/react";
+import { Link } from "react-router";
 
 export function Home() {
 
@@ -18,9 +19,11 @@ export function Home() {
 
       <Card title="Gerar Relatório">
         <Flex>
-          <Button variant={'surface'}>
-            Gerar
-          </Button>
+          <Link to="/gerar">
+            <Button variant={'surface'}>
+              Gerar
+            </Button>
+          </Link>
         </Flex>
       </Card>
     </Flex>

@@ -1,9 +1,10 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, Render } from '@nestjs/common';
 import { PontoService } from './ponto.service';
 import { CreatePontoDto } from './dto/create-ponto.dto';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { Auth } from '@/auth/decorators/auth.decorator';
 import { AuthEntity } from '@/auth/entities/auth.entity';
+import { Public } from '@/auth/decorators/public.decorator';
 @ApiBearerAuth()
 @Controller('pontos')
 export class PontoController {
@@ -23,6 +24,13 @@ export class PontoController {
   @Get('dia')
   findByDay(@Auth() auth: AuthEntity) {
     return this.pontoService.findByDay(auth);
+  }
+
+  @Get('gerar')
+  @Render('index')
+  @Public()
+  generate() {
+    return this.pontoService.generate();
   }
 
   @Get('test')

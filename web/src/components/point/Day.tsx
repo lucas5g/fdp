@@ -17,7 +17,13 @@ export function PointDay() {
       setList(JSON.parse(listActual))
       setIsLoading(false)
     }
+    findByDay()
+    const interval = setInterval(findByDay, 60_000)
+    return () => clearInterval(interval)
 
+  }, [])
+
+  function findByDay() {
     api.get('pontos/dia', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('value')}`
@@ -33,7 +39,8 @@ export function PointDay() {
       .finally(() => {
         setIsLoading(false)
       })
-  }, [])
+  }
+
 
 
   if (isLoading) {
