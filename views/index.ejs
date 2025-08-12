@@ -24,7 +24,7 @@
 
       <div style="display: grid; grid-template-columns: 40% 60%;  border-bottom: 1px solid; font-size: 12px;">
         <div style="border-right: 1px solid; display: flex; align-items: center; gap: 10px; ">
-          <img src="http://[::1]:3000/logo.png" width="60" height="60" alt="logo">
+          <img src="<% baseUrl %>/logo.png" width="60" height="60" alt="logo">
           <strong>
             <h3>
               DEFENSORIA PÚBLICA DE <br> MINAS GERAIS
@@ -137,15 +137,6 @@
 
 
         </tr>
-        {{#each days }}
-        <tr>
-          {{#if diaSemana == 'SÁBADO' || diaSemana == 'DOMINGO'}}
-            <td>{{diaSemana}}</td>
-          {{/if}}
-
-
-        </tr>
-        {{/each}}
 
       </tbody>
     </table>
@@ -182,13 +173,17 @@
   }
 
   async function getRegisters() {
-    const res = await fetch('http://[::1]:3000/pontos/test')
+    const res = await fetch('<%= baseUrl %>/pontos/mes', {
+      headers:{
+        Authorization: 'Bearer <%= token %>'
+      }
+    })
 
     const data = await res.json()
 
     const table = document.querySelector('table').getElementsByTagName('tbody')[0]
 
-    const image = '<img src="assinatura.png" width="45" height="15" />'
+    const image = '<img src="<%= baseUrl %>/assinatura.png" width="45" height="15" />'
 
     for (const row of data) {
       const newLine = table.insertRow()

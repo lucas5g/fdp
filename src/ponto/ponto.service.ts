@@ -6,6 +6,8 @@ import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { Page } from 'playwright';
 import { ptBR } from 'date-fns/locale';
 import { AuthEntity } from '@/auth/entities/auth.entity';
+import { env } from '@/env';
+import { Request } from 'express';
 @Injectable()
 export class PontoService {
   constructor(private readonly util: UtilService) { }
@@ -161,7 +163,7 @@ export class PontoService {
     return this.hoursRecorded(res);
   }
 
-  async generate() {
+  async generate(req: Request) {
     // const days = await this.findAll(auth);
 
     const days = [
@@ -219,7 +221,8 @@ export class PontoService {
 
     return {
       days,
-      test: '124'
+      baseUrl: req.protocol + '://' + req.get('host'),
+      token: req.get('authorization')?.split(' ')[1],
     }
   }
 }

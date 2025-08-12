@@ -3,10 +3,15 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import axios, { AxiosError } from 'axios';
 import qs from 'qs';
 import { UtilService } from '@/util/util.service';
+import { PrismaService } from '@/prisma/prisma.service';
+import { AuthEntity } from './entities/auth.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly util: UtilService) {}
+  constructor(
+    private readonly util: UtilService,
+    private readonly prisma:PrismaService
+  ) {}
   async login(dto: CreateAuthDto) {
     const message = await this.loginSecurityCheck(dto);
 
@@ -38,7 +43,29 @@ export class AuthService {
 
     await closeBrowser();
 
+    await this.prisma.user.upsert({
+      where: {
+        username: dto.username,
+      },
+      update: {
+        value: cookies[0].value,
+      },
+      create: {
+        username: dto.username,
+        value: cookies[0].value,
+      },
+    });
+
+
     return { value: cookies[0].value };
+  }
+
+  me(auth: AuthEntity){
+    return this.prisma.user.findUnique({
+      where: {
+        value: auth.value
+      }
+    })
   }
 
   async loginSecurityCheck(dto: CreateAuthDto): Promise<string> {
