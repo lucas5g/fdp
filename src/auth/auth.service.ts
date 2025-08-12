@@ -10,8 +10,8 @@ import { AuthEntity } from './entities/auth.entity';
 export class AuthService {
   constructor(
     private readonly util: UtilService,
-    private readonly prisma:PrismaService
-  ) {}
+    private readonly prisma: PrismaService
+  ) { }
   async login(dto: CreateAuthDto) {
     const message = await this.loginSecurityCheck(dto);
 
@@ -43,24 +43,10 @@ export class AuthService {
 
     await closeBrowser();
 
-    await this.prisma.user.upsert({
-      where: {
-        username: dto.username,
-      },
-      update: {
-        value: cookies[0].value,
-      },
-      create: {
-        username: dto.username,
-        value: cookies[0].value,
-      },
-    });
-
-
     return { value: cookies[0].value };
   }
 
-  me(auth: AuthEntity){
+  async me(auth: AuthEntity) {
     return this.prisma.user.findUnique({
       where: {
         value: auth.value

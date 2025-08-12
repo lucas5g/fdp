@@ -7,9 +7,11 @@ import { format } from 'date-fns';
 import { chromium, Cookie } from 'playwright';
 import axios from 'axios';
 import { env } from '@/env';
+import { PrismaService } from '@/prisma/prisma.service';
 
 @Injectable()
 export class UtilService {
+  constructor(private readonly prisma: PrismaService) { }
   async getUrlPoint(username: string) {
     const date = format(new Date(), 'yyyy-MM-dd');
 
@@ -40,11 +42,21 @@ export class UtilService {
     };
 
     if (cookie) {
+      console.log({ cookie })
       await context.addCookies([cookie]);
       await page.goto('https://azc.defensoria.mg.def.br');
 
       const selector = '#txtBoasVindas';
       const exist = await page.$(selector);
+
+      // await this.prisma.user.update({
+      //   where: {
+      //     value: cookie.value,
+      //   },
+      //   data:{
+      //     value: cookie.value
+      //   }
+      // });
 
       if (exist) {
         void closeBrowser();

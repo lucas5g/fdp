@@ -18,10 +18,6 @@ describe('AuthService', () => {
       providers: [AuthService, UtilService, PrismaService],
     }).compile();
 
-    const moduleUtil: TestingModule = await Test.createTestingModule({
-      providers: [UtilService],
-    }).compile();
-
     service = module.get<AuthService>(AuthService);
 
     const { value } = await service.login({

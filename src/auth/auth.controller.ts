@@ -3,6 +3,8 @@ import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ApiConsumes } from '@nestjs/swagger';
 import { Public } from './decorators/public.decorator';
+import { Auth } from './decorators/auth.decorator';
+import { AuthEntity } from './entities/auth.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -17,8 +19,8 @@ export class AuthController {
   }
 
   @Get('me')
-  me(){
-    return this.authService.me();
+  me(@Auth() auth: AuthEntity) {
+    return this.authService.me(auth);
   }
 
 }
