@@ -1,18 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreatePontoDto } from './dto/create-ponto.dto';
 import { UtilService } from '@/util/util.service';
 import { format, parse } from 'date-fns';
-import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { Page } from 'playwright';
 import { ptBR } from 'date-fns/locale';
 import { AuthEntity } from '@/auth/entities/auth.entity';
-import { env } from '@/env';
 import { Request } from 'express';
 @Injectable()
 export class PontoService {
   constructor(private readonly util: UtilService) { }
-  async create(dto: CreatePontoDto) {
-    const { page, closeBrowser } = await this.util.setupPlaywright(dto);
+  async create(auth:AuthEntity) {
+    const { page, closeBrowser } = await this.util.setupPlaywright(auth);
 
     const hoursDict = await this.findHours({ page });
 
@@ -42,8 +39,8 @@ export class PontoService {
     return { message: 'Ponto Batido' };
   }
 
-  async findAll(dto: FindAllPontoDto) {
-    const { page, closeBrowser } = await this.util.setupPlaywright(dto);
+  async findAll(auth:AuthEntity) {
+    const { page, closeBrowser } = await this.util.setupPlaywright(auth);
 
     await page.goto('https://azc.defensoria.mg.def.br');
 

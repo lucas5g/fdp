@@ -6,35 +6,45 @@ import { env } from "@/env";
 import { PrismaService } from "@/prisma/prisma.service";
 import { AuthEntity } from "./entities/auth.entity";
 import { authData } from "./auth-data";
+import { JwtModule, JwtService } from "@nestjs/jwt";
 
 
 describe('AuthService', () => {
 
   let service: AuthService;
-  let auth: AuthEntity;
+  let token: string;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        JwtModule.register({
+          secret: env.JWT_SECRET
+        })
+      ],
       providers: [AuthService, UtilService, PrismaService],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
 
-    const { value } = await service.login({
+    const res = await service.login({
       username: env.USER_NAME,
       password: env.USER_PASSWORD 
     })
 
-    auth = authData(value);
+    token = res.accessToken
+
+
 
     
   }, 5500);
 
-  it.only('me', async() => {
+  it('me', async() => {
 
+    const res = await service.me({ username: env.USER_NAME } as AuthEntity);
+    
+    expect(res).toMatchObject({
+      username: env.USER_NAME
+    })
 
-    const res = await service.me(auth);
-
-    console.log(res);
   })
 })

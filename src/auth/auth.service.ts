@@ -5,12 +5,20 @@ import qs from 'qs';
 import { UtilService } from '@/util/util.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { AuthEntity } from './entities/auth.entity';
+import { JwtService } from '@nestjs/jwt';
+
+enum SameSite {
+  Strict = 'Strict',
+  Lax = 'Lax',
+  None = 'None',
+}
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly util: UtilService,
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService
   ) { }
   async login(dto: CreateAuthDto) {
     const message = await this.loginSecurityCheck(dto);
@@ -43,13 +51,37 @@ export class AuthService {
 
     await closeBrowser();
 
-    return { value: cookies[0].value };
+    await this.prisma.user.update({
+      where: {
+        username: dto.username,
+      },
+      data: {
+        value: cookies[0].value,
+      },
+    })
+
+    const payload = {
+      username: dto.username,
+      value: cookies[0].value,
+      name: 'JSESSIONID',
+      domain: 'azc.defensoria.mg.def.br',
+      path: '/azc',
+      expires: -1,
+      httpOnly: true,
+      secure: false,
+      sameSite: SameSite.Lax,
+    };
+
+
+    return {
+      accessToken: await this.jwtService.signAsync(payload),
+    }
   }
 
   async me(auth: AuthEntity) {
     return this.prisma.user.findUnique({
       where: {
-        value: auth.value
+        username: auth.username
       }
     })
   }

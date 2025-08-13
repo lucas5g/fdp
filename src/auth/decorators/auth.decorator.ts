@@ -12,15 +12,8 @@ export const Auth = createParamDecorator(
     const request = ctx
       .switchToHttp()
       .getRequest<Request & { user: { value: string } }>();
-    return {
-      value: request.user.value,
-      name: 'JSESSIONID',
-      domain: 'azc.defensoria.mg.def.br',
-      path: '/azc',
-      expires: -1,
-      httpOnly: true,
-      secure: false,
-      sameSite: SameSite.Lax,
-    };
+
+    return request.user;
+    
   },
 );

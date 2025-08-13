@@ -5,20 +5,31 @@ import { env } from '@/env';
 import { plainToInstance } from 'class-transformer';
 import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { AuthService } from '@/auth/auth.service';
+import { AuthEntity } from '@/auth/entities/auth.entity';
+import { jwtDecode } from 'jwt-decode';
+import { PrismaService } from '@/prisma/prisma.service';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 
 describe('PontoService', () => {
   let service: PontoService;
   let serviceAuth: AuthService;
 
   let dto: FindAllPontoDto;
+  let token:string
+  let auth:AuthEntity
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PontoService, UtilService],
+      providers: [PontoService, UtilService, PrismaService],
     }).compile();
 
     const moduleAuth: TestingModule = await Test.createTestingModule({
-      providers: [AuthService, UtilService],
+      imports: [
+        JwtModule.register({
+          secret: env.JWT_SECRET,
+        }),
+      ],
+      providers: [AuthService, UtilService, PrismaService],
     }).compile();
 
     service = module.get<PontoService>(PontoService);
@@ -29,13 +40,12 @@ describe('PontoService', () => {
       password: env.USER_PASSWORD,
     });
 
-    dto = plainToInstance(FindAllPontoDto, {
-      value: res.value,
-    });
+    auth = jwtDecode(res.accessToken)
+    
   }, 6_500);
 
-  it('create', async () => {
-    const inserts = await service.findByDay(dto);
+  it.only('create', async () => {
+    const inserts = await service.findByDay(auth);
 
     expect(Object.keys(inserts)).toEqual([
       'Entrada',
@@ -45,7 +55,7 @@ describe('PontoService', () => {
       'Horas Trabalhadas',
     ]);
 
-    const res = service.create(dto);
+    const res = service.create(auth);
 
     if (inserts.Retorno !== '-') {
       return await expect(res).rejects.toThrow(
@@ -65,7 +75,7 @@ describe('PontoService', () => {
   }, 7_000);
 
   it('findAll', async () => {
-    const res = await service.findAll(dto);
+    const res = await service.findAll(auth);
 
     expect(res[0]).toHaveProperty('dia');
   });
