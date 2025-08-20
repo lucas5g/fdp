@@ -8,7 +8,13 @@ import { chromium, Cookie } from 'playwright';
 import axios from 'axios';
 import { env } from '@/env';
 import { PrismaService } from '@/prisma/prisma.service';
+import { AuthEntity } from '@/auth/entities/auth.entity';
 
+enum SameSite {
+  Strict = 'Strict',
+  Lax = 'Lax',
+  None = 'None',
+}
 @Injectable()
 export class UtilService {
   constructor(private readonly prisma: PrismaService) { }
@@ -28,7 +34,7 @@ export class UtilService {
     return url;
   }
 
-  async setupPlaywright(cookie?: Cookie) {
+  async setupPlaywright(auth?: AuthEntity) {
     const browser = await chromium.launch({
       // headless: false,
     });
@@ -41,7 +47,19 @@ export class UtilService {
       await browser.close();
     };
 
-    if (cookie) {
+    if (auth) {
+
+      const cookie = {
+        name: 'JSESSIONID',
+        domain: 'azc.defensoria.mg.def.br',
+        path: '/azc',
+        expires: -1,
+        httpOnly: true,
+        secure: false,
+        sameSite: SameSite.Lax,
+        value: auth.value
+      }
+
       console.log({ cookie })
       await context.addCookies([cookie]);
       await page.goto('https://azc.defensoria.mg.def.br');

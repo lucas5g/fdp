@@ -63,13 +63,6 @@ export class AuthService {
     const payload = {
       username: dto.username,
       value: cookies[0].value,
-      name: 'JSESSIONID',
-      domain: 'azc.defensoria.mg.def.br',
-      path: '/azc',
-      expires: -1,
-      httpOnly: true,
-      secure: false,
-      sameSite: SameSite.Lax,
     };
 
 
