@@ -18,8 +18,7 @@ async function bootstrap() {
     .setBaseViewsDir('./views')
     .useStaticAssets('./public')
     .setViewEngine('ejs')
-    .enableCors()
-  
+    .enableCors();
 
   const config = new DocumentBuilder()
     .setTitle('Folha de Pontos')

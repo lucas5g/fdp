@@ -7,8 +7,8 @@ import { AuthEntity } from '@/auth/entities/auth.entity';
 import { Request } from 'express';
 @Injectable()
 export class PontoService {
-  constructor(private readonly util: UtilService) { }
-  async create(auth:AuthEntity) {
+  constructor(private readonly util: UtilService) {}
+  async create(auth: AuthEntity) {
     const { page, closeBrowser } = await this.util.setupPlaywright(auth);
 
     const hoursDict = await this.findHours({ page });
@@ -39,7 +39,7 @@ export class PontoService {
     return { message: 'Ponto Batido' };
   }
 
-  async findAll(auth:AuthEntity) {
+  async findAll(auth: AuthEntity) {
     const { page, closeBrowser } = await this.util.setupPlaywright(auth);
 
     await page.goto('https://azc.defensoria.mg.def.br');
@@ -82,11 +82,11 @@ export class PontoService {
           dayWeek === 'SÁBADO' || dayWeek === 'DOMINGO'
             ? '-'
             : {
-              Entrada,
-              Almoco,
-              Retorno,
-              Saida,
-            },
+                Entrada,
+                Almoco,
+                Retorno,
+                Saida,
+              },
       };
     });
   }
@@ -160,66 +160,66 @@ export class PontoService {
     return this.hoursRecorded(res);
   }
 
-  async generate(req: Request) {
+  generate(req: Request) {
     // const days = await this.findAll(auth);
 
     const days = [
       {
-        "dia": "01",
-        "diaSemana": "SEXTA",
-        "registros": {
-          "Entrada": "09:05",
-          "Almoco": "13:52",
-          "Retorno": "14:54",
-          "Saida": "18:07"
-        }
+        dia: '01',
+        diaSemana: 'SEXTA',
+        registros: {
+          Entrada: '09:05',
+          Almoco: '13:52',
+          Retorno: '14:54',
+          Saida: '18:07',
+        },
       },
       {
-        "dia": "02",
-        "diaSemana": "SÁBADO",
-        "registros": "-"
+        dia: '02',
+        diaSemana: 'SÁBADO',
+        registros: '-',
       },
       {
-        "dia": "03",
-        "diaSemana": "DOMINGO",
-        "registros": "-"
+        dia: '03',
+        diaSemana: 'DOMINGO',
+        registros: '-',
       },
       {
-        "dia": "04",
-        "diaSemana": "SEGUNDA",
-        "registros": {
-          "Entrada": "09:02",
-          "Almoco": "12:22",
-          "Retorno": "13:22",
-          "Saida": "18:04"
-        }
+        dia: '04',
+        diaSemana: 'SEGUNDA',
+        registros: {
+          Entrada: '09:02',
+          Almoco: '12:22',
+          Retorno: '13:22',
+          Saida: '18:04',
+        },
       },
       {
-        "dia": "05",
-        "diaSemana": "TERÇA",
-        "registros": {
-          "Entrada": "08:56",
-          "Almoco": "13:20",
-          "Retorno": "14:20",
-          "Saida": "17:57"
-        }
+        dia: '05',
+        diaSemana: 'TERÇA',
+        registros: {
+          Entrada: '08:56',
+          Almoco: '13:20',
+          Retorno: '14:20',
+          Saida: '17:57',
+        },
       },
       {
-        "dia": "06",
-        "diaSemana": "QUARTA",
-        "registros": {
-          "Entrada": "09:20",
-          "Almoco": "13:19",
-          "Retorno": "14:26",
-          "Saida": "18:28"
-        }
-      }
-    ]
+        dia: '06',
+        diaSemana: 'QUARTA',
+        registros: {
+          Entrada: '09:20',
+          Almoco: '13:19',
+          Retorno: '14:26',
+          Saida: '18:28',
+        },
+      },
+    ];
 
     return {
       days,
       baseUrl: req.protocol + '://' + req.get('host'),
       token: req.get('authorization')?.split(' ')[1],
-    }
+    };
   }
 }

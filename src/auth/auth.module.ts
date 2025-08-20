@@ -24,4 +24,4 @@ import { env } from '@/env';
     },
   ],
 })
-export class AuthModule { }
+export class AuthModule {}

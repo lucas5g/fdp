@@ -7,19 +7,13 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { AuthEntity } from './entities/auth.entity';
 import { JwtService } from '@nestjs/jwt';
 
-enum SameSite {
-  Strict = 'Strict',
-  Lax = 'Lax',
-  None = 'None',
-}
-
 @Injectable()
 export class AuthService {
   constructor(
     private readonly util: UtilService,
     private readonly prisma: PrismaService,
-    private readonly jwtService: JwtService
-  ) { }
+    private readonly jwtService: JwtService,
+  ) {}
   async login(dto: CreateAuthDto) {
     const message = await this.loginSecurityCheck(dto);
 
@@ -57,26 +51,26 @@ export class AuthService {
       },
       data: {
         value: cookies[0].value,
+        
       },
-    })
+    });
 
     const payload = {
       username: dto.username,
       value: cookies[0].value,
     };
 
-
     return {
       accessToken: await this.jwtService.signAsync(payload),
-    }
+    };
   }
 
   async me(auth: AuthEntity) {
     return this.prisma.user.findUnique({
       where: {
-        username: auth.username
-      }
-    })
+        username: auth.username,
+      },
+    });
   }
 
   async loginSecurityCheck(dto: CreateAuthDto): Promise<string> {

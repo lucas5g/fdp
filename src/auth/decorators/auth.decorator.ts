@@ -8,6 +8,5 @@ export const Auth = createParamDecorator(
       .getRequest<Request & { user: { value: string } }>();
 
     return request.user;
-    
   },
 );

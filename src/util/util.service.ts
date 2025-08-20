@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { format } from 'date-fns';
-import { chromium, Cookie } from 'playwright';
+import { chromium } from 'playwright';
 import axios from 'axios';
 import { env } from '@/env';
 import { PrismaService } from '@/prisma/prisma.service';
@@ -17,7 +17,7 @@ enum SameSite {
 }
 @Injectable()
 export class UtilService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
   async getUrlPoint(username: string) {
     const date = format(new Date(), 'yyyy-MM-dd');
 
@@ -48,7 +48,6 @@ export class UtilService {
     };
 
     if (auth) {
-
       const cookie = {
         name: 'JSESSIONID',
         domain: 'azc.defensoria.mg.def.br',
@@ -57,24 +56,14 @@ export class UtilService {
         httpOnly: true,
         secure: false,
         sameSite: SameSite.Lax,
-        value: auth.value
-      }
+        value: auth.value,
+      };
 
-      console.log({ cookie })
       await context.addCookies([cookie]);
       await page.goto('https://azc.defensoria.mg.def.br');
 
       const selector = '#txtBoasVindas';
       const exist = await page.$(selector);
-
-      // await this.prisma.user.update({
-      //   where: {
-      //     value: cookie.value,
-      //   },
-      //   data:{
-      //     value: cookie.value
-      //   }
-      // });
 
       if (exist) {
         void closeBrowser();
@@ -88,5 +77,4 @@ export class UtilService {
       context,
     };
   }
-
 }

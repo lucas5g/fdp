@@ -2,21 +2,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PontoService } from './ponto.service';
 import { UtilService } from '@/util/util.service';
 import { env } from '@/env';
-import { plainToInstance } from 'class-transformer';
-import { FindAllPontoDto } from '@/ponto/dto/find-all-ponto.dto';
 import { AuthService } from '@/auth/auth.service';
 import { AuthEntity } from '@/auth/entities/auth.entity';
 import { jwtDecode } from 'jwt-decode';
 import { PrismaService } from '@/prisma/prisma.service';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 
 describe('PontoService', () => {
   let service: PontoService;
   let serviceAuth: AuthService;
 
-  let dto: FindAllPontoDto;
-  let token:string
-  let auth:AuthEntity
+  let auth: AuthEntity;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -40,11 +36,10 @@ describe('PontoService', () => {
       password: env.USER_PASSWORD,
     });
 
-    auth = jwtDecode(res.accessToken)
-    
+    auth = jwtDecode(res.accessToken);
   }, 6_500);
 
-  it.only('create', async () => {
+  it('create', async () => {
     const inserts = await service.findByDay(auth);
 
     expect(Object.keys(inserts)).toEqual([

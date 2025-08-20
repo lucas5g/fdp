@@ -8,7 +8,13 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AppController } from './app.controller';
 
 @Module({
-  imports: [AuthModule, PontoModule, UtilModule, ScheduleModule.forRoot(), PrismaModule],
+  imports: [
+    AuthModule,
+    PontoModule,
+    UtilModule,
+    ScheduleModule.forRoot(),
+    PrismaModule,
+  ],
   providers: [AppService],
   controllers: [AppController],
 })
