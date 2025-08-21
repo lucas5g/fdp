@@ -9,6 +9,8 @@ import axios from 'axios';
 import { env } from '@/env';
 import { PrismaService } from '@/prisma/prisma.service';
 import { AuthEntity } from '@/auth/entities/auth.entity';
+import crypto from "node:crypto";
+
 
 enum SameSite {
   Strict = 'Strict',
@@ -17,7 +19,7 @@ enum SameSite {
 }
 @Injectable()
 export class UtilService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
   async getUrlPoint(username: string) {
     const date = format(new Date(), 'yyyy-MM-dd');
 
@@ -77,4 +79,22 @@ export class UtilService {
       context,
     };
   }
+
+  encrypt(plainText: string): string {
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv("aes-256-cbc", env.SECRET_KEY, iv);
+    let encrypted = cipher.update(plainText, "utf8", "hex");
+    encrypted += cipher.final("hex");
+    return iv.toString("hex") + ":" + encrypted;
+  }
+  decrypt(encryptedText: string): string {
+    const [ivHex, encrypted] = encryptedText.split(":");
+    const iv = Buffer.from(ivHex, "hex");
+
+    const decipher = crypto.createDecipheriv("aes-256-cbc", env.SECRET_KEY, iv);
+    let decrypted = decipher.update(encrypted, "hex", "utf8");
+    decrypted += decipher.final("utf8");
+    return decrypted;
+  }
+
 }

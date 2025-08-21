@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 describe('AuthService', () => {
   let service: AuthService;
 
+
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
@@ -21,10 +22,10 @@ describe('AuthService', () => {
 
     service = module.get<AuthService>(AuthService);
 
-    // const res = await service.login({
-    //   username: env.USER_NAME,
-    //   password: env.USER_PASSWORD,
-    // });
+    await service.login({
+      username: env.USER_NAME,
+      password: env.USER_PASSWORD,
+    });
 
     // token = res.accessToken;
   }, 5500);

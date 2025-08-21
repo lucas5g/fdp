@@ -6,7 +6,7 @@ import { UtilService } from '@/util/util.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { AuthEntity } from './entities/auth.entity';
 import { JwtService } from '@nestjs/jwt';
-
+import bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
   constructor(
@@ -14,6 +14,21 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
   ) {}
+
+  async loginTest(dto: CreateAuthDto){
+    const user = await this.prisma.user.findUnique({
+      where: {
+        username: dto.username,
+      },
+    });
+
+    if(!user || bcrypt.compareSync(dto.password, user.password)){
+      throw new UnauthorizedException('Usuário ou Senha Incorretos!!!');
+    }
+
+  }
+
+
   async login(dto: CreateAuthDto) {
     const message = await this.loginSecurityCheck(dto);
 
@@ -45,13 +60,16 @@ export class AuthService {
 
     await closeBrowser();
 
-    await this.prisma.user.update({
+    await this.prisma.user.upsert({
       where: {
         username: dto.username,
       },
-      data: {
+      create: {
         value: cookies[0].value,
-        
+        username: dto.username,        
+      },
+      update: {
+        value: cookies[0].value,
       },
     });
 
