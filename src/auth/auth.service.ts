@@ -74,8 +74,7 @@ export class AuthService {
     try {
       const {
         data,
-      }: {
-        data: string;
+        headers
       } = await axios.post(
         'https://azc.defensoria.mg.def.br/azc/j_security_check',
         qs.stringify({
@@ -86,13 +85,17 @@ export class AuthService {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
-          transformResponse: [],
         },
       );
+      // transformResponse: [],
+      console.log('headers => ', headers)
+      console.log('dto => ', dto)
       return data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        return error.response?.data as string;
+        const cookie = error.response?.headers['set-cookie']?.[0] ?? '';
+        return cookie.split(/=|;/g)[1]
+
       }
       return 'Ocorreu um erro ao fazer o login';
     }

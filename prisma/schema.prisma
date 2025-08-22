@@ -15,10 +15,10 @@ datasource db {
 }
 
 model User {
-  id      String @id @default(uuid())
-  username String @unique
-  password String?
-  name    String?
+  id        String  @id @default(uuid())
+  username  String  @unique
+  password  String?
+  name      String?
   signature Bytes?
-  value   String? @unique
+  masp      String?
 }

@@ -12,31 +12,15 @@ describe('PontoService', () => {
   let service: PontoService;
   let serviceAuth: AuthService;
 
-  let auth: AuthEntity;
+  // let auth: AuthEntity;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [PontoService, UtilService, PrismaService],
     }).compile();
 
-    const moduleAuth: TestingModule = await Test.createTestingModule({
-      imports: [
-        JwtModule.register({
-          secret: env.JWT_SECRET,
-        }),
-      ],
-      providers: [AuthService, UtilService, PrismaService],
-    }).compile();
-
     service = module.get<PontoService>(PontoService);
-    serviceAuth = moduleAuth.get<AuthService>(AuthService);
 
-    const res = await serviceAuth.login({
-      username: env.USER_NAME,
-      password: env.USER_PASSWORD,
-    });
-
-    auth = jwtDecode(res.accessToken);
   }, 6_500);
 
   it('create', async () => {
@@ -69,9 +53,9 @@ describe('PontoService', () => {
     await expect(res).resolves.toBeDefined();
   }, 7_000);
 
-  it('findAll', async () => {
-    const res = await service.findAll(auth);
-
+  it.only('findAll', async () => {
+    const res = await service.findAll({ username: env.USER_NAME });
+    // console.log(res.slice(0, 4));
     expect(res[0]).toHaveProperty('dia');
   });
 

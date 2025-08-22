@@ -8,7 +8,7 @@ import { Request } from 'express';
 @ApiBearerAuth()
 @Controller('pontos')
 export class PontoController {
-  constructor(private readonly pontoService: PontoService) {}
+  constructor(private readonly pontoService: PontoService) { }
 
   @Post()
   create(@Auth() auth: AuthEntity) {
@@ -27,8 +27,9 @@ export class PontoController {
 
   @Get('gerar')
   @Render('index')
-  generate(@Req() req: Request) {
-    return this.pontoService.generate(req);
+  @Public()
+  generate(@Req() req: AuthEntity) {
+    return this.pontoService.generate({ username: 'lucas.assuncao' });
   }
 
   @Get('test')

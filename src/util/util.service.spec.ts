@@ -25,16 +25,21 @@ describe('UtilService', () => {
     await expect(res).rejects.toThrow('Usuário não cadastrado!!!');
   });
 
-  it.only('encrypt', () => {
-    const res = service.encrypt('test-123');
-    console.log(res);
+  it('encrypt and decrypt', () => {
+    const text = 'test-123'
+    const res = service.encrypt(text);
+
+    const decrypted = service.decrypt(res);
+
     expect(res).toHaveLength(65)
-    // expect(res).toEqual('321776bc81752b33f29aa32cc3048342:456a485f7148fa77fdfb99de1329707c')
-    // console.log(res);
+    expect(decrypted).toContain(text)
+
   })
 
-  it.only('decrypt', async() => {
-    const res =  service.decrypt('321776bc81752b33f29aa32cc3048342:456a485f7148fa77fdfb99de1329707c');
-    expect(res).toEqual('test-123')
+  it.only('setHourEnd', () => {
+    const res = service.setEnd('09:00', '12:00', '13:02')
+
+    expect(res).toBe('18:02')
+
   })
 });

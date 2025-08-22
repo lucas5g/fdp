@@ -56,10 +56,13 @@
 
       <div style="display: grid; grid-template-columns: auto 15%;">
         <div style="border-right: 1px solid; padding: 5px">
-          NOME DO SERVIDOR: <strong>LUCAS DE SOUSA ASSUNÇÃO</strong>
+          NOME DO SERVIDOR: <strong>
+            <%= user.name %>
+          </strong>
         </div>
         <div style="padding: 5px;">
-          <strong>MASP: 7000.699-4 </strong>
+          <strong>MASP:</strong>
+          <%= user.masp %>
         </div>
       </div>
     </div>
@@ -134,15 +137,55 @@
           <td>
             RUBRICA
           </td>
-
-
         </tr>
+        <% for(day of days ) { %>
+          <tr>
+            <% if(day.registros==='-' ) { %>
+              <td>
+                <%= day.diaSemana %>
+              </td>
+              <% Array.from({ length: 10 }, ()=> { %>
+                <td></td>
+                <% }) %>
+                  <% }else { %>
+                    <td>
+                      <%= day.dia %>
+                    </td>
+                    <td>
+                      <%= day.registros.Entrada %>
+                    </td>
+                    <td>
+                      image
+                    </td>
+                    <td>
+                      <%= day.registros.Almoco %>
+                    </td>
+                    <td>
+                      image
+                    </td>
+                    <td>
+                      <%= day.registros.Retorno %>
+                    </td>
+                    <td>
+                      image
+                    </td>
+                    <td>
+                      <%= day.registros.Saida %>
+                    </td>
+                    <td>
+                      image
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <% } %>
 
+          </tr>
+          <% } %>
       </tbody>
     </table>
     <div style="display: flex; border: 1px solid; border-top: 0px; justify-content: center; ">
       <div style=" display: flex; gap: 3em; border-right: 1px solid; padding: 25px 20px 10px ">
-        <span style="border-top: 1px solid; padding: 5px 10px 0px 15px">
+        <span style="border-top: 1px solid; padding: 5px 15px 0px 15px">
           DATA
         </span>
         <span style="border-top: 1px solid; padding: 5px 10px 0px 15px">
@@ -151,7 +194,7 @@
       </div>
 
       <div style="display: flex; gap: 3em; padding: 25px 20px 10px">
-        <span style="border-top: 1px solid; padding: 5px 10px 0px 15px">
+        <span style="border-top: 1px solid; padding: 5px 15px 0px 15px">
           DATA
         </span>
         <span style="border-top: 1px solid; padding: 5px 10px 0px 15px">
@@ -172,49 +215,6 @@
     html2pdf().from(elemento).save('pagina.pdf');
   }
 
-  async function getRegisters() {
-    const res = await fetch('<%= baseUrl %>/pontos/mes', {
-      headers:{
-        Authorization: 'Bearer <%= token %>'
-      }
-    })
-
-    const data = await res.json()
-
-    const table = document.querySelector('table').getElementsByTagName('tbody')[0]
-
-    const image = '<img src="<%= baseUrl %>/assinatura.png" width="45" height="15" />'
-
-    for (const row of data) {
-      const newLine = table.insertRow()
-
-      newLine.insertCell().innerHTML = row.dia
-
-      if (row.diaSemana === 'SÁBADO' || row.diaSemana === 'DOMINGO') {
-        newLine.insertCell().innerHTML = row.diaSemana
-
-        for (let i = 0; i < 9; i++) {
-          newLine.insertCell().innerHTML = ''
-        }
-
-        continue
-      }
-
-      newLine.insertCell().innerHTML = row.registros.Entrada
-      newLine.insertCell().innerHTML = image
-      newLine.insertCell().innerHTML = row.registros.Almoco
-      newLine.insertCell().innerHTML = image
-      newLine.insertCell().innerHTML = row.registros.Retorno
-      newLine.insertCell().innerHTML = image
-      newLine.insertCell().innerHTML = row.registros.Saida
-      newLine.insertCell().innerHTML = image
-      newLine.insertCell().innerHTML = ''
-      newLine.insertCell().innerHTML = ''
-
-
-    }
-
-  }
 
   function setInfo() {
     const year = new Date().getFullYear()
@@ -222,7 +222,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', async () => {
-    getRegisters()
+    // getRegisters()
     setInfo()
   })
 

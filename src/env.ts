@@ -13,5 +13,6 @@ export const env = z
     JWT_SECRET: z.string(),
     SECRET_KEY: z.string().length(32),
     DATABASE_URL: z.string(),
+    BASE_URL: z.string().url(),
   })
   .parse(process.env);

@@ -5,11 +5,13 @@ import {
 } from '@nestjs/common';
 import { format } from 'date-fns';
 import { chromium } from 'playwright';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { env } from '@/env';
 import { PrismaService } from '@/prisma/prisma.service';
 import { AuthEntity } from '@/auth/entities/auth.entity';
 import crypto from "node:crypto";
+import { LoginAuthDto } from '@/auth/dto/login-auth.dto';
+import qs from 'qs';
 
 
 enum SameSite {
@@ -36,9 +38,9 @@ export class UtilService {
     return url;
   }
 
-  async setupPlaywright(auth?: AuthEntity) {
+  async setupPlaywright(auth: AuthEntity) {
     const browser = await chromium.launch({
-      // headless: false,
+      headless: false,
     });
 
     const context = await browser.newContext();
@@ -49,29 +51,27 @@ export class UtilService {
       await browser.close();
     };
 
-    if (auth) {
-      const cookie = {
-        name: 'JSESSIONID',
-        domain: 'azc.defensoria.mg.def.br',
-        path: '/azc',
-        expires: -1,
-        httpOnly: true,
-        secure: false,
-        sameSite: SameSite.Lax,
-        value: auth.value,
-      };
+    const user = await this.prisma.user.findFirstOrThrow({
+      where: {
+        username: auth?.username,
+      },
+    });
 
-      await context.addCookies([cookie]);
-      await page.goto('https://azc.defensoria.mg.def.br');
+    const password = this.decrypt(user.password ?? '');
 
-      const selector = '#txtBoasVindas';
-      const exist = await page.$(selector);
 
-      if (exist) {
-        void closeBrowser();
-        throw new UnauthorizedException('Faça login!!!');
-      }
-    }
+    await page.goto('https://azc.defensoria.mg.def.br/azc');
+    await page.waitForSelector('p.titulo');
+    await page.locator('#cod_usuario').fill(auth.username);
+    await page.locator('#senha').fill(password);
+    await page.locator('#senha').press('Enter');
+    await page.waitForSelector('#idLabelRazaoEmpresaSelecionada');
+    await page
+      .getByRole('row', { name: 'Minha Frequência' })
+      .getByRole('img')
+      .nth(1)
+      .click();
+
 
     return {
       page,
@@ -79,6 +79,38 @@ export class UtilService {
       context,
     };
   }
+
+  async loginSecurityCheck(dto: LoginAuthDto): Promise<string> {
+    try {
+      const {
+        data,
+
+      } = await axios.post(
+        'https://azc.defensoria.mg.def.br/azc/j_security_check',
+        qs.stringify({
+          j_username: dto.username,
+          j_password: dto.password,
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        },
+      );
+
+      return data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const cookie = error.response?.headers['set-cookie']?.[0] ?? '';
+        return cookie.split(/=|;/g)[1]
+
+      }
+      return 'Ocorreu um erro ao fazer o login';
+    }
+  }
+
+
+
 
   encrypt(plainText: string): string {
     const iv = crypto.randomBytes(16);
@@ -96,5 +128,26 @@ export class UtilService {
     decrypted += decipher.final("utf8");
     return decrypted;
   }
+
+  setEnd(start: string, lunchStart: string, lunchEnd: string) {
+    const [hourStart, minuteStart] = start.split(':');
+    const [hourLunchStart, minuteLunchStart] = lunchStart.split(':');
+    const [hourLunchEnd, minuteLunchEnd] = lunchEnd.split(':');
+
+    const startNumber = Number(hourStart) * 60 + Number(minuteStart);
+    const lunchStartNumber = Number(hourLunchStart) * 60 + Number(minuteLunchStart);
+    const lunchEndNumber = Number(hourLunchEnd) * 60 + Number(minuteLunchEnd);
+
+    const heightHour = 480
+
+    const endNumber = startNumber + (lunchEndNumber - lunchStartNumber) + heightHour
+
+
+    const hours = Math.floor(endNumber / 60);
+    const minutes = endNumber % 60;
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+  }
+
 
 }

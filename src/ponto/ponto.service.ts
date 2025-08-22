@@ -1,13 +1,19 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UtilService } from '@/util/util.service';
-import { format, parse } from 'date-fns';
+import { add, format, parse } from 'date-fns';
 import { Page } from 'playwright';
 import { ptBR } from 'date-fns/locale';
 import { AuthEntity } from '@/auth/entities/auth.entity';
 import { Request } from 'express';
+import { data } from 'cheerio/dist/commonjs/api/attributes';
+import { env } from '@/env';
+import { PrismaService } from '@/prisma/prisma.service';
 @Injectable()
 export class PontoService {
-  constructor(private readonly util: UtilService) {}
+  constructor(
+    private readonly util: UtilService,
+    private readonly prisma: PrismaService,
+  ) { }
   async create(auth: AuthEntity) {
     const { page, closeBrowser } = await this.util.setupPlaywright(auth);
 
@@ -41,10 +47,8 @@ export class PontoService {
 
   async findAll(auth: AuthEntity) {
     const { page, closeBrowser } = await this.util.setupPlaywright(auth);
+    await page.getByText('Controle').click();
 
-    await page.goto('https://azc.defensoria.mg.def.br');
-
-    await page.waitForTimeout(1_700);
 
     const selectorDateFilter =
       'input#id_datefield-mascara-jquery_2007264_2111180';
@@ -53,8 +57,10 @@ export class PontoService {
       .locator(selectorDateFilter)
       .getAttribute('value');
 
-    const selector =
-      '#x-widget-50 > div > div > div.GB2UA-DDDUB > div.GB2UA-DDOSB > table > tbody:nth-child(2) > tr > td:nth-child(4) > div';
+    await page.waitForTimeout(1_200)
+
+
+    const selector = 'table > tbody:nth-child(2) > tr > td:nth-child(4) > div'
 
     await page.waitForSelector(selector);
 
@@ -68,27 +74,32 @@ export class PontoService {
 
     const [, month, year] = dateFilter!.split('/').map(Number);
 
-    return res.map((row, i) => {
-      const day = i + 1;
-      const [Entrada, Almoco, Retorno, Saida] = row.split(' ');
-      const data = parse(`${day}/${month}/${year}`, 'dd/MM/yyyy', new Date());
+    console.log({ res })
 
-      const dayWeek = format(data, 'E', { locale: ptBR }).toUpperCase();
+    return res
+      .filter(row => row !== 'Entrada/Saída')
+      .map((row, i) => {
+        const day = i + 1;
+        const [Entrada, Almoco, Retorno, Saida] = row.split(' ');
+        const data = parse(`${day}/${month}/${year}`, 'dd/MM/yyyy', new Date());
 
-      return {
-        dia: String(day).padStart(2, '0'),
-        diaSemana: dayWeek,
-        registros:
-          dayWeek === 'SÁBADO' || dayWeek === 'DOMINGO'
-            ? '-'
-            : {
+
+        const dayWeek = format(data, 'E', { locale: ptBR }).toUpperCase();
+
+        return {
+          dia: String(day).padStart(2, '0'),
+          diaSemana: dayWeek,
+          registros:
+            dayWeek === 'SÁBADO' || dayWeek === 'DOMINGO' || Entrada === ''
+              ? '-'
+              : {
                 Entrada,
                 Almoco,
                 Retorno,
-                Saida,
+                Saida: Saida ?? this.util.setEnd(Entrada, Almoco, Retorno),
               },
-      };
-    });
+        };
+      });
   }
 
   async findByDay(auth: AuthEntity) {
@@ -139,7 +150,6 @@ export class PontoService {
   }
 
   private async findHours({ page }: { page: Page }) {
-    await page.goto('https://azc.defensoria.mg.def.br/azc');
     await page.getByText('Marcar').click();
 
     await page
@@ -160,8 +170,15 @@ export class PontoService {
     return this.hoursRecorded(res);
   }
 
-  generate(req: Request) {
+  async generate(auth: AuthEntity) {
     // const days = await this.findAll(auth);
+    const user = await this.prisma.user.findFirstOrThrow({
+      where: {
+        username: auth?.username,
+      },
+    })
+
+    console.log({ user })
 
     const days = [
       {
@@ -218,8 +235,8 @@ export class PontoService {
 
     return {
       days,
-      baseUrl: req.protocol + '://' + req.get('host'),
-      token: req.get('authorization')?.split(' ')[1],
+      baseUrl: env.BASE_URL,
+      user,
     };
   }
 }

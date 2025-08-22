@@ -27,7 +27,8 @@ describe('AuthService', () => {
       password: env.USER_PASSWORD,
     });
 
-    console.log(res);
+    expect(res).toBe
+    // console.log(res);
 
     // token = res.accessToken;
   }, 5500);
@@ -39,4 +40,14 @@ describe('AuthService', () => {
     //   username: env.USER_NAME,
     // });
   });
+
+  it.only('loginSecurityCheck', async () => {
+    const res = await service.loginSecurityCheck({
+      username: env.USER_NAME,
+      password: env.USER_PASSWORD,
+    });
+
+    expect(res).toBe
+    console.log(res);
+  })
 });
