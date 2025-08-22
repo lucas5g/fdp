@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { LoginAuthDto } from './dto/login-auth.dto';
 import axios, { AxiosError } from 'axios';
 import qs from 'qs';
 import { UtilService } from '@/util/util.service';
@@ -13,23 +13,41 @@ export class AuthService {
     private readonly util: UtilService,
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
-  async loginTest(dto: CreateAuthDto){
-    const user = await this.prisma.user.findUnique({
+
+
+  async login(dto: LoginAuthDto) {
+
+    const user = await this.prisma.user.findFirst({
       where: {
         username: dto.username,
       },
-    });
+    })
 
-    if(!user || bcrypt.compareSync(dto.password, user.password)){
-      throw new UnauthorizedException('Usuário ou Senha Incorretos!!!');
+    if (!user || this.util.decrypt(user?.password ?? '') !== dto.password) {
+      if (await this.hasScrapedLogin(dto)) {
+        await this.prisma.user.create({
+          data: {
+            username: dto.username,
+            password: this.util.encrypt(dto.password),
+          },
+        })
+      }
     }
 
+
+    const payload = {
+      username: dto.username,
+    };
+
+    return {
+      accessToken: await this.jwtService.signAsync(payload)
+    }
   }
 
 
-  async login(dto: CreateAuthDto) {
+  private async hasScrapedLogin(dto: LoginAuthDto) {
     const message = await this.loginSecurityCheck(dto);
 
     if (
@@ -39,48 +57,9 @@ export class AuthService {
       throw new UnauthorizedException('Usuário ou Senha Incorretos!!!');
     }
 
-    const { page, context, closeBrowser } = await this.util.setupPlaywright();
 
-    await page.goto('https://azc.defensoria.mg.def.br');
 
-    await page.locator('#cod_usuario').fill(dto.username);
-    await page.locator('#senha').fill(dto.password);
-    await page.locator('#senha').press('Enter');
-
-    const cookies = await context.cookies();
-
-    await page.waitForSelector('#idLabelRazaoEmpresaSelecionada');
-    await page
-      .getByRole('row', { name: 'Minha Frequência' })
-      .getByRole('img')
-      .nth(1)
-      .click();
-    await page.getByText('Controle').click();
-    await page.waitForSelector('h1#tituloForm');
-
-    await closeBrowser();
-
-    await this.prisma.user.upsert({
-      where: {
-        username: dto.username,
-      },
-      create: {
-        value: cookies[0].value,
-        username: dto.username,        
-      },
-      update: {
-        value: cookies[0].value,
-      },
-    });
-
-    const payload = {
-      username: dto.username,
-      value: cookies[0].value,
-    };
-
-    return {
-      accessToken: await this.jwtService.signAsync(payload),
-    };
+    return true;
   }
 
   async me(auth: AuthEntity) {
@@ -91,7 +70,7 @@ export class AuthService {
     });
   }
 
-  async loginSecurityCheck(dto: CreateAuthDto): Promise<string> {
+  async loginSecurityCheck(dto: LoginAuthDto): Promise<string> {
     try {
       const {
         data,
@@ -118,4 +97,5 @@ export class AuthService {
       return 'Ocorreu um erro ao fazer o login';
     }
   }
+
 }

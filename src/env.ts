@@ -12,7 +12,6 @@ export const env = z
     RECORD_HOURS: z.string().transform((value) => value === 'true'),
     JWT_SECRET: z.string(),
     SECRET_KEY: z.string().length(32),
-    // BASE_URL: z.string().url(),
-    // BROWSER_HEADLESS: z.string().transform((value) => value === 'true'),
+    DATABASE_URL: z.string(),
   })
   .parse(process.env);

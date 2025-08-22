@@ -7,7 +7,7 @@ import {
   Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { CreateAuthDto } from './dto/login-auth.dto';
 import { ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import { Public } from './decorators/public.decorator';
 import { Auth } from './decorators/auth.decorator';
@@ -16,7 +16,7 @@ import { AuthEntity } from './entities/auth.entity';
 @Controller('auth')
 @ApiBearerAuth()
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('login')
   @Public()
