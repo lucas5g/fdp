@@ -1,21 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UtilService } from '@/util/util.service';
 import { add, format, parse } from 'date-fns';
 import { Page } from 'playwright';
 import { ptBR } from 'date-fns/locale';
 import { AuthEntity } from '@/auth/entities/auth.entity';
 import { Request } from 'express';
 import { data } from 'cheerio/dist/commonjs/api/attributes';
-import { env } from '@/env';
+import { env } from '@/utils/env';
 import { PrismaService } from '@/prisma/prisma.service';
+import { setupPlaywright } from '@/utils/setup-playwright';
 @Injectable()
 export class PontoService {
   constructor(
-    private readonly util: UtilService,
     private readonly prisma: PrismaService,
   ) { }
   async create(auth: AuthEntity) {
-    const { page, closeBrowser } = await this.util.setupPlaywright(auth);
+    const { page, closeBrowser } = await setupPlaywright(auth);
 
     const hoursDict = await this.findHours({ page });
 
@@ -40,7 +39,9 @@ export class PontoService {
       .getByRole('button', { name: 'Inserir Marcação' })
       .click();
 
+    await page.waitForTimeout(500)
     void closeBrowser();
+
 
     return { message: 'Ponto Batido' };
   }
@@ -73,8 +74,6 @@ export class PontoService {
     void closeBrowser();
 
     const [, month, year] = dateFilter!.split('/').map(Number);
-
-    console.log({ res })
 
     return res
       .filter(row => row !== 'Entrada/Saída')
@@ -177,8 +176,6 @@ export class PontoService {
         username: auth?.username,
       },
     })
-
-    console.log({ user })
 
     const days = [
       {

@@ -2,15 +2,14 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import axios, { AxiosError } from 'axios';
 import qs from 'qs';
-import { UtilService } from '@/util/util.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { AuthEntity } from './entities/auth.entity';
 import { JwtService } from '@nestjs/jwt';
-import bcrypt from 'bcrypt';
+import { decrypt } from '@/utils/decrypt';
+import { encrypt } from '@/utils/encrypt';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly util: UtilService,
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
   ) { }
@@ -25,12 +24,12 @@ export class AuthService {
       },
     })
 
-    if (!user || this.util.decrypt(user?.password ?? '') !== dto.password) {
+    if (!user || decrypt(user?.password ?? '') !== dto.password) {
       if (await this.hasScrapedLogin(dto)) {
         await this.prisma.user.create({
           data: {
             username: dto.username,
-            password: this.util.encrypt(dto.password),
+            password: encrypt(dto.password),
           },
         })
       }
@@ -41,9 +40,7 @@ export class AuthService {
       username: dto.username,
     };
 
-    return {
-      accessToken: await this.jwtService.signAsync(payload)
-    }
+    return this.jwtService.signAsync(payload)
   }
 
 
@@ -87,9 +84,7 @@ export class AuthService {
           },
         },
       );
-      // transformResponse: [],
-      console.log('headers => ', headers)
-      console.log('dto => ', dto)
+
       return data;
     } catch (error) {
       if (error instanceof AxiosError) {

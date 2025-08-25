@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PontoService } from './ponto.service';
 import { UtilService } from '@/util/util.service';
-import { env } from '@/env';
+import { env } from '@/utils/env';
 import { AuthService } from '@/auth/auth.service';
 import { AuthEntity } from '@/auth/entities/auth.entity';
 import { jwtDecode } from 'jwt-decode';
@@ -55,7 +55,7 @@ describe('PontoService', () => {
 
   it.only('findAll', async () => {
     const res = await service.findAll({ username: env.USER_NAME });
-    // console.log(res.slice(0, 4));
+
     expect(res[0]).toHaveProperty('dia');
   });
 

@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { UtilService } from '@/util/util.service';
-import { env } from '@/env';
+import { env } from '@/utils/env';
 import { PrismaService } from '@/prisma/prisma.service';
 import { AuthEntity } from './entities/auth.entity';
 import { JwtModule } from '@nestjs/jwt';
@@ -17,7 +16,7 @@ describe('AuthService', () => {
           secret: env.JWT_SECRET,
         }),
       ],
-      providers: [AuthService, UtilService, PrismaService],
+      providers: [AuthService, PrismaService],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
@@ -26,28 +25,31 @@ describe('AuthService', () => {
       username: env.USER_NAME,
       password: env.USER_PASSWORD,
     });
+    expect(res).toHaveLength(143)
 
     expect(res).toBe
-    // console.log(res);
 
-    // token = res.accessToken;
   }, 5500);
 
   it('me', async () => {
-    // const res = await service.me({ username: env.USER_NAME } as AuthEntity);
+    const res = await service.me({ username: env.USER_NAME } as AuthEntity);
 
-    // expect(res).toMatchObject({
-    //   username: env.USER_NAME,
-    // });
+    const properties = [
+      'username',
+      'masp'
+    ]
+
+    for (const property of properties) {
+      expect(res).toHaveProperty(property)
+    }
   });
 
-  it.only('loginSecurityCheck', async () => {
+  it('loginSecurityCheck', async () => {
     const res = await service.loginSecurityCheck({
       username: env.USER_NAME,
       password: env.USER_PASSWORD,
     });
 
     expect(res).toBe
-    console.log(res);
   })
 });
