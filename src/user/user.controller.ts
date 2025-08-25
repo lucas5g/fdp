@@ -1,15 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiExcludeEndpoint } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiExcludeEndpoint } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
+@ApiBearerAuth()
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        username: { type: 'string' },
+        password: { type: 'string' },
+        name: { type: 'string' },
+        signature: { type: 'string', format: 'binary' },
+        masp: { type: 'string' },
+      },
+    }
+  })
+  @UseInterceptors(FileInterceptor('signature'))
+  create(@Body() createUserDto: CreateUserDto, @UploadedFile() file: Express.Multer.File) {
+    console.log(file);
     return this.userService.create(createUserDto);
   }
 

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    table,
+    /**tr **/
+    th,
+    td {
+      border: 1px solid;
+      border-collapse: collapse;
+      padding: 4px;
+    }
+  </style>
+</head>
+
+<body style="padding: 2em; display: flex; flex-direction: column; gap: 1.5em">
+  <div id="set-token" style="display: none;">
+    <input type="text" placeholder="Token">
+    <button id="save-token" onclick="handleSaveToken()">
+      Salvar
+    </button>
+  </div>
+  <!-- <button onclick="generatePDF()">Gerar PDF</button> -->
+  <div id="content"
+    style=" font-size: 10px; overflow: hidden; font-family: 'Times New Roman', Times, serif,  sans-serif; display: none;">
+    <div style="border: 1px solid; border-bottom: 0px;">
+
+      <div style="display: grid; grid-template-columns: 40% 60%;  border-bottom: 1px solid; font-size: 12px;">
+        <div style="border-right: 1px solid; display: flex; align-items: center; gap: 10px; ">
+          <img src="logo.png" width="60" height="60" alt="logo">
+          <strong>
+            <h3>
+              DEFENSORIA PÚBLICA DE <br> MINAS GERAIS
+            </h3>
+          </strong>
+        </div>
+        <div style="text-align: center;">
+          <strong>
+            <h3>
+              FOLHA DE PONTO DE <br>FREQUÊNCIA
+            </h3>
+          </strong>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: auto auto auto;  border-bottom: 1px solid; ">
+        <div style="border-right: 1px solid; padding: 5px;">
+          UNIDADE EMITENTE: DIRETORIA DE DESENVOLVIMENTO DE SISTEMAS E PROJETOS / SEDE II
+        </div>
+        <div style="border-right: 1px solid;  padding: 5px;">
+          <strong>
+            MÊS: JULHO
+          </strong>
+        </div>
+        <div style="padding: 5px;">
+          <strong id="year"></strong>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: auto 15%;">
+        <div style="border-right: 1px solid; padding: 5px">
+          NOME DO SERVIDOR: <strong>
+            <%= user.name %>
+          </strong>
+        </div>
+        <div style="padding: 5px;">
+          <strong>MASP:</strong>
+          <%= user.masp %>
+        </div>
+      </div>
+    </div>
+    <table style="width: 100%;">
+      <thead>
+        <tr>
+          <th colspan="5">
+            <strong>
+              PERÍODO DE AFASTAMENTO
+            </strong>
+          </th>
+          <th colspan="6">
+            <strong>
+              MOTIVO
+            </strong>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="5">
+            <strong>
+              DE __/__/____ A __/__/____
+            </strong>
+          </td>
+          <td colspan="6">
+
+          </td>
+        </tr>
+
+        <tr>
+          <td rowspan="2">
+            DIA
+          </td>
+          <td colspan="4" style="text-align: center;">
+            1° TURNO
+          </td>
+          <td colspan="4" style="text-align: center;">
+            2° TURNO
+          </td>
+          <td rowspan="2">
+            RUBRICA <br>
+            DA CHEFIA
+          </td>
+          <td rowspan="2">
+            OBSERVAÇÕES
+          </td>
+
+        </tr>
+        <tr>
+          <td>
+            ENTRADA
+          </td>
+          <td>
+            RUBRICA
+          </td>
+          <td>
+            SAÍDA
+          </td>
+          <td>
+            RUBRICA
+          </td>
+          <td>
+            ENTRADA
+          </td>
+          <td>
+            RUBRICA
+          </td>
+          <td>
+            SAÍDA
+          </td>
+          <td>
+            RUBRICA
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="display: flex; border: 1px solid; border-top: 0px; justify-content: center; ">
+      <div style=" display: flex; gap: 3em; border-right: 1px solid; padding: 25px 20px 10px ">
+        <span style="border-top: 1px solid; padding: 5px 15px 0px 15px">
+          DATA
+        </span>
+        <span style="border-top: 1px solid; padding: 5px 10px 0px 15px">
+          ASSINATURA DO SERVIDOR / MASP
+        </span>
+      </div>
+
+      <div style="display: flex; gap: 3em; padding: 25px 20px 10px">
+        <span style="border-top: 1px solid; padding: 5px 15px 0px 15px">
+          DATA
+        </span>
+        <span style="border-top: 1px solid; padding: 5px 10px 0px 15px">
+          ASSINATURA DA CHEFIA / MADEP OU MASP
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <div>
+    <button onclick="generatePDF()">Gerar pdf</button>
+  </div>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  function generatePDF() {
+    const elemento = document.getElementById('content');
+    html2pdf().from(elemento).save('pagina.pdf');
+  }
+
+
+  function setInfo() {
+    const year = new Date().getFullYear()
+    document.querySelector('#year').innerHTML = year
+  }
+
+  function verifyToken() {
+
+    const jwt = localStorage.getItem('jwt')
+
+    if (!jwt) {
+      document.querySelector('#set-token').style.display = 'block'
+      return
+    }
+
+    document.querySelector('#content').style.display = 'block'
+  }
+
+  function handleSaveToken() {
+    const token = document.querySelector('#set-token input').value
+    localStorage.setItem('jwt', token)
+    document.querySelector('#set-token').style.display = 'none'
+    document.querySelector('#content').style.display = 'block'
+  }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    verifyToken()
+    // getRegisters()
+    //setInfo()
+  })
+
+
+
+
+</script>
+
+</html>

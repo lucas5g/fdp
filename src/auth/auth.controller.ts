@@ -13,7 +13,7 @@ import { Auth } from './decorators/auth.decorator';
 import { AuthEntity } from './entities/auth.entity';
 import { LoginAuthDto } from '@/auth/dto/login-auth.dto';
 
-@Controller('auth')
+@Controller()
 @ApiBearerAuth()
 export class AuthController {
   constructor(private readonly authService: AuthService) { }

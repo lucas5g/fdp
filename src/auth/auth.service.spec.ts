@@ -4,6 +4,7 @@ import { env } from '@/utils/env';
 import { PrismaService } from '@/prisma/prisma.service';
 import { AuthEntity } from './entities/auth.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { UserService } from '@/user/user.service';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -16,7 +17,7 @@ describe('AuthService', () => {
           secret: env.JWT_SECRET,
         }),
       ],
-      providers: [AuthService, PrismaService],
+      providers: [AuthService, UserService, PrismaService],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
@@ -29,7 +30,7 @@ describe('AuthService', () => {
 
     expect(res).toBe
 
-  }, 5500);
+  });
 
   it('me', async () => {
     const res = await service.me({ username: env.USER_NAME } as AuthEntity);
@@ -42,6 +43,8 @@ describe('AuthService', () => {
     for (const property of properties) {
       expect(res).toHaveProperty(property)
     }
+
+    expect(res).not.toHaveProperty('password')
   });
 
   it('loginSecurityCheck', async () => {

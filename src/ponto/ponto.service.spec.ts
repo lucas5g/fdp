@@ -1,22 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PontoService } from './ponto.service';
-import { UtilService } from '@/util/util.service';
+
 import { env } from '@/utils/env';
 import { AuthService } from '@/auth/auth.service';
-import { AuthEntity } from '@/auth/entities/auth.entity';
-import { jwtDecode } from 'jwt-decode';
 import { PrismaService } from '@/prisma/prisma.service';
-import { JwtModule } from '@nestjs/jwt';
+import { UserService } from '@/user/user.service';
 
 describe('PontoService', () => {
   let service: PontoService;
-  let serviceAuth: AuthService;
 
-  // let auth: AuthEntity;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PontoService, UtilService, PrismaService],
+      providers: [PontoService, PrismaService, UserService],
     }).compile();
 
     service = module.get<PontoService>(PontoService);
@@ -53,7 +49,7 @@ describe('PontoService', () => {
     await expect(res).resolves.toBeDefined();
   }, 7_000);
 
-  it.only('findAll', async () => {
+  it('findAll', async () => {
     const res = await service.findAll({ username: env.USER_NAME });
 
     expect(res[0]).toHaveProperty('dia');
@@ -71,4 +67,14 @@ describe('PontoService', () => {
       'Horas Trabalhadas',
     ]);
   });
+
+  it.only('generate', async () => {
+    const res = await service.generate({ username: env.USER_NAME });
+
+    console.log(res);
+
+    // console.log(res.days)
+
+    // expect(res).toBeDefined();
+  }, 7_000);
 });

@@ -5,9 +5,11 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { env } from '@/utils/env';
+import { UserModule } from '@/user/user.module';
 
 @Module({
   imports: [
+    UserModule,
     JwtModule.register({
       secret: env.JWT_SECRET ?? 'secret',
       // signOptions: { expiresIn: '1d' },

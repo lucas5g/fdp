@@ -15,13 +15,13 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsOptional()
-  name: string
+  name?: string
 
   @ApiProperty()
   // @File()
-  signature: File
+  signature?: Buffer
 
   @ApiProperty()
   @IsOptional()
-  masp: string
+  masp?: string
 }

@@ -7,10 +7,13 @@ import { AuthEntity } from './entities/auth.entity';
 import { JwtService } from '@nestjs/jwt';
 import { decrypt } from '@/utils/decrypt';
 import { encrypt } from '@/utils/encrypt';
+import { UserService } from '@/user/user.service';
+import { plainToInstance } from 'class-transformer';
+import { CreateUserDto } from '@/user/dto/create-user.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) { }
 
@@ -18,20 +21,16 @@ export class AuthService {
 
   async login(dto: LoginAuthDto) {
 
-    const user = await this.prisma.user.findFirst({
-      where: {
-        username: dto.username,
-      },
-    })
+    const user = await this.userService.findOneWhere({
+      username: dto.username,
+    }, true);
 
     if (!user || decrypt(user?.password ?? '') !== dto.password) {
       if (await this.hasScrapedLogin(dto)) {
-        await this.prisma.user.create({
-          data: {
-            username: dto.username,
-            password: encrypt(dto.password),
-          },
-        })
+        const userDto = plainToInstance(CreateUserDto, dto);
+
+        await this.userService.create(userDto)
+
       }
     }
 
@@ -60,10 +59,8 @@ export class AuthService {
   }
 
   async me(auth: AuthEntity) {
-    return this.prisma.user.findUnique({
-      where: {
-        username: auth.username,
-      },
+    return this.userService.findOneWhere({
+      username: auth.username,
     });
   }
 
