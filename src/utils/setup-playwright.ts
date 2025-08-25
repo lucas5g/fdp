@@ -1,10 +1,12 @@
 import { chromium } from 'playwright';
 import { AuthEntity } from "@/auth/entities/auth.entity";
 import { decrypt } from '@/utils/decrypt';
+import { PrismaClient } from '@prisma/client'
 
+const prisma = new PrismaClient()
 export async function setupPlaywright(auth: AuthEntity) {
   const browser = await chromium.launch({
-    headless: false,
+    // headless: false,
   });
 
   const context = await browser.newContext();
@@ -15,7 +17,7 @@ export async function setupPlaywright(auth: AuthEntity) {
     await browser.close();
   };
 
-  const user = await this.prisma.user.findFirstOrThrow({
+  const user = await prisma.user.findFirstOrThrow({
     where: {
       username: auth?.username,
     },

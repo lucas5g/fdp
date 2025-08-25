@@ -130,10 +130,12 @@ export class PontoService {
     const endNumber = hoursToNumber(end);
 
 
-    const hoursWorkedNumber =
-      startNumber -
-      lunchStartNumber -
-      (lunchEndNumber - lunchStartNumber);
+    // const hoursWorkedNumber =
+    //   startNumber -
+    //   lunchStartNumber -
+    //   (lunchEndNumber - lunchStartNumber);
+
+    const hoursWorkedNumber = lunchStartNumber - startNumber + (endNumber - lunchEndNumber)
 
     const hours = Math.floor(hoursWorkedNumber / 60);
     const minutes = hoursWorkedNumber % 60;
