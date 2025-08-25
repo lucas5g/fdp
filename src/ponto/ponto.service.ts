@@ -102,7 +102,7 @@ export class PontoService {
   }
 
   async findByDay(auth: AuthEntity) {
-    const { page, closeBrowser } = await this.util.setupPlaywright(auth);
+    const { page, closeBrowser } = await setupPlaywright(auth);
 
     const res = await this.findHours({ page });
 
@@ -111,40 +111,41 @@ export class PontoService {
   }
 
   hoursRecorded(horasList: string[]) {
-    const horasChaves = {
-      start: horasList[0] ?? '-',
-      lunch: horasList[1] ?? '-',
-      lunchEnd: horasList[2] ?? '-',
-      end: horasList[3] ?? '-',
+    const start = horasList[0] ?? '-'
+    const lunch = horasList[1] ?? '-'
+    const lunchEnd = horasList[2] ?? '-'
+    const end = horasList[3] ?? '-'
+
+    const hoursToNumber = (hoursMinutes: string) => {
+      const hoursSplit =
+        hoursMinutes === '-' ? format(new Date(), 'HH:mm') : hoursMinutes;
+
+      const [hour, minute] = hoursSplit.split(':');
+      return Number(hour) * 60 + Number(minute);
     };
 
-    const hoursToNumber = (horasMinutos: string) => {
-      const horasParaSplitar =
-        horasMinutos === '-' ? format(new Date(), 'HH:mm') : horasMinutos;
+    const startNumber = hoursToNumber(start);
+    const lunchStartNumber = hoursToNumber(lunch);
+    const lunchEndNumber = hoursToNumber(lunchEnd);
+    const endNumber = hoursToNumber(end);
 
-      const [horas, minutos] = horasParaSplitar.split(':');
-      return Number(horas) * 60 + Number(minutos);
-    };
 
-    const horasInteiro = {
-      start: hoursToNumber(horasChaves.start),
-      lunch: hoursToNumber(horasChaves.lunch),
-      lunchEnd: hoursToNumber(horasChaves.lunchEnd),
-      Saída: hoursToNumber(horasChaves.end),
-    };
+    const hoursWorkedNumber =
+      startNumber -
+      lunchStartNumber -
+      (lunchEndNumber - lunchStartNumber);
 
-    const horasTrabalhadaInteiro =
-      horasInteiro.Saída -
-      horasInteiro.start -
-      (horasInteiro.lunch - horasInteiro.Almoço);
-    const horas = Math.floor(horasTrabalhadaInteiro / 60);
-    const minutos = horasTrabalhadaInteiro % 60;
+    const hours = Math.floor(hoursWorkedNumber / 60);
+    const minutes = hoursWorkedNumber % 60;
 
-    const HorasTrabalhada = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
+    const hoursWorked = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 
     return {
-      ...horasChaves,
-      'Horas Trabalhadas': HorasTrabalhada,
+      start,
+      lunch,
+      lunchEnd,
+      end,
+      hoursWorked
     };
   }
 
