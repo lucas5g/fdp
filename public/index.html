@@ -175,46 +175,6 @@
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script>
-  function generatePDF() {
-    const elemento = document.getElementById('content');
-    html2pdf().from(elemento).save('pagina.pdf');
-  }
-
-
-  function setInfo() {
-    const year = new Date().getFullYear()
-    document.querySelector('#year').innerHTML = year
-  }
-
-  function verifyToken() {
-
-    const jwt = localStorage.getItem('jwt')
-
-    if (!jwt) {
-      document.querySelector('#set-token').style.display = 'block'
-      return
-    }
-
-    document.querySelector('#content').style.display = 'block'
-  }
-
-  function handleSaveToken() {
-    const token = document.querySelector('#set-token input').value
-    localStorage.setItem('jwt', token)
-    document.querySelector('#set-token').style.display = 'none'
-    document.querySelector('#content').style.display = 'block'
-  }
-
-  document.addEventListener('DOMContentLoaded', async () => {
-    verifyToken()
-    // getRegisters()
-    //setInfo()
-  })
-
-
-
-
-</script>
+<script type="module" src="script.js"></script>
 
 </html>

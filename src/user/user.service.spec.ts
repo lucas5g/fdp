@@ -38,7 +38,7 @@ describe('UserService', () => {
     expect(res).toHaveProperty('username', 'lucas.sousa');
   });
 
-  it.only('update', async () => {
+  it('update', async () => {
 
     const payload: UpdateUserDto = {
       username: 'lucas.sousa',
@@ -53,5 +53,7 @@ describe('UserService', () => {
     expect(res).not.toHaveProperty('password');
 
   });
+
+  // it.only('')
 
 });

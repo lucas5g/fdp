@@ -12,22 +12,9 @@ export class UserController {
 
   @Post()
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        username: { type: 'string' },
-        password: { type: 'string' },
-        name: { type: 'string' },
-        signature: { type: 'string', format: 'binary' },
-        masp: { type: 'string' },
-      },
-    }
-  })
   @UseInterceptors(FileInterceptor('signature'))
-  create(@Body() createUserDto: CreateUserDto, @UploadedFile() file: Express.Multer.File) {
-    console.log(file);
-    return this.userService.create(createUserDto);
+  create(@Body() dto: CreateUserDto, @UploadedFile() file: Express.Multer.File) {
+    return this.userService.create({ ...dto, signature: file ? file.buffer : undefined });
   }
 
   @Get()
@@ -42,9 +29,22 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
+  @Get(':id/signature')
+  async findOneSignature(@Param('id') id: number) {
+    // const user 
+    // return this.userService.findOneSignature(+id);
+  }
+
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('signature'))
+  update(
+    @Param('id') id: number,
+    @Body() dto: UpdateUserDto,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    return this.userService.update(id, { ...dto, signature: file ? file.buffer : undefined });
   }
 
   @ApiExcludeEndpoint()

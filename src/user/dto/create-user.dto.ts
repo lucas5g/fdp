@@ -17,8 +17,10 @@ export class CreateUserDto {
   @IsOptional()
   name?: string
 
-  @ApiProperty()
-  // @File()
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+  })
   signature?: Buffer
 
   @ApiProperty()

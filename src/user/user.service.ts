@@ -7,20 +7,21 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) { }
+
+  private omit: Prisma.UserOmit = {
+    signature: true,
+    password: true,
+  }
   create(createUserDto: CreateUserDto) {
     return this.prisma.user.create({
       data: createUserDto,
-      omit: {
-        password: true
-      }
+      omit: this.omit
     });
   }
 
   findAll() {
     return this.prisma.user.findMany({
-      omit: {
-        password: true
-      }
+      omit: this.omit
     });
   }
 
@@ -29,9 +30,7 @@ export class UserService {
       where: {
         id
       },
-      omit: {
-        password: true
-      }
+      omit: this.omit
     });
   }
 
@@ -41,9 +40,7 @@ export class UserService {
         id
       },
       data: updateUserDto,
-      omit: {
-        password: true
-      }
+      omit: this.omit
     });
   }
 
@@ -52,9 +49,7 @@ export class UserService {
       where: {
         id
       },
-      omit: {
-        password: true
-      }
+      omit: this.omit
     });
   }
 
@@ -66,10 +61,22 @@ export class UserService {
         username: true,
         password: showPassword,
         name: true,
-        signature: true,
         masp: true,
       }
 
     });
+  }
+
+  async findOneSignature(id: number) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: {
+        id
+      },
+      select: {
+        signature: true
+      }
+    });
+
+    return user.signature
   }
 }
