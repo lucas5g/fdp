@@ -32,4 +32,5 @@ RUN npx playwright install
 EXPOSE 8000
 
 # Start the server
-CMD ["npm", "run", "start"]
+# CMD ["npm", "run", "start"]
+CMD npx prisma db push && npm run start
