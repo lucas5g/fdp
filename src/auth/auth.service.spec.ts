@@ -23,8 +23,8 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
 
     const res = await service.login({
-      username: env.USER_NAME,
-      password: env.USER_PASSWORD,
+      username: env.USER_NAME!,
+      password: env.USER_PASSWORD!,
     });
     expect(res).toHaveLength(143)
 
