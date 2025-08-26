@@ -3,9 +3,6 @@ import 'dotenv/config';
 
 export const env = z
   .object({
-    DISCORD_TOKEN: z.string(),
-    DISCORD_CLIENT_ID: z.string(),
-    AZC_TOKEN: z.string(),
     DISCORD_ONLINE: z.string().transform((value) => value === 'true'),
     USER_NAME: z.string().optional(),
     USER_PASSWORD: z.string().optional(),
