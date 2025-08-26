@@ -18,4 +18,4 @@ import { AppController } from '@/app.controller';
   providers: [AppService],
   controllers: [AppController],
 })
-export class AppModule { }
+export class AppModule {}

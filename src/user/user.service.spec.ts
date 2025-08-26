@@ -24,8 +24,7 @@ describe('UserService', () => {
 
     const res = await service.create(payload);
 
-    id = res.id
-
+    id = res.id;
   });
 
   afterAll(async () => {
@@ -39,21 +38,16 @@ describe('UserService', () => {
   });
 
   it('update', async () => {
-
     const payload: UpdateUserDto = {
       username: 'lucas.sousa',
       password: '123456',
       name: 'Lucas de Teste',
       masp: '123456789',
-      signature: Buffer.from('public/assinatura.png')
+      signature: Buffer.from('public/assinatura.png'),
     };
 
     const res = await service.update(id, payload);
 
     expect(res).not.toHaveProperty('password');
-
   });
-
-  // it.only('')
-
 });

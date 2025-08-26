@@ -1,14 +1,13 @@
-import { Controller, Get, Post, Render, Req } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { PontoService } from './ponto.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Auth } from '@/auth/decorators/auth.decorator';
 import { AuthEntity } from '@/auth/entities/auth.entity';
-import { Public } from '@/auth/decorators/public.decorator';
-import { Request } from 'express';
+
 @ApiBearerAuth()
 @Controller('pontos')
 export class PontoController {
-  constructor(private readonly pontoService: PontoService) { }
+  constructor(private readonly pontoService: PontoService) {}
 
   @Post()
   create(@Auth() auth: AuthEntity) {
@@ -29,5 +28,4 @@ export class PontoController {
   generate(@Auth() auth: AuthEntity) {
     return this.pontoService.generate(auth);
   }
-
 }

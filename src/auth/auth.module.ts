@@ -26,4 +26,4 @@ import { UserModule } from '@/user/user.module';
     },
   ],
 })
-export class AuthModule { }
+export class AuthModule {}

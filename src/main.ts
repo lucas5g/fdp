@@ -19,8 +19,8 @@ async function bootstrap() {
     .setBaseViewsDir('./views')
     .useStaticAssets('./public')
     .setViewEngine('ejs')
-    .useGlobalFilters(new PrismaExceptionFilter)
-    .enableCors()
+    .useGlobalFilters(new PrismaExceptionFilter())
+    .enableCors();
 
   const config = new DocumentBuilder()
     .setTitle('Folha de Pontos')

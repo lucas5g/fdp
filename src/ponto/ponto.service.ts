@@ -3,16 +3,12 @@ import { format, parse } from 'date-fns';
 import { Page } from 'playwright';
 import { ptBR } from 'date-fns/locale';
 import { AuthEntity } from '@/auth/entities/auth.entity';
-import { env } from '@/utils/env';
-import { PrismaService } from '@/prisma/prisma.service';
 import { setupPlaywright } from '@/utils/setup-playwright';
 import { UserService } from '@/user/user.service';
 import { setEnd } from '@/utils/set-end';
 @Injectable()
 export class PontoService {
-  constructor(
-    private readonly userService: UserService,
-  ) { }
+  constructor(private readonly userService: UserService) {}
   async create(auth: AuthEntity) {
     const { page, closeBrowser } = await setupPlaywright(auth);
 
@@ -23,9 +19,7 @@ export class PontoService {
       throw new BadRequestException('Já registrou a saída.');
     }
 
-    const [hours, minutes] = hoursDict['Horas Trabalhadas']
-      .split(':')
-      .map(Number);
+    const [hours, minutes] = hoursDict.hoursWorked.split(':').map(Number);
     const minutesFull = hours * 60 + minutes;
 
     if (hoursDict.lunchEnd !== '-' && minutesFull < 480) {
@@ -39,9 +33,8 @@ export class PontoService {
       .getByRole('button', { name: 'Inserir Marcação' })
       .click();
 
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(500);
     void closeBrowser();
-
 
     return { message: 'Ponto Batido' };
   }
@@ -50,6 +43,7 @@ export class PontoService {
     const { page, closeBrowser } = await setupPlaywright(auth);
     await page.getByText('Controle').click();
 
+    await page.waitForTimeout(1_000);
 
     const selectorDateFilter =
       'input#id_datefield-mascara-jquery_2007264_2111180';
@@ -58,9 +52,7 @@ export class PontoService {
       .locator(selectorDateFilter)
       .getAttribute('value');
 
-    await page.waitForTimeout(2000)
-
-    const selector = 'table > tbody:nth-child(2) > tr > td:nth-child(4) > div'
+    const selector = 'table > tbody:nth-child(2) > tr > td:nth-child(4) > div';
 
     await page.waitForSelector(selector);
 
@@ -74,30 +66,35 @@ export class PontoService {
 
     const [, month, year] = dateFilter!.split('/').map(Number);
 
-    return res
-      // .filter(row => row !== 'start/Saída')
-      .slice(1)
-      .map((row, i) => {
-        const day = i + 1;
-        const [start, lunch, lunchEnd, end] = row.split(' ');
-        const data = parse(`${day}/${month}/${year}`, 'dd/MM/yyyy', new Date());
-    
-        const dayWeek = format(data, 'E', { locale: ptBR }).toUpperCase();
+    return (
+      res
+        // .filter(row => row !== 'start/Saída')
+        .slice(1)
+        .map((row, i) => {
+          const day = i + 1;
+          const [start, lunch, lunchEnd, end] = row.split(' ');
+          const data = parse(
+            `${day}/${month}/${year}`,
+            'dd/MM/yyyy',
+            new Date(),
+          );
+          const dayWeek = format(data, 'E', { locale: ptBR }).toUpperCase();
 
-        return {
-          day: String(day).padStart(2, '0'),
-          dayName: dayWeek,
-          registers:
-            dayWeek === 'SÁBADO' || dayWeek === 'DOMINGO' || start === ''
-              ? '-lunch'
-              : {
-                start,
-                lunch,
-                lunchEnd,
-                end: end ?? setEnd(start, lunch, lunchEnd),
-              },
-        };
-      });
+          return {
+            day: String(day).padStart(2, '0'),
+            dayName: dayWeek,
+            registers:
+              dayWeek === 'SÁBADO' || dayWeek === 'DOMINGO' || start === ''
+                ? '-lunch'
+                : {
+                    start,
+                    lunch,
+                    lunchEnd,
+                    end: end ?? setEnd(start, lunch, lunchEnd),
+                  },
+          };
+        })
+    );
   }
 
   async findByDay(auth: AuthEntity) {
@@ -110,10 +107,10 @@ export class PontoService {
   }
 
   hoursRecorded(horasList: string[]) {
-    const start = horasList[0] ?? '-'
-    const lunch = horasList[1] ?? '-'
-    const lunchEnd = horasList[2] ?? '-'
-    const end = horasList[3] ?? '-'
+    const start = horasList[0] ?? '-';
+    const lunch = horasList[1] ?? '-';
+    const lunchEnd = horasList[2] ?? '-';
+    const end = horasList[3] ?? '-';
 
     const hoursToNumber = (hoursMinutes: string) => {
       const hoursSplit =
@@ -128,13 +125,13 @@ export class PontoService {
     const lunchEndNumber = hoursToNumber(lunchEnd);
     const endNumber = hoursToNumber(end);
 
-
     // const hoursWorkedNumber =
     //   startNumber -
     //   lunchStartNumber -
     //   (lunchEndNumber - lunchStartNumber);
 
-    const hoursWorkedNumber = lunchStartNumber - startNumber + (endNumber - lunchEndNumber)
+    const hoursWorkedNumber =
+      lunchStartNumber - startNumber + (endNumber - lunchEndNumber);
 
     const hours = Math.floor(hoursWorkedNumber / 60);
     const minutes = hoursWorkedNumber % 60;
@@ -146,7 +143,7 @@ export class PontoService {
       lunch,
       lunchEnd,
       end,
-      hoursWorked
+      hoursWorked,
     };
   }
 
@@ -172,8 +169,9 @@ export class PontoService {
   }
 
   async generate(auth: AuthEntity) {
-
-    const user = await this.userService.findOneWhere({ username: auth?.username });
+    const user = await this.userService.findOneWhere({
+      username: auth?.username,
+    });
 
     const days = [
       {
@@ -228,10 +226,9 @@ export class PontoService {
       },
     ];
 
-
     return {
       user,
-      days
-    }
+      days,
+    };
   }
 }

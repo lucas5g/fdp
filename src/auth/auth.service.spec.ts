@@ -9,7 +9,6 @@ import { UserService } from '@/user/user.service';
 describe('AuthService', () => {
   let service: AuthService;
 
-
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
@@ -26,33 +25,27 @@ describe('AuthService', () => {
       username: env.USER_NAME!,
       password: env.USER_PASSWORD!,
     });
-    expect(res).toHaveLength(143)
-
-    expect(res).toBe
-
+    expect(res).toHaveLength(143);
   });
 
   it('me', async () => {
     const res = await service.me({ username: env.USER_NAME } as AuthEntity);
 
-    const properties = [
-      'username',
-      'masp'
-    ]
+    const properties = ['username', 'masp'];
 
     for (const property of properties) {
-      expect(res).toHaveProperty(property)
+      expect(res).toHaveProperty(property);
     }
 
-    expect(res).not.toHaveProperty('password')
+    expect(res).not.toHaveProperty('password');
   });
 
   it('loginSecurityCheck', async () => {
     const res = await service.loginSecurityCheck({
-      username: env.USER_NAME,
-      password: env.USER_PASSWORD,
+      username: env.USER_NAME!,
+      password: env.USER_PASSWORD!,
     });
 
-    expect(res).toBe
-  })
+    expect(res).toHaveLength(32);
+  });
 });

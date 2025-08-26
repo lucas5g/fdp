@@ -9,4 +9,4 @@ import { UserModule } from '@/user/user.module';
   providers: [PontoService],
   exports: [PontoService],
 })
-export class PontoModule { }
+export class PontoModule {}

@@ -1,14 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PontoService } from './ponto.service';
-
 import { env } from '@/utils/env';
-import { AuthService } from '@/auth/auth.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { UserService } from '@/user/user.service';
 
 describe('PontoService', () => {
   let service: PontoService;
-
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -16,7 +13,6 @@ describe('PontoService', () => {
     }).compile();
 
     service = module.get<PontoService>(PontoService);
-
   }, 6_500);
 
   // it('create', async () => {
@@ -49,7 +45,7 @@ describe('PontoService', () => {
   //   await expect(res).resolves.toBeDefined();
   // }, 7_000);
 
-  it.only('findAll', async () => {
+  it('findAll', async () => {
     const res = await service.findAll({ username: env.USER_NAME! });
 
     expect(res[0]).toHaveProperty('day');
@@ -60,18 +56,17 @@ describe('PontoService', () => {
     const res = service.hoursRecorded(hours);
 
     expect(Object.keys(res)).toEqual([
-      'Entrada',
-      'Almoco',
-      'Retorno',
-      'Saida',
-      'Horas Trabalhadas',
+      'start',
+      'lunch',
+      'lunchEnd',
+      'end',
+      'hoursWorked',
     ]);
   });
 
   it('generate', async () => {
     const res = await service.generate({ username: env.USER_NAME! });
 
-    expect(res).toHaveProperty('user')
-
+    expect(res).toHaveProperty('user');
   });
 });

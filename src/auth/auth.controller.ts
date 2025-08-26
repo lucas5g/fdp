@@ -16,7 +16,7 @@ import { LoginAuthDto } from '@/auth/dto/login-auth.dto';
 @Controller()
 @ApiBearerAuth()
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('login')
   @Public()
