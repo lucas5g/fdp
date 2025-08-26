@@ -5,7 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('user')
+@Controller('users')
 @ApiBearerAuth()
 export class UserController {
   constructor(private readonly userService: UserService) { }

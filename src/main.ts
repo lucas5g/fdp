@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { version } from '../package.json';
+import { PrismaExceptionFilter } from '@/prisma/prisma-exception.filter';
+import { AppModule } from '@/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -18,7 +19,8 @@ async function bootstrap() {
     .setBaseViewsDir('./views')
     .useStaticAssets('./public')
     .setViewEngine('ejs')
-    .enableCors();
+    .useGlobalFilters(new PrismaExceptionFilter)
+    .enableCors()
 
   const config = new DocumentBuilder()
     .setTitle('Folha de Pontos')
