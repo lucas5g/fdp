@@ -58,8 +58,7 @@ export class PontoService {
       .locator(selectorDateFilter)
       .getAttribute('value');
 
-    await page.waitForTimeout(1_200)
-
+    await page.waitForTimeout(2000)
 
     const selector = 'table > tbody:nth-child(2) > tr > td:nth-child(4) > div'
 
@@ -76,13 +75,13 @@ export class PontoService {
     const [, month, year] = dateFilter!.split('/').map(Number);
 
     return res
-      .filter(row => row !== 'start/Saída')
+      // .filter(row => row !== 'start/Saída')
+      .slice(1)
       .map((row, i) => {
         const day = i + 1;
         const [start, lunch, lunchEnd, end] = row.split(' ');
         const data = parse(`${day}/${month}/${year}`, 'dd/MM/yyyy', new Date());
-
-
+    
         const dayWeek = format(data, 'E', { locale: ptBR }).toUpperCase();
 
         return {

@@ -26,7 +26,6 @@ export class PontoController {
   }
 
   @Get('gerar')
-  @Public()
   generate(@Auth() auth: AuthEntity) {
     return this.pontoService.generate(auth);
   }
