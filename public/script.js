@@ -1,4 +1,4 @@
-function handleSaveToken() {
+export function handleSaveToken() {
   const token = document.querySelector('#set-token input').value
   localStorage.setItem('jwt', token)
   document.querySelector('#set-token').style.display = 'none'
@@ -17,17 +17,29 @@ function generatePDF() {
 function verifyToken() {
   const token = localStorage.getItem('jwt')
   if (!token) {
+    document.querySelector('#set-token').style.display = 'block'
+    
     return false
   }
   document.querySelector('#set-token').style.display = 'none'
   document.querySelector('#content').style.display = 'block'
+  document.querySelector('#gerar-pdf').style.display = 'block'
   return token
 }
 
+document.addEventListener('click', e => {
+  if (e.target.id === 'button-save-token') {
+    handleSaveToken()
+  }
+})
+
 document.addEventListener('DOMContentLoaded', async () => {
   const token = verifyToken()
+  if(!token){
+    return
+  }
 
-  fetch('https://fdp.dizelequefez.com.br/pontos/gerar', {
+  fetch('https://folha-de-pontos.dizelequefez.com.br/pontos/gerar', {
     headers: {
       'Authorization': `Bearer ${token}`
     }

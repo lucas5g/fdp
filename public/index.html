@@ -15,12 +15,17 @@
       padding: 4px;
     }
   </style>
+  <script type="module" src="script.js"></script>
+
 </head>
 
 <body style="padding: 2em; display: flex; flex-direction: column; gap: 1.5em">
   <div id="set-token" style="display: none;">
     <input type="text" placeholder="Token">
-    <button id="save-token" onclick="handleSaveToken()">
+    <!-- id="button-save-token" -->
+    <button 
+      oncl
+      >
       Salvar
     </button>
   </div>
@@ -169,12 +174,12 @@
 
   </div>
 
-  <div>
+  <div id="gerar-pdf" style="display: none;">
     <button onclick="generatePDF()">Gerar pdf</button>
   </div>
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="script.js"></script>
+<!-- <script type="module" src="script.js"></script> -->
 
 </html>
