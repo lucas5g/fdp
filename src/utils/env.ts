@@ -3,7 +3,6 @@ import 'dotenv/config';
 
 export const env = z
   .object({
-    DISCORD_ONLINE: z.string().transform((value) => value === 'true'),
     USER_NAME: z.string().optional(),
     USER_PASSWORD: z.string().optional(),
     RECORD_HOURS: z.string().transform((value) => value === 'true'),
