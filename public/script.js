@@ -42,7 +42,11 @@ async function getSignature(id){
 
 document.addEventListener('click', e => {
   if (e.target.id === 'button-save-token') {
-    handleSaveToken()
+    return handleSaveToken()
+  }
+
+  if (e.target.id === 'button-gerar-pdf') {
+    return generatePDF()
   }
 })
 
