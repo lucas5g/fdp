@@ -15,6 +15,12 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       );
     }
 
+    if (exception.code === 'P2025') {
+      throw new BadRequestException(
+        `${String(exception.meta?.modelName)} not found`,
+      );
+    }
+
     throw new InternalServerErrorException('Erro database');
   }
 }

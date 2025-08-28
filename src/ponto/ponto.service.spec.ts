@@ -49,7 +49,7 @@ describe('PontoService', () => {
     const res = await service.findAll({ username: env.USER_NAME! });
 
     expect(res[0]).toHaveProperty('day');
-  }, 5500);
+  }, 6_000);
 
   it('hoursRecorded', () => {
     const hours = ['09:35'];

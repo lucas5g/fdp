@@ -43,7 +43,7 @@ export class PontoService {
     const { page, closeBrowser } = await setupPlaywright(auth);
     await page.getByText('Controle').click();
 
-    await page.waitForTimeout(1_000);
+    await page.waitForTimeout(1_100);
 
     const selectorDateFilter =
       'input#id_datefield-mascara-jquery_2007264_2111180';

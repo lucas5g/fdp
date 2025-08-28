@@ -15,16 +15,16 @@
       padding: 4px;
     }
   </style>
-  <script type="module" src="script.js"></script>
+  <script type="module" src="script.js">
+  </script>
 
 </head>
 
 <body style="padding: 2em; display: flex; flex-direction: column; gap: 1.5em">
   <div id="set-token" style="display: none;">
     <input type="text" placeholder="Token">
-    <!-- id="button-save-token" -->
     <button 
-      oncl
+      id="button-save-token"
       >
       Salvar
     </button>
@@ -68,13 +68,11 @@
 
       <div style="display: grid; grid-template-columns: auto 15%;">
         <div style="border-right: 1px solid; padding: 5px">
-          NOME DO SERVIDOR: <strong>
-            <%= user.name %>
-          </strong>
+          NOME DO SERVIDOR: <strong id="name"> </strong>          
         </div>
         <div style="padding: 5px;">
           <strong>MASP:</strong>
-          <%= user.masp %>
+          <span id="masp"></span>
         </div>
       </div>
     </div>

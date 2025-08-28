@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,6 +19,7 @@ import {
   ApiExcludeEndpoint,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 
 @Controller('users')
 @ApiBearerAuth()
@@ -48,9 +50,11 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
-  @Get(':id/signature')
-  async findOneSignature(@Param('id') id: number) {
-    return this.userService.findOneSignature(id);
+  @Get(':id/signature.png')
+  async findOneSignature(@Param('id') id: number, @Res() res: Response) {
+    const signature = await this.userService.findOneSignature(id);
+    res.setHeader('Content-Type', 'image/png');
+    res.send(signature);
   }
 
   @Patch(':id')
