@@ -48,6 +48,11 @@ describe('PontoService', () => {
   it('findAll', async () => {
     const res = await service.findAll({ username: env.USER_NAME! });
 
+    for (const row of res) {
+      expect(row).toHaveProperty('day');
+      expect(row.registers).not.toEqual('-lunch');
+    }
+
     expect(res[0]).toHaveProperty('day');
   }, 6_000);
 

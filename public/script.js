@@ -28,6 +28,18 @@ function verifyToken() {
   return token
 }
 
+async function getSignature(id){
+  const token = verifyToken()
+  const data = await fetch(`https://folha-de-pontos.dizelequefez.com.br/users/${id}/signature.png`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+  const res = await data.arrayBuffer()
+
+  return URL.createObjectURL(new Blob([res]))
+}
+
 document.addEventListener('click', e => {
   if (e.target.id === 'button-save-token') {
     handleSaveToken()
@@ -48,10 +60,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const { user, days } = await data.json()
 
+  const imageUrl = await getSignature(user.id)
+  
+
   document.querySelector('#name').innerHTML = user.name ?? 'SEM NOME'
   document.querySelector('#masp').innerHTML = user.masp ?? 'SEM MASP'
 
   const table = document.querySelector('table').getElementsByTagName('tbody')[0]
+  const image = `<img src="${imageUrl}" width="45" height="15" />`
 
   for (const row of days) {
     const newLine = table.insertRow()
@@ -68,16 +84,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     newLine.insertCell().innerHTML = row.registers.start
-    newLine.insertCell().innerHTML = ''
+    newLine.insertCell().innerHTML = image
     newLine.insertCell().innerHTML = row.registers.lunch
-    newLine.insertCell().innerHTML = ''
+    newLine.insertCell().innerHTML = image
     newLine.insertCell().innerHTML = row.registers.lunchEnd
-    newLine.insertCell().innerHTML = ''
+    newLine.insertCell().innerHTML = image
     newLine.insertCell().innerHTML = row.registers.end
+    newLine.insertCell().innerHTML = ''
+    newLine.insertCell().innerHTML = ''
+    newLine.insertCell().innerHTML = ''
+    
 
   }
-  console.log(days)
-
-
-
+  
 })

@@ -85,7 +85,7 @@ export class PontoService {
             dayName: dayWeek,
             registers:
               dayWeek === 'SÁBADO' || dayWeek === 'DOMINGO' || start === ''
-                ? '-lunch'
+                ? '-'
                 : {
                     start,
                     lunch,
@@ -168,7 +168,7 @@ export class PontoService {
     return this.hoursRecorded(res);
   }
 
-  async generate(auth: AuthEntity) {
+  async generateTest(auth: AuthEntity) {
     const user = await this.userService.findOneWhere({
       username: auth?.username,
     });
@@ -225,6 +225,20 @@ export class PontoService {
         },
       },
     ];
+
+    return {
+      user,
+      days,
+    };
+  }
+
+  async generate(auth: AuthEntity) {
+    const [user, days] = await Promise.all([
+      this.userService.findOneWhere({
+        username: auth?.username,
+      }),
+      this.findAll(auth),
+    ]);
 
     return {
       user,
