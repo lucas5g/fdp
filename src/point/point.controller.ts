@@ -5,7 +5,7 @@ import { Auth } from '@/auth/decorators/auth.decorator';
 import { AuthEntity } from '@/auth/entities/auth.entity';
 
 @ApiBearerAuth()
-@Controller('pontos')
+@Controller('points')
 export class PointController {
   constructor(private readonly pointService: PointService) {}
 
@@ -14,17 +14,17 @@ export class PointController {
     return this.pointService.create(auth);
   }
 
-  @Get('mes')
+  @Get('month')
   findAll(@Auth() auth: AuthEntity) {
     return this.pointService.findAll(auth);
   }
 
-  @Get('dia')
+  @Get('day')
   findByDay(@Auth() auth: AuthEntity) {
     return this.pointService.findByDay(auth);
   }
 
-  @Get('gerar')
+  @Get('generate')
   generate(@Auth() auth: AuthEntity) {
     return this.pointService.generate(auth);
   }

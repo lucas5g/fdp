@@ -15,38 +15,22 @@ describe('PointService', () => {
     service = module.get<PointService>(PointService);
   }, 6_500);
 
-  // it('create', async () => {
-  //   const inserts = await service.findByDay(auth);
+  it('findByDay', async () => {
+    const res = await service.findByDay({ username: env.USER_NAME! });
 
-  //   expect(Object.keys(inserts)).toEqual([
-  //     'Entrada',
-  //     'Almoco',
-  //     'Retorno',
-  //     'Saida',
-  //     'Horas Trabalhadas',
-  //   ]);
-
-  //   const res = service.create(auth);
-
-  //   if (inserts.Retorno !== '-') {
-  //     return await expect(res).rejects.toThrow(
-  //       'Você ainda não trabalhou 8 horas.',
-  //     );
-  //   }
-
-  //   if (inserts.Saida !== '-') {
-  //     return await expect(res).rejects.toThrow('Já registrou a saída.');
-  //   }
-
-  //   if (env.RECORD_HOURS === false) {
-  //     return await expect(res).rejects.toThrow('Função desativada');
-  //   }
-
-  //   await expect(res).resolves.toBeDefined();
-  // }, 7_000);
+    expect(Object.keys(res)).toEqual([
+      'start',
+      'lunch',
+      'lunchEnd',
+      'end',
+      'hoursWorked',
+    ]);
+  });
 
   it('findAll', async () => {
     const res = await service.findAll({ username: env.USER_NAME! });
+
+    expect(res).toBeDefined();
 
     for (const row of res) {
       expect(row).toHaveProperty('day');
@@ -57,7 +41,7 @@ describe('PointService', () => {
   }, 6_000);
 
   it('hoursRecorded', () => {
-    const hours = ['09:35'];
+    const hours = ['09:27', '12:13', '13:13'];
     const res = service.hoursRecorded(hours);
 
     expect(Object.keys(res)).toEqual([

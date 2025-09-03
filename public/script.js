@@ -1,3 +1,5 @@
+const api = 'http://[::1]:3000'
+
 export function handleSaveToken() {
   const token = document.querySelector('#set-token input').value
   console.log({ token })
@@ -28,10 +30,10 @@ function verifyToken() {
   return token
 }
 
-async function getSignature(id){
+async function getSignature(id) {
   const token = verifyToken()
-  const data = await fetch(`http://[::1]:3000/users/${id}/signature.png`,{
-  // const data = await fetch(`https://folha-de-pontos.dizelequefez.com.br/users/${id}/signature.png`, {
+  const data = await fetch(`${api}/users/${id}/signature.png`, {
+    // const data = await fetch(`https://folha-de-pontos.dizelequefez.com.br/users/${id}/signature.png`, {
     headers: {
       'Authorization': `Bearer ${token}`
     }
@@ -41,23 +43,8 @@ async function getSignature(id){
   return URL.createObjectURL(new Blob([res]))
 }
 
-document.addEventListener('click', e => {
-  if (e.target.id === 'button-save-token') {
-    return handleSaveToken()
-  }
-
-  if (e.target.id === 'button-gerar-pdf') {
-    return generatePDF()
-  }
-})
-
-document.addEventListener('DOMContentLoaded', async () => {
-  const token = verifyToken()
-  if (!token) {
-    return
-  }
-  const data = await fetch('http://[::1]:3000/pontos/gerar', {
-  // const data = await fetch('https://folha-de-pontos.dizelequefez.com.br/pontos/gerar', {
+async function getList(token) {
+  const data = await fetch(`${api}/points/generate`, {
     headers: {
       'Authorization': `Bearer ${token}`
     }
@@ -66,10 +53,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const { user, days } = await data.json()
 
   const imageUrl = await getSignature(user.id)
-  
 
   document.querySelector('#name').innerHTML = user.name ?? 'SEM NOME'
   document.querySelector('#masp').innerHTML = user.masp ?? 'SEM MASP'
+  document.querySelector('#month').innerHTML = days[0].month
 
   const table = document.querySelector('table').getElementsByTagName('tbody')[0]
   const image = `<img src="${imageUrl}" width="45" height="15" />`
@@ -79,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     newLine.insertCell().innerHTML = row.day
     if (row.details !== 'TRABALHO') {
-      newLine.insertCell().innerHTML = row.details === 'FOLGA' ? row.dayName: row.details
+      newLine.insertCell().innerHTML = row.details === 'FOLGA' ? row.dayName : row.details
 
       for (let i = 0; i < 9; i++) {
         newLine.insertCell().innerHTML = ''
@@ -98,8 +85,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     newLine.insertCell().innerHTML = ''
     newLine.insertCell().innerHTML = ''
     newLine.insertCell().innerHTML = ''
-    
 
   }
-  
+}
+
+document.addEventListener('click', e => {
+  if (e.target.id === 'button-save-token') {
+    return handleSaveToken()
+  }
+
+  if (e.target.id === 'button-gerar-pdf') {
+    return generatePDF()
+  }
+})
+
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const token = verifyToken()
+  if (!token) {
+    return
+  }
+
+  await getList(token)
+
+  setInfo()
+
+
 })

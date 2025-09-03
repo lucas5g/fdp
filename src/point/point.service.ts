@@ -84,6 +84,9 @@ export class PointService {
           return {
             day: String(day).padStart(2, '0'),
             dayName: dayWeek,
+            month: format(new Date(year, month - 1), 'MMMM', {
+              locale: ptBR,
+            }).toUpperCase(),
             details: getDayDetail(dayWeek, start),
             registers:
               dayWeek === 'SÁBADO' || dayWeek === 'DOMINGO' || start === ''
@@ -108,11 +111,11 @@ export class PointService {
     return res;
   }
 
-  hoursRecorded(horasList: string[]) {
-    const start = horasList[0] ?? '-';
-    const lunch = horasList[1] ?? '-';
-    const lunchEnd = horasList[2] ?? '-';
-    const end = horasList[3] ?? '-';
+  hoursRecorded(hoursList: string[]) {
+    const start = hoursList[0] ?? '-';
+    const lunch = hoursList[1] ?? '-';
+    const lunchEnd = hoursList[2] ?? '-';
+    const end = hoursList[3] ?? '-';
 
     const hoursToNumber = (hoursMinutes: string) => {
       const hoursSplit =
@@ -126,11 +129,6 @@ export class PointService {
     const lunchStartNumber = hoursToNumber(lunch);
     const lunchEndNumber = hoursToNumber(lunchEnd);
     const endNumber = hoursToNumber(end);
-
-    // const hoursWorkedNumber =
-    //   startNumber -
-    //   lunchStartNumber -
-    //   (lunchEndNumber - lunchStartNumber);
 
     const hoursWorkedNumber =
       lunchStartNumber - startNumber + (endNumber - lunchEndNumber);
