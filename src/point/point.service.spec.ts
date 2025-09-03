@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PontoService } from './ponto.service';
+import { PointService } from './point.service';
 import { env } from '@/utils/env';
 import { PrismaService } from '@/prisma/prisma.service';
 import { UserService } from '@/user/user.service';
 
-describe('PontoService', () => {
-  let service: PontoService;
+describe('PointService', () => {
+  let service: PointService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PontoService, PrismaService, UserService],
+      providers: [PointService, PrismaService, UserService],
     }).compile();
 
-    service = module.get<PontoService>(PontoService);
+    service = module.get<PointService>(PointService);
   }, 6_500);
 
   // it('create', async () => {

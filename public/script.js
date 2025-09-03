@@ -24,13 +24,14 @@ function verifyToken() {
   }
   document.querySelector('#set-token').style.display = 'none'
   document.querySelector('#content').style.display = 'block'
-  document.querySelector('#gerar-pdf').style.display = 'block'
+  // document.querySelector('#gerar-pdf').style.display = 'block'
   return token
 }
 
 async function getSignature(id){
   const token = verifyToken()
-  const data = await fetch(`https://folha-de-pontos.dizelequefez.com.br/users/${id}/signature.png`, {
+  const data = await fetch(`http://[::1]:3000/users/${id}/signature.png`,{
+  // const data = await fetch(`https://folha-de-pontos.dizelequefez.com.br/users/${id}/signature.png`, {
     headers: {
       'Authorization': `Bearer ${token}`
     }
@@ -55,8 +56,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!token) {
     return
   }
-
-  const data = await fetch('https://folha-de-pontos.dizelequefez.com.br/pontos/gerar', {
+  const data = await fetch('http://[::1]:3000/pontos/gerar', {
+  // const data = await fetch('https://folha-de-pontos.dizelequefez.com.br/pontos/gerar', {
     headers: {
       'Authorization': `Bearer ${token}`
     }
@@ -77,8 +78,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const newLine = table.insertRow()
 
     newLine.insertCell().innerHTML = row.day
-    if (row.dayName === 'SÁBADO' || row.dayName === 'DOMINGO') {
-      newLine.insertCell().innerHTML = row.dayName
+    if (row.details !== 'TRABALHO') {
+      newLine.insertCell().innerHTML = row.details === 'FOLGA' ? row.dayName: row.details
 
       for (let i = 0; i < 9; i++) {
         newLine.insertCell().innerHTML = ''

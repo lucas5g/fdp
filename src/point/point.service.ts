@@ -6,8 +6,9 @@ import { AuthEntity } from '@/auth/entities/auth.entity';
 import { setupPlaywright } from '@/utils/setup-playwright';
 import { UserService } from '@/user/user.service';
 import { setEnd } from '@/utils/set-end';
+import { getDayDetail } from '@/utils/get-day-detail';
 @Injectable()
-export class PontoService {
+export class PointService {
   constructor(private readonly userService: UserService) {}
   async create(auth: AuthEntity) {
     const { page, closeBrowser } = await setupPlaywright(auth);
@@ -83,6 +84,7 @@ export class PontoService {
           return {
             day: String(day).padStart(2, '0'),
             dayName: dayWeek,
+            details: getDayDetail(dayWeek, start),
             registers:
               dayWeek === 'SÁBADO' || dayWeek === 'DOMINGO' || start === ''
                 ? '-'

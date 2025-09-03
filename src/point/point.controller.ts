@@ -1,31 +1,31 @@
 import { Controller, Get, Post } from '@nestjs/common';
-import { PontoService } from './ponto.service';
+import { PointService } from './point.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Auth } from '@/auth/decorators/auth.decorator';
 import { AuthEntity } from '@/auth/entities/auth.entity';
 
 @ApiBearerAuth()
 @Controller('pontos')
-export class PontoController {
-  constructor(private readonly pontoService: PontoService) {}
+export class PointController {
+  constructor(private readonly pointService: PointService) {}
 
   @Post()
   create(@Auth() auth: AuthEntity) {
-    return this.pontoService.create(auth);
+    return this.pointService.create(auth);
   }
 
   @Get('mes')
   findAll(@Auth() auth: AuthEntity) {
-    return this.pontoService.findAll(auth);
+    return this.pointService.findAll(auth);
   }
 
   @Get('dia')
   findByDay(@Auth() auth: AuthEntity) {
-    return this.pontoService.findByDay(auth);
+    return this.pointService.findByDay(auth);
   }
 
   @Get('gerar')
   generate(@Auth() auth: AuthEntity) {
-    return this.pontoService.generate(auth);
+    return this.pointService.generate(auth);
   }
 }

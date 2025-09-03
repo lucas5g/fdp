@@ -1,0 +1,262 @@
+[
+  {
+    "day": 1,
+    "dayName": "Sexta-feira",
+    "inserts": {
+      "start": "09:05",
+      "lunch": "13:52",
+      "lunchEnd": "14:54",
+      "end": "18:07"
+    }
+  },
+  {
+    "day": 2,
+    "dayName": "Sábado",
+    "inserts": "-"
+  },
+  {
+    "day": 3,
+    "dayName": "Domingo",
+    "inserts": "-"
+  },
+  {
+    "day": 4,
+    "dayName": "Segunda-feira",
+    "inserts": {
+      "start": "09:02",
+      "lunch": "13:22",
+      "lunchEnd": "13:22",
+      "end": "18:04"
+    }
+  },
+  {
+    "day": 5,
+    "dayName": "Terça-feira",
+    "inserts": {
+      "start": "08:56",
+      "lunch": "13:20",
+      "lunchEnd": "14:20",
+      "end": "17:57"
+    }
+  },
+  {
+    "day": 6,
+    "dayName": "Quarta-feira",
+    "inserts": {
+      "start": "09:20",
+      "lunch": "13:19",
+      "lunchEnd": "14:26",
+      "end": "18:28"
+    }
+  },
+  {
+    "day": 7,
+    "dayName": "Quinta-feira",
+    "inserts": {
+      "start": "09:13",
+      "lunch": "12:21",
+      "lunchEnd": "13:37",
+      "end": "18:40"
+    }
+  },
+  {
+    "day": 8,
+    "dayName": "Sexta-feira",
+    "inserts": {
+      "start": "09:10",
+      "lunch": "12:47",
+      "lunchEnd": "13:48",
+      "end": "18:17"
+    }
+  },
+  {
+    "day": 9,
+    "dayName": "Sábado",
+    "inserts": "-"
+  },
+  {
+    "day": 10,
+    "dayName": "Domingo",
+    "inserts": "-"
+  },
+  {
+    "day": 11,
+    "dayName": "Segunda-feira",
+    "inserts": {
+      "start": "09:35",
+      "lunch": "13:06",
+      "lunchEnd": null,
+      "end": "14:08"
+    }
+  },
+  {
+    "day": 12,
+    "dayName": "Terça-feira",
+    "inserts": {
+      "start": "09:45",
+      "lunch": "15:41",
+      "lunchEnd": "16:44",
+      "end": "18:50"
+    }
+  },
+  {
+    "day": 13,
+    "dayName": "Quarta-feira",
+    "inserts": {
+      "start": "09:30",
+      "lunch": "13:14",
+      "lunchEnd": "14:24",
+      "end": "18:41"
+    }
+  },
+  {
+    "day": 14,
+    "dayName": "Quinta-feira",
+    "inserts": {
+      "start": "09:00",
+      "lunch": "13:42",
+      "lunchEnd": "14:42",
+      "end": "18:16"
+    }
+  },
+  {
+    "day": 15,
+    "dayName": "Sexta-feira",
+    "inserts": {
+      "start": null,
+      "lunch": null,
+      "lunchEnd": null,
+      "end": null
+    }
+  },
+  {
+    "day": 16,
+    "dayName": "Sábado",
+    "inserts": "-"
+  },
+  {
+    "day": 17,
+    "dayName": "Domingo",
+    "inserts": "-"
+  },
+  {
+    "day": 18,
+    "dayName": "Segunda-feira",
+    "inserts": {
+      "start": "08:54",
+      "lunch": "11:29",
+      "lunchEnd": "12:34",
+      "end": "17:59"
+    }
+  },
+  {
+    "day": 19,
+    "dayName": "Terça-feira",
+    "inserts": {
+      "start": "09:37",
+      "lunch": "13:09",
+      "lunchEnd": "14:09",
+      "end": "18:37"
+    }
+  },
+  {
+    "day": 20,
+    "dayName": "Quarta-feira",
+    "inserts": {
+      "start": "09:41",
+      "lunch": "13:13",
+      "lunchEnd": "14:09",
+      "end": "18:41"
+    }
+  },
+  {
+    "day": 21,
+    "dayName": "Quinta-feira",
+    "inserts": {
+      "start": "09:38",
+      "lunch": "13:16",
+      "lunchEnd": "14:16",
+      "end": "18:38"
+    }
+  },
+  {
+    "day": 22,
+    "dayName": "Sexta-feira",
+    "inserts": {
+      "start": "09:52",
+      "lunch": "12:05",
+      "lunchEnd": "13:06",
+      "end": "18:58"
+    }
+  },
+  {
+    "day": 23,
+    "dayName": "Sábado",
+    "inserts": "-"
+  },
+  {
+    "day": 24,
+    "dayName": "Domingo",
+    "inserts": "-"
+  },
+  {
+    "day": 25,
+    "dayName": "Segunda-feira",
+    "inserts": {
+      "start": "08:58",
+      "lunch": "12:07",
+      "lunchEnd": "13:33",
+      "end": "18:25"
+    }
+  },
+  {
+    "day": 26,
+    "dayName": "Terça-feira",
+    "inserts": {
+      "start": "09:30",
+      "lunch": "12:04",
+      "lunchEnd": "13:15",
+      "end": "18:42"
+    }
+  },
+  {
+    "day": 27,
+    "dayName": "Quarta-feira",
+    "inserts": {
+      "start": "09:40",
+      "lunch": "13:21",
+      "lunchEnd": "16:06",
+      "end": "20:26"
+    }
+  },
+  {
+    "day": 28,
+    "dayName": "Quinta-feira",
+    "inserts": {
+      "start": "09:23",
+      "lunch": "13:25",
+      "lunchEnd": "14:26",
+      "end": "18:24"
+    }
+  },
+  {
+    "day": 29,
+    "dayName": "Sexta-feira",
+    "inserts": {
+      "start": "09:08",
+      "lunch": "14:00",
+      "lunchEnd": "15:04",
+      "end": "18:12"
+    }
+  },
+  {
+    "day": 30,
+    "dayName": "Sábado",
+    "inserts": "-"
+  },
+  {
+    "day": 31,
+    "dayName": "Domingo",
+    "inserts": "-"
+  }
+]
