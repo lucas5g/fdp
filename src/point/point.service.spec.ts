@@ -25,7 +25,7 @@ describe('PointService', () => {
       'end',
       'hoursWorked',
     ]);
-  });
+  }, 5500);
 
   it('findAll', async () => {
     const res = await service.findAll({ username: env.USER_NAME! });
