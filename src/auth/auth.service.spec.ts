@@ -48,4 +48,13 @@ describe('AuthService', () => {
 
     expect(res).toHaveLength(32);
   });
+
+  it('login with wrong password', async () => {
+    const res = service.login({
+      username: env.USER_NAME!,
+      password: 'wrong-password',
+    });
+
+    await expect(res).rejects.toThrow('Usuário ou Senha Incorretos!!!');
+  });
 });

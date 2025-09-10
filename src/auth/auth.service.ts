@@ -4,7 +4,6 @@ import axios, { AxiosError } from 'axios';
 import qs from 'qs';
 import { AuthEntity } from './entities/auth.entity';
 import { JwtService } from '@nestjs/jwt';
-import { decrypt } from '@/utils/decrypt';
 import { UserService } from '@/user/user.service';
 import { plainToInstance } from 'class-transformer';
 import { CreateUserDto } from '@/user/dto/create-user.dto';
@@ -23,13 +22,13 @@ export class AuthService {
       true,
     );
 
-    if (!user || decrypt(user?.password ?? '') !== dto.password) {
-      if (await this.hasScrapedLogin(dto)) {
-        const userDto = plainToInstance(CreateUserDto, dto);
+    if (!user) {
+      const userDto = plainToInstance(CreateUserDto, dto);
 
-        await this.userService.create(userDto);
-      }
+      await this.userService.create(userDto);
     }
+
+    await this.hasScrapedLogin(dto);
 
     const payload = {
       username: dto.username,

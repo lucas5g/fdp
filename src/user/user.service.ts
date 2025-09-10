@@ -6,9 +6,9 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  private omit: Prisma.UserOmit = {
+  private readonly omit: Prisma.UserOmit = {
     signature: true,
     password: true,
   };
