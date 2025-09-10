@@ -1,4 +1,4 @@
-const api = 'http://[::1]:3000'
+const api = 'https://folha-de-pontos.dizelequefez.com.br'
 
 export function handleSaveToken() {
   const token = document.querySelector('#set-token input').value
@@ -33,7 +33,7 @@ function verifyToken() {
 async function getSignature(id) {
   const token = verifyToken()
   const data = await fetch(`${api}/users/${id}/signature.png`, {
-    // const data = await fetch(`https://folha-de-pontos.dizelequefez.com.br/users/${id}/signature.png`, {
+    // const data = await fetch(`/users/${id}/signature.png`, {
     headers: {
       'Authorization': `Bearer ${token}`
     }
