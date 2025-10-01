@@ -153,7 +153,7 @@ export class PointService {
     await page
       .locator('#iFrameArteWeb')
       .contentFrame()
-      .getByRole('heading', { name: 'Ponto web LUCAS DE SOUSA' })
+      .getByRole('heading', { name: 'Ponto web' })
       .waitFor();
 
     const table = await page
