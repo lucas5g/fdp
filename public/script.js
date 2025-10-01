@@ -44,47 +44,55 @@ async function getSignature(id) {
 }
 
 async function getList(token) {
-  const data = await fetch(`${api}/points/generate`, {
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  })
+  try {
 
-  const { user, days } = await data.json()
+    const data = await fetch(`${api}/points/generate`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
 
-  const imageUrl = await getSignature(user.id)
+    const { user, days } = await data.json()
 
-  document.querySelector('#name').innerHTML = user.name ?? 'SEM NOME'
-  document.querySelector('#masp').innerHTML = user.masp ?? 'SEM MASP'
-  document.querySelector('#month').innerHTML = days[0].month
+    const imageUrl = await getSignature(user.id)
 
-  const table = document.querySelector('table').getElementsByTagName('tbody')[0]
-  const image = `<img src="${imageUrl}" width="45" height="15" />`
+    document.querySelector('#name').innerHTML = user.name ?? 'SEM NOME'
+    document.querySelector('#masp').innerHTML = user.masp ?? 'SEM MASP'
+    document.querySelector('#month').innerHTML = days[0].month
 
-  for (const row of days) {
-    const newLine = table.insertRow()
+    const table = document.querySelector('table').getElementsByTagName('tbody')[0]
+    const image = `<img src="${imageUrl}" width="45" height="15" />`
 
-    newLine.insertCell().innerHTML = row.day
-    if (row.details !== 'TRABALHO') {
-      newLine.insertCell().innerHTML = row.details === 'FOLGA' ? row.dayName : row.details
+    for (const row of days) {
+      const newLine = table.insertRow()
 
-      for (let i = 0; i < 9; i++) {
-        newLine.insertCell().innerHTML = ''
+      newLine.insertCell().innerHTML = row.day
+      if (row.details !== 'TRABALHO') {
+        newLine.insertCell().innerHTML = row.details === 'FOLGA' ? row.dayName : row.details
+
+        for (let i = 0; i < 9; i++) {
+          newLine.insertCell().innerHTML = ''
+        }
+
+        continue
       }
 
-      continue
-    }
+      newLine.insertCell().innerHTML = row.registers.start
+      newLine.insertCell().innerHTML = image
+      newLine.insertCell().innerHTML = row.registers.lunch
+      newLine.insertCell().innerHTML = image
+      newLine.insertCell().innerHTML = row.registers.lunchEnd
+      newLine.insertCell().innerHTML = image
+      newLine.insertCell().innerHTML = row.registers.end
+      newLine.insertCell().innerHTML = image
+      newLine.insertCell().innerHTML = ''
+      newLine.insertCell().innerHTML = ''
 
-    newLine.insertCell().innerHTML = row.registers.start
-    newLine.insertCell().innerHTML = image
-    newLine.insertCell().innerHTML = row.registers.lunch
-    newLine.insertCell().innerHTML = image
-    newLine.insertCell().innerHTML = row.registers.lunchEnd
-    newLine.insertCell().innerHTML = image
-    newLine.insertCell().innerHTML = row.registers.end
-    newLine.insertCell().innerHTML = ''
-    newLine.insertCell().innerHTML = ''
-    newLine.insertCell().innerHTML = ''
+    }
+  } catch (error) {
+    console.log({ error })
+    document.querySelector('#set-token').style.display = 'block'
+    document.querySelector('#content').style.display = 'none'
 
   }
 }

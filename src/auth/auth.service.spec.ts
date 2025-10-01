@@ -57,4 +57,13 @@ describe('AuthService', () => {
 
     await expect(res).rejects.toThrow('Usuário ou Senha Incorretos!!!');
   });
+
+  it('login user not exist', async () => {
+    const res = service.login({
+      username: 'wrong-user',
+      password: 'wrong-password',
+    });
+
+    await expect(res).rejects.toThrow('Usuário ou Senha Incorretos!!!');
+  });
 });

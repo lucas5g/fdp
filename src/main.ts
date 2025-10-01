@@ -31,7 +31,7 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/doc', app, documentFactory);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3030);
 
   Logger.debug(
     `Application is running on: ${await app.getUrl()}/doc - version: ${version}`,
