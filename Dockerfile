@@ -33,4 +33,4 @@ EXPOSE 8000
 
 # Start the server
 # CMD ["npm", "run", "start"]
-CMD npx prisma db push && npm run start
+CMD npx prisma db push --accept-data-loss && npm run start
