@@ -45,6 +45,7 @@ export class DiscordService implements OnModuleInit, OnModuleDestroy {
   private async handleInteraction(interaction: Interaction) {
     if (!interaction.isCommand()) return;
 
+    await interaction.deferReply();
     // console.log(interaction)
     const { commandName, user } = interaction;
 
@@ -61,11 +62,11 @@ export class DiscordService implements OnModuleInit, OnModuleDestroy {
           Saída: ${res.end}
           Horas trabalhadas: ${res.hoursWorked}
         `;
-      return interaction.reply(message);
+      return interaction.editReply(message);
     }
 
     if (commandName === 'bater-ponto') {
-      return interaction.reply(
+      return interaction.editReply(
         'Ponto batido com sucesso! (implemente a lógica aqui)',
       );
     }
