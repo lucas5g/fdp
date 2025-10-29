@@ -55,20 +55,18 @@ export class DiscordService implements OnModuleInit, OnModuleDestroy {
 
     if (commandName === 'pontos') {
       const res = await this.pointService.findByDay(auth);
-      const message = `
-          Entrada: ${res.start}
-          Início do almoço: ${res.start}
-          Fim do almoço: ${res.lunchEnd}
-          Saída: ${res.end}
-          Horas trabalhadas: ${res.hoursWorked}
-        `;
+      const message = `Entrada: ${res.start}\nInício do almoço: ${res.start}\nFim do almoço: ${res.lunchEnd}\nSaída: ${res.end}\nHoras trabalhadas: ${res.hoursWorked}`;
       return interaction.editReply(message);
     }
 
     if (commandName === 'bater-ponto') {
-      return interaction.editReply(
-        'Ponto batido com sucesso! (implemente a lógica aqui)',
-      );
+      try {
+        await this.pointService.create(auth);
+        return interaction.editReply(`Ponto batido com sucesso!`);
+      } catch (error: any) {
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        return interaction.editReply(`Erro ao bater ponto: ${errorMsg}`);
+      }
     }
   }
 }
