@@ -9,5 +9,7 @@ export const env = z
     JWT_SECRET: z.string(),
     SECRET_KEY: z.string().length(32),
     DATABASE_URL: z.string(),
+    DISCORD_CLIENT_ID: z.string(),
+    DISCORD_BOT_TOKEN: z.string(),
   })
   .parse(process.env);

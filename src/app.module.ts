@@ -6,6 +6,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { AppController } from '@/app.controller';
 import { PointModule } from './point/point.module';
+import { DiscordService } from './discord/discord.service';
+import { DiscordModule } from './discord/discord.module';
 
 @Module({
   imports: [
@@ -14,8 +16,9 @@ import { PointModule } from './point/point.module';
     ScheduleModule.forRoot(),
     PrismaModule,
     UserModule,
+    DiscordModule,
   ],
-  providers: [AppService],
+  providers: [AppService, DiscordService],
   controllers: [AppController],
 })
 export class AppModule {}

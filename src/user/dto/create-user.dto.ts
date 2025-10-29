@@ -26,4 +26,9 @@ export class CreateUserDto {
   @ApiProperty()
   @IsOptional()
   masp?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  discordUser?: string;
 }

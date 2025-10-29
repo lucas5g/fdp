@@ -20,4 +20,5 @@ model User {
   name      String?
   signature Bytes?
   masp      String?
+  discordUser String? @unique
 }
