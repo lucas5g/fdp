@@ -55,7 +55,7 @@ export class DiscordService implements OnModuleInit, OnModuleDestroy {
 
     if (commandName === 'pontos') {
       const res = await this.pointService.findByDay(auth);
-      const message = `Entrada: ${res.start}\nInício do almoço: ${res.start}\nFim do almoço: ${res.lunchEnd}\nSaída: ${res.end}\nHoras trabalhadas: ${res.hoursWorked}`;
+      const message = `Entrada: ${res.start}\nInício do almoço: ${res.lunch}\nFim do almoço: ${res.lunchEnd}\nSaída: ${res.end}\nHoras trabalhadas: ${res.hoursWorked}`;
       return interaction.editReply(message);
     }
 

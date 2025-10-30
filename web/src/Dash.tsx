@@ -1,0 +1,75 @@
+import React, { useEffect, useState } from 'react';
+
+type PointDay = {
+  start?: string;
+  lunch?: string;
+  lunchEnd?: string;
+  end?: string;
+  hoursWorked?: string;
+};
+
+export default function Dash() {
+  const [point, setPoint] = useState<PointDay | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPoint = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('https://fdp.dizelequefez.com.br/points/day', {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+          },
+        });
+        if (!response.ok) {
+          throw new Error('Erro ao buscar pontos do dia');
+        }
+        const data = await response.json();
+        setPoint(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPoint();
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900">
+      <h1 className="text-3xl text-gray-100 font-bold mb-8">Bem-vindo ao Dashboard!</h1>
+  <div className="bg-linear-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-xl p-8 w-96 shadow-2xl">
+        <h2 className="text-2xl text-blue-400 font-bold mb-6 text-center tracking-wide">Ponto do Dia</h2>
+        {loading && <div className="text-gray-400 text-center">Carregando...</div>}
+        {error && <div className="text-red-400 text-center">{error}</div>}
+        {point && (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Entrada:</span>
+              <span className="text-lg text-gray-100 font-semibold">{point.start || '-'}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Saída Almoço:</span>
+              <span className="text-lg text-gray-100 font-semibold">{point.lunch || '-'}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Volta Almoço:</span>
+              <span className="text-lg text-gray-100 font-semibold">{point.lunchEnd || '-'}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">Saída:</span>
+              <span className="text-lg text-gray-100 font-semibold">{point.end || '-'}</span>
+            </div>
+            <div className="flex justify-between items-center border-t border-gray-700 pt-4 mt-2">
+              <span className="text-gray-300 font-medium">Horas Trabalhadas:</span>
+              <span className="text-xl text-green-400 font-bold">{point.hoursWorked || '-'}</span>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

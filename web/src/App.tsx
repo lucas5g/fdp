@@ -1,23 +1,16 @@
-import {
-  Route, Routes
-} from 'react-router'
-import { Home } from './pages/Home'
-import { Login } from './pages/Login'
-import { Layout } from '@/components/Layout'
-import { Logout } from '@/pages/Logout'
-import { Generate } from './pages/Generate'
-
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router';
+import Login from './Login';
+import Dash from './Dash';
 export function App() {
   return (
-    <Routes>
-      <Route path='/login' element={<Login />} />
-      <Route path='/sair' element={<Logout />} />
-      <Route path='/gerar' element={<Generate />} />
-      <Route element={<Layout />} >
-        <Route index element={<Home />} />
-        <Route path='/home' element={<Home />} />
-      </Route>
-      <Route path='*' element={<Logout />} />
-    </Routes>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path='/login' element={<Login />} />
+        <Route path='/dash' element={<Dash />} />
+        <Route path='*' element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
+
+
