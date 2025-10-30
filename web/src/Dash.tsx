@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type PointDay = {
   start?: string;
@@ -69,6 +69,32 @@ export default function Dash() {
             </div>
           </div>
         )}
+        <button
+          className="mt-8 w-full bg-blue-700 text-white p-3 rounded hover:bg-blue-800 disabled:opacity-50 cursor-pointer font-semibold text-lg transition-colors duration-200"
+          onClick={async () => {
+            try {
+              const token = localStorage.getItem('token');
+              const response = await fetch('https://fdp.dizelequefez.com.br/points', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': token ? `Bearer ${token}` : '',
+                },
+              });
+              if (!response.ok) {
+                throw new Error('Erro ao bater o ponto');
+              }
+              // Atualiza o card após bater o ponto
+              const data = await response.json();
+              setPoint(data);
+              setError('');
+            } catch (err: any) {
+              setError(err.message);
+            }
+          }}
+        >
+          Bater Ponto
+        </button>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router';
+import { BrowserRouter, Route, Routes } from 'react-router';
 import Login from './Login';
 import Dash from './Dash';
 export function App() {
@@ -7,7 +7,7 @@ export function App() {
       <Routes>
         <Route path='/login' element={<Login />} />
         <Route path='/dash' element={<Dash />} />
-        <Route path='*' element={<Navigate to="/login" replace />} />
+        {/* <Route path='*' element={<Navigate to="/login" replace />} /> */}
       </Routes>
     </BrowserRouter>
   );
