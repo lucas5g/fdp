@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 type PointDay = {
   start?: string;
@@ -8,7 +9,8 @@ type PointDay = {
   hoursWorked?: string;
 };
 
-export default function Dash() {
+export default function Pontos() {
+  const navigate = useNavigate();
   const [point, setPoint] = useState<PointDay | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -24,6 +26,10 @@ export default function Dash() {
             'Authorization': token ? `Bearer ${token}` : '',
           },
         });
+        if (response.status === 401) {
+          navigate('/login');
+          return;
+        }
         if (!response.ok) {
           throw new Error('Erro ao buscar pontos do dia');
         }
@@ -81,6 +87,10 @@ export default function Dash() {
                   'Authorization': token ? `Bearer ${token}` : '',
                 },
               });
+              if (response.status === 401) {
+                navigate('/login');
+                return;
+              }
               if (!response.ok) {
                 throw new Error('Erro ao bater o ponto');
               }

@@ -23,7 +23,7 @@ export default function Login() {
       console.log({data});
       if (data) {
         localStorage.setItem('token', data);
-        globalThis.location.href = '/dash';
+        globalThis.location.href = '/';
       } else {
         throw new Error('Token não recebido');
       }
