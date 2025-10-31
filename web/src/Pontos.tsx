@@ -71,7 +71,7 @@ export default function Pontos() {
         }, faltaMs);
 
       } catch (err: unknown) {
-        setError(err.message);
+        setError(err instanceof Error ? err.message : 'Erro desconhecido');
       } finally {
         setLoading(false);
       }
