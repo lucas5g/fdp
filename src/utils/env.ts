@@ -11,6 +11,6 @@ export const env = z
     DATABASE_URL: z.string(),
     DISCORD_CLIENT_ID: z.string(),
     DISCORD_BOT_TOKEN: z.string(),
-    REDIS_URL: z.string().url(),
+    // REDIS_URL: z.string().url(),
   })
   .parse(process.env);
