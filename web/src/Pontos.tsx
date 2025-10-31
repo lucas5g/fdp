@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { CircleNotchIcon } from '@phosphor-icons/react';
+import { useEffect, useState, useRef } from 'react';
+
 import { useNavigate } from 'react-router';
 
 type PointDay = {
@@ -11,6 +11,7 @@ type PointDay = {
 };
 
 export default function Pontos() {
+  const notificationTimeout = useRef<number | null>(null);
   const navigate = useNavigate();
   const [point, setPoint] = useState<PointDay | null>(null);
   const [error, setError] = useState('');
@@ -36,13 +37,47 @@ export default function Pontos() {
         }
         const data = await response.json();
         setPoint(data);
-      } catch (err: any) {
+
+        // Notificação agendada para quando completar 08:00
+        if (!data.hoursWorked) return;
+        if (!("Notification" in window)) return;
+
+        // Função para converter HH:MM para minutos
+        const toMinutes = (h: string) => {
+          const [hh, mm] = h.split(":").map(Number);
+          return hh * 60 + mm;
+        };
+        const worked = toMinutes(data.hoursWorked);
+        const target = 8 * 60;
+        if (worked >= target) return;
+        const faltaMin = target - worked;
+        const faltaMs = faltaMin * 60 * 1000;
+
+        // Limpa timeout anterior se houver
+        if (notificationTimeout.current) {
+          clearTimeout(notificationTimeout.current);
+        }
+
+        // Solicita permissão se necessário
+        if (Notification.permission === "default") {
+          Notification.requestPermission();
+        }
+
+        // Agenda notificação
+        notificationTimeout.current = window.setTimeout(() => {
+          if (Notification.permission === "granted") {
+            new Notification('Você completou 08:00 horas trabalhadas! Considere bater o ponto.');
+          }
+        }, faltaMs);
+
+      } catch (err: unknown) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
     fetchPoint();
+    // Removido o setInterval para atualização automática
   }, []);
 
   return (
@@ -72,8 +107,16 @@ export default function Pontos() {
             </div>
             <div className="flex justify-between items-center border-t border-gray-700 pt-4 mt-2">
               <span className="text-gray-300 font-medium">Horas Trabalhadas:</span>
-              <span className="text-xl text-green-400 font-bold">{point.hoursWorked || '-'}</span>
+              <span
+                className={`text-xl font-bold ${point.hoursWorked && point.hoursWorked < '08:00'
+                  ? 'text-orange-400'
+                  : 'text-green-400'
+                  }`}
+              >
+                {point.hoursWorked || '-'}
+              </span>
             </div>
+            {/* Mensagem removida conforme solicitado */}
           </div>
         )}
         <button
@@ -99,6 +142,8 @@ export default function Pontos() {
               // Após bater o ponto, busca novamente o ponto do dia
               await response.json(); // ignora o retorno do POST
               try {
+                // Desabilita o botão durante a atualização, mas não mostra loading
+                // Não altera setLoading aqui
                 const token = localStorage.getItem('token');
                 const dayResponse = await fetch('https://fdp.dizelequefez.com.br/points/day', {
                   headers: {
@@ -115,18 +160,18 @@ export default function Pontos() {
                 const dayData = await dayResponse.json();
                 setPoint(dayData);
                 setError('');
-              } catch (err: any) {
-                setError(err.message);
+              } catch (err: unknown) {
+                setError(err instanceof Error ? err.message : 'Erro desconhecido');
               }
-            } catch (err: any) {
-              setError(err.message);
+            } catch (err: unknown) {
+              setError(err instanceof Error ? err.message : 'Erro desconhecido');
             } finally {
               setLoading(false);
             }
           }}
           disabled={loading}
         >
-          {loading ? <CircleNotchIcon className="animate-spin" size={24} /> : null}
+          {/* Não mostra ícone de loading durante atualização do ponto do dia */}
           Bater Ponto
         </button>
       </div>

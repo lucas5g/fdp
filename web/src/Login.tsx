@@ -20,16 +20,20 @@ export default function Login() {
         throw new Error('Usuário ou senha inválidos');
       }
       const data = await response.text();
-      console.log({data});
+      console.log({ data });
       if (data) {
         localStorage.setItem('token', data);
         globalThis.location.href = '/';
       } else {
         throw new Error('Token não recebido');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.log(err);
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Erro desconhecido');
+      }
     } finally {
       setLoading(false);
     }

@@ -8,7 +8,8 @@ import { AppController } from '@/app.controller';
 import { PointModule } from './point/point.module';
 import { DiscordService } from './discord/discord.service';
 import { DiscordModule } from './discord/discord.module';
-
+import { BullModule } from '@nestjs/bullmq';
+import { env } from '@/utils/env';
 @Module({
   imports: [
     AuthModule,
@@ -17,6 +18,11 @@ import { DiscordModule } from './discord/discord.module';
     PrismaModule,
     UserModule,
     DiscordModule,
+    BullModule.forRoot({
+      connection: {
+        url: env.REDIS_URL,
+      },
+    }),
   ],
   providers: [AppService, DiscordService],
   controllers: [AppController],

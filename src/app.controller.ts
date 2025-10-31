@@ -11,4 +11,10 @@ export class AppController {
   home() {
     return { api: 'fdp' };
   }
+
+  @Get('notify')
+  @Public()
+  notify() {
+    return { message: 'Notified!' };
+  }
 }

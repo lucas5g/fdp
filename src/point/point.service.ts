@@ -34,10 +34,12 @@ export class PointService {
       .getByRole('button', { name: 'Inserir Marcação' })
       .click();
 
-    await page.waitForTimeout(500);
+    // await page.waitForTimeout(500);
+    const hoursNew = await this.findHours({ page });
     void closeBrowser();
 
-    return { message: 'Ponto Batido' };
+    // return { message: 'Ponto Batido' };
+    return hoursNew;
   }
 
   async findAll(auth: AuthEntity) {
