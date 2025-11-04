@@ -95,8 +95,8 @@ export class PointService {
                 ? '-'
                 : {
                     start,
-                    lunch,
-                    lunchEnd,
+                    lunch: lunch || '12:00',
+                    lunchEnd: lunchEnd || '13:00',
                     end: end ?? setEnd(start, lunch, lunchEnd),
                   },
           };
