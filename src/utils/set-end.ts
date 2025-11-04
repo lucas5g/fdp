@@ -1,4 +1,8 @@
-export function setEnd(start: string, lunchStart: string, lunchEnd: string) {
+export function setEnd(
+  start: string,
+  lunchStart: string = '12:00',
+  lunchEnd: string = '13:00',
+): string {
   const [hourStart, minuteStart] = start.split(':');
   const [hourLunchStart, minuteLunchStart] = lunchStart.split(':');
   const [hourLunchEnd, minuteLunchEnd] = lunchEnd.split(':');
