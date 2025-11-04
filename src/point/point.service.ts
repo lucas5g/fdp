@@ -75,13 +75,16 @@ export class PointService {
         .slice(1)
         .map((row, i) => {
           const day = i + 1;
-          const [start, lunch, lunchEnd, end] = row.split(' ');
+          let [start] = row.split(' ');
+          const [, lunch, lunchEnd, end] = row.split(' ');
           const data = parse(
             `${day}/${month}/${year}`,
             'dd/MM/yyyy',
             new Date(),
           );
           const dayWeek = format(data, 'E', { locale: ptBR }).toUpperCase();
+
+          start = String(day) === '21' ? '09:00' : start;
 
           return {
             day: String(day).padStart(2, '0'),
