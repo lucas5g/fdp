@@ -1,0 +1,337 @@
+{
+	"user": {
+		"id": 2,
+		"username": "lucas.assuncao",
+		"name": "LUCAS DE SOUSA ASSUNÇÃO",
+		"masp": "7000.699-4"
+	},
+	"days": [
+		{
+			"day": "01",
+			"dayName": "QUARTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:14",
+				"lunch": "13:22",
+				"lunchEnd": "14:24",
+				"end": "18:16"
+			}
+		},
+		{
+			"day": "02",
+			"dayName": "QUINTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:52",
+				"lunch": "12:11",
+				"lunchEnd": "13:15",
+				"end": "18:57"
+			}
+		},
+		{
+			"day": "03",
+			"dayName": "SEXTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:07",
+				"lunch": "12:55",
+				"lunchEnd": "14:16",
+				"end": "18:28"
+			}
+		},
+		{
+			"day": "04",
+			"dayName": "SÁBADO",
+			"month": "OUTUBRO",
+			"details": "FOLGA",
+			"registers": "-"
+		},
+		{
+			"day": "05",
+			"dayName": "DOMINGO",
+			"month": "OUTUBRO",
+			"details": "FOLGA",
+			"registers": "-"
+		},
+		{
+			"day": "06",
+			"dayName": "SEGUNDA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:55",
+				"lunch": "12:51",
+				"lunchEnd": "13:51",
+				"end": "19:33"
+			}
+		},
+		{
+			"day": "07",
+			"dayName": "TERÇA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:22",
+				"lunch": "12:02",
+				"lunchEnd": "13:40",
+				"end": "19:01"
+			}
+		},
+		{
+			"day": "08",
+			"dayName": "QUARTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:29",
+				"lunch": "12:02",
+				"lunchEnd": "13:34",
+				"end": "19:04"
+			}
+		},
+		{
+			"day": "09",
+			"dayName": "QUINTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:40",
+				"lunch": "11:50",
+				"lunchEnd": "12:54",
+				"end": "18:45"
+			}
+		},
+		{
+			"day": "10",
+			"dayName": "SEXTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "10:16",
+				"lunch": "12:42",
+				"lunchEnd": "14:05",
+				"end": "19:41"
+			}
+		},
+		{
+			"day": "11",
+			"dayName": "SÁBADO",
+			"month": "OUTUBRO",
+			"details": "FOLGA",
+			"registers": "-"
+		},
+		{
+			"day": "12",
+			"dayName": "DOMINGO",
+			"month": "OUTUBRO",
+			"details": "FOLGA",
+			"registers": "-"
+		},
+		{
+			"day": "13",
+			"dayName": "SEGUNDA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "10:09",
+				"lunch": "13:00",
+				"lunchEnd": "14:00",
+				"end": "19:10"
+			}
+		},
+		{
+			"day": "14",
+			"dayName": "TERÇA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:35",
+				"lunch": "12:05",
+				"lunchEnd": "13:22",
+				"end": "18:53"
+			}
+		},
+		{
+			"day": "15",
+			"dayName": "QUARTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:36",
+				"lunch": "12:03",
+				"lunchEnd": "14:00",
+				"end": "19:43"
+			}
+		},
+		{
+			"day": "16",
+			"dayName": "QUINTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:32",
+				"lunch": "11:45",
+				"lunchEnd": "12:58",
+				"end": "18:55"
+			}
+		},
+		{
+			"day": "17",
+			"dayName": "SEXTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "10:06",
+				"lunch": "13:01",
+				"lunchEnd": "17:11",
+				"end": "22:39"
+			}
+		},
+		{
+			"day": "18",
+			"dayName": "SÁBADO",
+			"month": "OUTUBRO",
+			"details": "FOLGA",
+			"registers": "-"
+		},
+		{
+			"day": "19",
+			"dayName": "DOMINGO",
+			"month": "OUTUBRO",
+			"details": "FOLGA",
+			"registers": "-"
+		},
+		{
+			"day": "20",
+			"dayName": "SEGUNDA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:57",
+				"lunch": "12:00",
+				"lunchEnd": "13:00",
+				"end": "18:57"
+			}
+		},
+		{
+			"day": "21",
+			"dayName": "TERÇA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:00",
+				"lunch": "12:00",
+				"lunchEnd": "13:00",
+				"end": "18:00"
+			}
+		},
+		{
+			"day": "22",
+			"dayName": "QUARTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:44",
+				"lunch": "12:00",
+				"lunchEnd": "13:02",
+				"end": "19:01"
+			}
+		},
+		{
+			"day": "23",
+			"dayName": "QUINTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:29",
+				"lunch": "12:16",
+				"lunchEnd": "13:30",
+				"end": "18:43"
+			}
+		},
+		{
+			"day": "24",
+			"dayName": "SEXTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "10:25",
+				"lunch": "12:45",
+				"lunchEnd": "13:46",
+				"end": "19:26"
+			}
+		},
+		{
+			"day": "25",
+			"dayName": "SÁBADO",
+			"month": "OUTUBRO",
+			"details": "FOLGA",
+			"registers": "-"
+		},
+		{
+			"day": "26",
+			"dayName": "DOMINGO",
+			"month": "OUTUBRO",
+			"details": "FOLGA",
+			"registers": "-"
+		},
+		{
+			"day": "27",
+			"dayName": "SEGUNDA",
+			"month": "OUTUBRO",
+			"details": "FERIADO",
+			"registers": "-"
+		},
+		{
+			"day": "28",
+			"dayName": "TERÇA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:27",
+				"lunch": "12:06",
+				"lunchEnd": "13:12",
+				"end": "18:35"
+			}
+		},
+		{
+			"day": "29",
+			"dayName": "QUARTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:42",
+				"lunch": "12:19",
+				"lunchEnd": "13:20",
+				"end": "18:50"
+			}
+		},
+		{
+			"day": "30",
+			"dayName": "QUINTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:02",
+				"lunch": "11:52",
+				"lunchEnd": "12:53",
+				"end": "18:20"
+			}
+		},
+		{
+			"day": "31",
+			"dayName": "SEXTA",
+			"month": "OUTUBRO",
+			"details": "TRABALHO",
+			"registers": {
+				"start": "09:49",
+				"lunch": "12:16",
+				"lunchEnd": "13:23",
+				"end": "19:14"
+			}
+		}
+	]
+}
