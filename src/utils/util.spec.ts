@@ -1,6 +1,8 @@
 import { encrypt } from './encrypt';
 import { decrypt } from './decrypt';
 import { setEnd } from './set-end';
+import { newDate } from './new-date';
+import { startDay } from './startDay';
 
 describe('Util', () => {
   it('encrypt and decrypt', () => {
@@ -17,5 +19,16 @@ describe('Util', () => {
     const res = setEnd('09:00', '12:00', '13:02');
 
     expect(res).toBe('18:02');
+  });
+
+  it('newDate', () => {
+    const utilDate = newDate();
+
+    expect(utilDate).toBeInstanceOf(Date);
+  });
+
+  it('startDay', () => {
+    const res = startDay();
+    expect(res).toBeInstanceOf(Date);
   });
 });

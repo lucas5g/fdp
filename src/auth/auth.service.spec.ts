@@ -25,7 +25,7 @@ describe('AuthService', () => {
       username: env.USER_NAME!,
       password: env.USER_PASSWORD!,
     });
-    expect(res).toHaveLength(143);
+    expect(res).toHaveLength(152);
   });
 
   it('me', async () => {

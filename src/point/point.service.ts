@@ -8,23 +8,38 @@ import { UserService } from '@/user/user.service';
 import { setEnd } from '@/utils/set-end';
 import { getDayDetail } from '@/utils/get-day-detail';
 import { env } from '@/utils/env';
+import { PrismaService } from '@/prisma/prisma.service';
+import { startDay } from '@/utils/startDay';
+import { EIGHT_HOURS_IN_MINUTES } from '@/utils/contants';
 @Injectable()
 export class PointService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly prisma: PrismaService,
+  ) {}
   async create(auth: AuthEntity) {
     const { page, closeBrowser } = await setupPlaywright(auth);
 
-    const hoursDict = await this.findHours({ page });
+    const pointToday = await this.prisma.point.findUnique({
+      where: {
+        userId_date: {
+          userId: auth.id,
+          date: startDay(),
+        },
+      },
+    });
 
-    if (hoursDict.end !== '-') {
+    if (pointToday?.end !== '-') {
       void closeBrowser();
       throw new BadRequestException('Já registrou a saída.');
     }
 
-    const [hours, minutes] = hoursDict.hoursWorked.split(':').map(Number);
+    const [hours, minutes] = (
+      pointToday.hoursWorked?.split(':') || ['0', '0']
+    ).map(Number);
     const minutesFull = hours * 60 + minutes;
 
-    if (hoursDict.lunchEnd !== '-' && minutesFull < 480) {
+    if (pointToday.lunchEnd !== '-' && minutesFull < EIGHT_HOURS_IN_MINUTES) {
       void closeBrowser();
       throw new BadRequestException('Você ainda não trabalhou 8 horas.');
     }
@@ -39,17 +54,32 @@ export class PointService {
       Logger.debug('Record hours is disabled. Skipping point recording.');
     }
 
-    const table = await page
-      .locator('#iFrameArteWeb')
-      .contentFrame()
-      .getByRole('table')
-      .locator('tbody > tr > td')
-      .allTextContents();
-
-    const res = table.map((element) => element.trim());
+    const res = await this.findHours({ page });
     void closeBrowser();
 
-    return this.hoursRecorded(res);
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: {
+        username: auth.username,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return await this.prisma.point.upsert({
+      where: {
+        userId_date: {
+          date: startDay(),
+          userId: user.id,
+        },
+      },
+      create: {
+        ...res,
+        userId: user.id,
+        date: startDay(),
+      },
+      update: res,
+    });
   }
 
   async findAll(auth: AuthEntity) {
@@ -117,31 +147,32 @@ export class PointService {
     );
   }
 
-  async findByDay(auth: AuthEntity) {
-    const { page, closeBrowser } = await setupPlaywright(auth);
-
-    const res = await this.findHours({ page });
-
-    void closeBrowser();
-    return res;
+  findByDay(auth: AuthEntity) {
+    return this.prisma.point.findUniqueOrThrow({
+      where: {
+        userId_date: {
+          userId: auth.id,
+          date: startDay(),
+        },
+      },
+    });
   }
 
   hoursRecorded(hoursList: string[]) {
-    const start = hoursList[0] ?? '-';
-    const lunch = hoursList[1] ?? '-';
-    const lunchEnd = hoursList[2] ?? '-';
-    const end = hoursList[3] ?? '-';
+    const start = hoursList[0];
+    const lunchStart = hoursList[1];
+    const lunchEnd = hoursList[2];
+    const end = hoursList[3];
 
     const hoursToNumber = (hoursMinutes: string) => {
-      const hoursSplit =
-        hoursMinutes === '-' ? format(new Date(), 'HH:mm') : hoursMinutes;
+      const hoursSplit = hoursMinutes || format(new Date(), 'HH:mm');
 
       const [hour, minute] = hoursSplit.split(':');
       return Number(hour) * 60 + Number(minute);
     };
 
     const startNumber = hoursToNumber(start);
-    const lunchStartNumber = hoursToNumber(lunch);
+    const lunchStartNumber = hoursToNumber(lunchStart);
     const lunchEndNumber = hoursToNumber(lunchEnd);
     const endNumber = hoursToNumber(end);
 
@@ -155,7 +186,7 @@ export class PointService {
 
     return {
       start,
-      lunch,
+      lunchStart,
       lunchEnd,
       end,
       hoursWorked,

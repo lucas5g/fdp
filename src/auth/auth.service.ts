@@ -32,6 +32,7 @@ export class AuthService {
 
     const payload = {
       username: dto.username,
+      id: user?.id,
     };
 
     return this.jwtService.signAsync(payload);

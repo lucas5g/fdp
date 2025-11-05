@@ -1,0 +1,1 @@
+export const EIGHT_HOURS_IN_MINUTES = 480;
