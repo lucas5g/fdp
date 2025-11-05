@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { format, parse } from 'date-fns';
 import { Page } from 'playwright';
 import { ptBR } from 'date-fns/locale';
@@ -7,6 +7,7 @@ import { setupPlaywright } from '@/utils/setup-playwright';
 import { UserService } from '@/user/user.service';
 import { setEnd } from '@/utils/set-end';
 import { getDayDetail } from '@/utils/get-day-detail';
+import { env } from '@/utils/env';
 @Injectable()
 export class PointService {
   constructor(private readonly userService: UserService) {}
@@ -28,18 +29,27 @@ export class PointService {
       throw new BadRequestException('Você ainda não trabalhou 8 horas.');
     }
 
-    await page
+    if (env.RECORD_HOURS) {
+      await page
+        .locator('#iFrameArteWeb')
+        .contentFrame()
+        .getByRole('button', { name: 'Inserir Marcação' })
+        .click();
+    } else {
+      Logger.debug('Record hours is disabled. Skipping point recording.');
+    }
+
+    const table = await page
       .locator('#iFrameArteWeb')
       .contentFrame()
-      .getByRole('button', { name: 'Inserir Marcação' })
-      .click();
+      .getByRole('table')
+      .locator('tbody > tr > td')
+      .allTextContents();
 
-    // await page.waitForTimeout(500);
-    const hoursNew = await this.findHours({ page });
+    const res = table.map((element) => element.trim());
     void closeBrowser();
 
-    // return { message: 'Ponto Batido' };
-    return hoursNew;
+    return this.hoursRecorded(res);
   }
 
   async findAll(auth: AuthEntity) {

@@ -139,30 +139,8 @@ export default function Pontos() {
               if (!response.ok) {
                 throw new Error('Erro ao bater o ponto');
               }
-              // Após bater o ponto, busca novamente o ponto do dia
-              await response.json(); // ignora o retorno do POST
-              try {
-                // Desabilita o botão durante a atualização, mas não mostra loading
-                // Não altera setLoading aqui
-                const token = localStorage.getItem('token');
-                const dayResponse = await fetch('https://fdp.dizelequefez.com.br/points/day', {
-                  headers: {
-                    'Authorization': token ? `Bearer ${token}` : '',
-                  },
-                });
-                if (dayResponse.status === 401) {
-                  navigate('/login');
-                  return;
-                }
-                if (!dayResponse.ok) {
-                  throw new Error('Erro ao buscar pontos do dia');
-                }
-                const dayData = await dayResponse.json();
-                setPoint(dayData);
-                setError('');
-              } catch (err: unknown) {
-                setError(err instanceof Error ? err.message : 'Erro desconhecido');
-              }
+              const data = await response.json(); 
+              setPoint(data);              
             } catch (err: unknown) {
               setError(err instanceof Error ? err.message : 'Erro desconhecido');
             } finally {
