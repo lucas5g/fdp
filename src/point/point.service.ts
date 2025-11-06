@@ -58,13 +58,8 @@ export class PointService {
       Logger.debug('Record hours is disabled. Skipping point recording.');
     }
 
-    const res = await this.findHours({ page });
-    const data = {
-      start: res[0],
-      lunchStart: res[1],
-      lunchEnd: res[2],
-      end: res[3],
-    };
+    const hours = await this.findHours({ page });
+
     void closeBrowser();
 
     const user = await this.prisma.user.findUniqueOrThrow({
@@ -84,16 +79,16 @@ export class PointService {
         },
       },
       create: {
-        ...data,
+        ...hours,
         userId: user.id,
         date: startDay(),
       },
-      update: data,
+      update: hours,
     });
 
     return {
       ...point,
-      hoursWorked: getHoursWorked(data),
+      hoursWorked: getHoursWorked(hours),
     };
   }
 
@@ -163,7 +158,7 @@ export class PointService {
   }
 
   async findByDay(auth: AuthEntity) {
-    const point = await this.prisma.point.findUniqueOrThrow({
+    const point = await this.prisma.point.findUnique({
       where: {
         userId_date: {
           userId: auth.id,
@@ -174,8 +169,32 @@ export class PointService {
 
     return {
       ...point,
-      hoursWorked: getHoursWorked(point),
+      hoursWorked: point ? getHoursWorked(point) : '00:00',
     };
+  }
+
+  async refreshDay(auth: AuthEntity) {
+    const { page, closeBrowser } = await setupPlaywright(auth);
+
+    const hours = await this.findHours({ page });
+    void closeBrowser();
+
+    return this.prisma.point.upsert({
+      where: {
+        userId_date: {
+          userId: auth.id,
+          date: startDay(),
+        },
+      },
+      create: {
+        ...hours,
+        userId: auth.id,
+        date: startDay(),
+      },
+      update: {
+        ...hours,
+      },
+    });
   }
 
   hoursRecorded(hoursList: string[]) {
@@ -184,36 +203,16 @@ export class PointService {
     const lunchEnd = hoursList[2];
     const end = hoursList[3];
 
-    const hoursToNumber = (hoursMinutes: string) => {
-      const hoursSplit = hoursMinutes || format(new Date(), 'HH:mm');
-
-      const [hour, minute] = hoursSplit.split(':');
-      return Number(hour) * 60 + Number(minute);
-    };
-
-    const startNumber = hoursToNumber(start);
-    const lunchStartNumber = hoursToNumber(lunchStart);
-    const lunchEndNumber = hoursToNumber(lunchEnd);
-    const endNumber = hoursToNumber(end);
-
-    const hoursWorkedNumber =
-      lunchStartNumber - startNumber + (endNumber - lunchEndNumber);
-
-    const hours = Math.floor(hoursWorkedNumber / 60);
-    const minutes = hoursWorkedNumber % 60;
-
-    const hoursWorked = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-
     return {
       start,
       lunchStart,
       lunchEnd,
       end,
-      hoursWorked,
     };
   }
 
   private async findHours({ page }: { page: Page }) {
+    await page.waitForTimeout(1_000);
     await page.getByText('Marcar').click();
 
     await page
@@ -229,9 +228,9 @@ export class PointService {
       .locator('tbody > tr > td')
       .allTextContents();
 
-    return table.map((element) => element.trim());
+    const res = table.map((element) => element.trim());
 
-    // return this.hoursRecorded(res);
+    return this.hoursRecorded(res);
   }
 
   async generate(auth: AuthEntity) {

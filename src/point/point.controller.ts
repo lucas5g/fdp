@@ -24,6 +24,11 @@ export class PointController {
     return this.pointService.findByDay(auth);
   }
 
+  @Get('refres-day')
+  refreshDay(@Auth() auth: AuthEntity) {
+    return this.pointService.refreshDay(auth);
+  }
+
   @Get('generate')
   generate(@Auth() auth: AuthEntity) {
     return this.pointService.generate(auth);

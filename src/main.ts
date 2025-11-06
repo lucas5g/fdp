@@ -16,11 +16,7 @@ async function bootstrap() {
         whitelist: true,
       }),
     )
-    // .setBaseViewsDir('./views')
-    // .useStaticAssets('./public')
-    // .setViewEngine('ejs')
     .useGlobalFilters(new PrismaExceptionFilter())
-    // .setGlobalPrefix('/api')
     .enableCors();
 
   const config = new DocumentBuilder()

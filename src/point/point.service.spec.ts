@@ -42,6 +42,15 @@ describe('PointService', () => {
     }
   });
 
+  it('refreshDay', async () => {
+    const res = await service.refreshDay({
+      username: env.USER_NAME!,
+      id: env.USER_ID!,
+    });
+
+    expect(res).toBeDefined();
+  }, 5500);
+
   // it('findAll', async () => {
   //   const res = await service.findAll({ username: env.USER_NAME! });
 
