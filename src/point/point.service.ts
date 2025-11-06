@@ -10,7 +10,8 @@ import { getDayDetail } from '@/utils/get-day-detail';
 import { env } from '@/utils/env';
 import { PrismaService } from '@/prisma/prisma.service';
 import { startDay } from '@/utils/startDay';
-import { EIGHT_HOURS_IN_MINUTES } from '@/utils/contants';
+import { EIGHT_HOURS_WORKED } from '@/utils/contants';
+import { getHoursWorked } from '@/utils/get-hours-worked';
 @Injectable()
 export class PointService {
   constructor(
@@ -27,19 +28,22 @@ export class PointService {
           date: startDay(),
         },
       },
+      select: {
+        start: true,
+        lunchStart: true,
+        lunchEnd: true,
+        end: true,
+      },
     });
 
-    if (pointToday?.end !== '-') {
+    if (pointToday?.end) {
       void closeBrowser();
       throw new BadRequestException('Já registrou a saída.');
     }
 
-    const [hours, minutes] = (
-      pointToday.hoursWorked?.split(':') || ['0', '0']
-    ).map(Number);
-    const minutesFull = hours * 60 + minutes;
+    const hoursWorked = pointToday ? getHoursWorked(pointToday) : '00:00';
 
-    if (pointToday.lunchEnd !== '-' && minutesFull < EIGHT_HOURS_IN_MINUTES) {
+    if (pointToday?.lunchEnd && hoursWorked < EIGHT_HOURS_WORKED) {
       void closeBrowser();
       throw new BadRequestException('Você ainda não trabalhou 8 horas.');
     }
@@ -55,6 +59,12 @@ export class PointService {
     }
 
     const res = await this.findHours({ page });
+    const data = {
+      start: res[0],
+      lunchStart: res[1],
+      lunchEnd: res[2],
+      end: res[3],
+    };
     void closeBrowser();
 
     const user = await this.prisma.user.findUniqueOrThrow({
@@ -66,7 +76,7 @@ export class PointService {
       },
     });
 
-    return await this.prisma.point.upsert({
+    const point = await this.prisma.point.upsert({
       where: {
         userId_date: {
           date: startDay(),
@@ -74,12 +84,17 @@ export class PointService {
         },
       },
       create: {
-        ...res,
+        ...data,
         userId: user.id,
         date: startDay(),
       },
-      update: res,
+      update: data,
     });
+
+    return {
+      ...point,
+      hoursWorked: getHoursWorked(data),
+    };
   }
 
   async findAll(auth: AuthEntity) {
@@ -147,8 +162,8 @@ export class PointService {
     );
   }
 
-  findByDay(auth: AuthEntity) {
-    return this.prisma.point.findUniqueOrThrow({
+  async findByDay(auth: AuthEntity) {
+    const point = await this.prisma.point.findUniqueOrThrow({
       where: {
         userId_date: {
           userId: auth.id,
@@ -156,6 +171,11 @@ export class PointService {
         },
       },
     });
+
+    return {
+      ...point,
+      hoursWorked: getHoursWorked(point),
+    };
   }
 
   hoursRecorded(hoursList: string[]) {
@@ -209,73 +229,9 @@ export class PointService {
       .locator('tbody > tr > td')
       .allTextContents();
 
-    const res = table.map((element) => element.trim());
+    return table.map((element) => element.trim());
 
-    return this.hoursRecorded(res);
-  }
-
-  async generateTest(auth: AuthEntity) {
-    const user = await this.userService.findOneWhere({
-      username: auth?.username,
-    });
-
-    const days = [
-      {
-        day: '01',
-        dayName: 'SEXTA',
-        registers: {
-          start: '09:05',
-          lunch: '13:52',
-          lunchEnd: '14:54',
-          end: '18:07',
-        },
-      },
-      {
-        day: '02',
-        dayName: 'SÁBADO',
-        registers: '-',
-      },
-      {
-        day: '03',
-        dayName: 'DOMINGO',
-        registers: '-',
-      },
-      {
-        day: '04',
-        dayName: 'SEGUNDA',
-        registers: {
-          start: '09:02',
-          lunch: '12:22',
-          lunchEnd: '13:22',
-          end: '18:04',
-        },
-      },
-      {
-        day: '05',
-        dayName: 'TERÇA',
-        registers: {
-          start: '08:56',
-          lunch: '13:20',
-          lunchEnd: '14:20',
-          end: '17:57',
-        },
-      },
-      {
-        day: '06',
-        dayName: 'QUARTA',
-        registers: {
-          start: '09:20',
-          lunch: '13:19',
-          lunchEnd: '14:26',
-          end: '18:28',
-        },
-      },
-    ];
-
-    return {
-      user,
-      days,
-    };
+    // return this.hoursRecorded(res);
   }
 
   async generate(auth: AuthEntity) {

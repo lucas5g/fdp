@@ -31,7 +31,6 @@ model Point {
   lunchStart  String?
   lunchEnd    String?
   end         String?
-  hoursWorked String?
   user        User     @relation(fields: [userId], references: [id])
   userId      Int
 
