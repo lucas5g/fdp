@@ -1,4 +1,5 @@
-const api = 'https://folha-de-pontos.dizelequefez.com.br'
+// const api = 'https://folha-de-pontos.dizelequefez.com.br'
+const api = 'http://localhost:3030'
 
 export function handleSaveToken() {
   const token = document.querySelector('#set-token input').value
@@ -8,7 +9,8 @@ export function handleSaveToken() {
   document.querySelector('#content').style.display = 'block'
 }
 function setInfo() {
-  const year = new Date().getFullYear()
+  const year = '2025'
+  // const year = new Date().getFullYear()
 
   document.querySelector('#year').innerHTML = year
 }
@@ -67,7 +69,7 @@ async function getList(token) {
       const newLine = table.insertRow()
 
       newLine.insertCell().innerHTML = row.day
-      if (row.details !== 'TRABALHO') {
+      if (['FOLGA', 'DOMINGO', 'FERIADO', 'RECESSO'].includes(row.details)) {
         newLine.insertCell().innerHTML = row.details === 'FOLGA' ? row.dayName : row.details
 
         for (let i = 0; i < 9; i++) {
@@ -76,7 +78,9 @@ async function getList(token) {
 
         continue
       }
-
+      if (row.day === '21') {
+        console.log(row, ' => row')
+      }
       newLine.insertCell().innerHTML = row.registers.start
       newLine.insertCell().innerHTML = image
       newLine.insertCell().innerHTML = row.registers.lunch
@@ -86,7 +90,7 @@ async function getList(token) {
       newLine.insertCell().innerHTML = row.registers.end
       newLine.insertCell().innerHTML = image
       newLine.insertCell().innerHTML = ''
-      newLine.insertCell().innerHTML = ''
+      newLine.insertCell().innerHTML = row.details === 'PLANTÃO' ? 'PLANTÃO' : ''
 
     }
   } catch (error) {

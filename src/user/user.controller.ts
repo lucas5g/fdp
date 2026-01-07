@@ -35,7 +35,7 @@ export class UserController {
   ) {
     return this.userService.create({
       ...dto,
-      signature: file ? file.buffer : undefined,
+      signature: file ? new Uint8Array(file.buffer) : undefined,
     });
   }
 

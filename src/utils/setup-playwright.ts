@@ -7,7 +7,7 @@ import { env } from './env';
 const prisma = new PrismaClient();
 export async function setupPlaywright(auth: AuthEntity) {
   const browser = await chromium.launch({
-    headless: env.BROWSER_HEADLESS,
+    // headless: env.BROWSER_HEADLESS,
   });
 
   const context = await browser.newContext({

@@ -51,16 +51,18 @@ describe('PointService', () => {
     expect(res).toBeDefined();
   }, 5500);
 
-  // it('findAll', async () => {
-  //   const res = await service.findAll({ username: env.USER_NAME! });
+  it.only('findAll', async () => {
+    const res = await service.findAll({ username: env.USER_NAME!, id: env.USER_ID! });
 
-  //   expect(res).toBeDefined();
+    console.log(res);
+    return
+    expect(res).toBeDefined();
 
-  //   for (const row of res) {
-  //     expect(row).toHaveProperty('day');
-  //     expect(row.registers).not.toEqual('-lunch');
-  //   }
+    for (const row of res) {
+      expect(row).toHaveProperty('day');
+      expect(row.registers).not.toEqual('-lunch');
+    }
 
-  //   expect(res[0]).toHaveProperty('day');
-  // }, 6_000);
+    expect(res[0]).toHaveProperty('day');
+  }, 6_000);
 });

@@ -21,7 +21,7 @@ export class CreateUserDto {
     type: 'string',
     format: 'binary',
   })
-  signature?: Uint8Array<ArrayBuffer>;
+  signature?: Uint8Array;
 
   @ApiProperty()
   @IsOptional()

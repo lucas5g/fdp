@@ -20,6 +20,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
         `${String(exception.meta?.modelName)} not found`,
       );
     }
+    console.log(exception)
 
     throw new InternalServerErrorException('Erro database');
   }

@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { format, parse } from 'date-fns';
 import { Page } from 'playwright';
-import { ptBR } from 'date-fns/locale';
+import { de, ptBR } from 'date-fns/locale';
 import { AuthEntity } from '@/auth/entities/auth.entity';
 import { setupPlaywright } from '@/utils/setup-playwright';
 import { UserService } from '@/user/user.service';
@@ -134,7 +134,7 @@ export class PointService {
           );
           const dayWeek = format(data, 'E', { locale: ptBR }).toUpperCase();
 
-          start = String(day) === '21' ? '09:00' : start;
+          // start = String(day) === '21' ? '09:00' : start;
 
           return {
             day: String(day).padStart(2, '0'),
@@ -142,7 +142,8 @@ export class PointService {
             month: format(new Date(year, month - 1), 'MMMM', {
               locale: ptBR,
             }).toUpperCase(),
-            details: getDayDetail(dayWeek, start),
+            // details: [ 22, 23, 29, 30].includes(day) ? 'PLANTÃO' : getDayDetail(dayWeek, start),
+            details: getDayDetail({ dayWeek, start, day }),
             registers:
               dayWeek === 'SÁBADO' || dayWeek === 'DOMINGO' || start === ''
                 ? '-'
