@@ -9,7 +9,7 @@ export function handleSaveToken() {
   document.querySelector('#content').style.display = 'block'
 }
 function setInfo() {
-  const year = '2025'
+  const year = '2026'
   // const year = new Date().getFullYear()
 
   document.querySelector('#year').innerHTML = year
